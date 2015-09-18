@@ -9,14 +9,21 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
+
 @interface ViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
 
-@property (nonatomic, strong) CLLocationManager * locationManager;
-@property (weak, nonatomic) MKMapView *mapView;
+// Location properties
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, strong) CLLocation *currentLocation;
 
--(IBAction)zoomIn:(id)sender;
--(IBAction)changeMapType:(id)sender;
+// Interface properties
+@property (strong, nonatomic) IBOutlet UITextField *searchText;
+@property (strong, nonatomic) NSMutableArray *matchingItems;
+@property (strong, nonatomic) IBOutlet MKMapView *mapView;
 
+- (IBAction)zoomIn:(id)sender;
+- (IBAction)changeMapType:(id)sender;
+- (IBAction)textFieldReturn:(id)sender;
 
 @end
 
