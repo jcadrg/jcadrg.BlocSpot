@@ -18,20 +18,25 @@
 
 
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Start locationManager
+- (void)viewWillAppear:(BOOL)animated {
+
     self.locationManager = [[CLLocationManager alloc]init];
     self.locationManager.delegate = self;
-    
+
     if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
         [self.locationManager requestAlwaysAuthorization];
     }
-
-    
-    self.searchText.delegate = self;
-    _mapView.delegate = self;
     [self.locationManager startUpdatingLocation];
+    
+    self.searchTextField.delegate =self;
+
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    NSLog(@"Current location is %@", _location);
+    _mapView.delegate = self;
+
     _mapView.showsUserLocation = YES;
 }
 
@@ -56,63 +61,68 @@
     }
 }
 
-- (IBAction)textFieldReturn:(id)sender {
+#pragma mark - searching methods
+
+-(IBAction)searhTextFieldReturn:(id)sender{
+    
+    NSLog(@"TextFieldReturns");
     [sender resignFirstResponder];
     [_mapView removeAnnotations:[_mapView annotations]];
-    [self performSearch];
+    [self doSearch];
 }
 
-
-
-#pragma Search
-
-- (void)performSearch {
-    MKLocalSearchRequest *request = [[MKLocalSearchRequest alloc]init];
-    request.naturalLanguageQuery = _searchText.text;
-    request.region = _mapView.region;
+-(void) doSearch{
+    MKLocalSearchRequest *localSearchRequest = [[MKLocalSearchRequest alloc] init];
+    localSearchRequest.naturalLanguageQuery = _searchTextField.text;
+    localSearchRequest.region = _mapView.region;
     
-    _matchingItems = [[NSMutableArray alloc]init];
+    _matchingItems = [[NSMutableArray alloc] init];
     
-    MKLocalSearch *search = [[MKLocalSearch alloc]initWithRequest:request];
-    NSLog(@"MKLocalSearch array created");
+    MKLocalSearch *localSearch =[[MKLocalSearch alloc] initWithRequest:localSearchRequest];
+    NSLog(@"Local search created!");
     
-    [search startWithCompletionHandler:^(MKLocalSearchResponse *response, NSError *error) {
-        if (response.mapItems.count == 0) {
-            NSLog(@"No Matches Found");
-        } else {
-            for (MKMapItem *item in response.mapItems) {
-                [_matchingItems addObject:item];
-                MKPointAnnotation *annotation = [[MKPointAnnotation alloc]init];
-                annotation.coordinate = item.placemark.coordinate;
-                annotation.title = item.name;
-                [_mapView addAnnotation:annotation];
+    [localSearch startWithCompletionHandler:^(MKLocalSearchResponse *searchResponse, NSError *error){
+        if (searchResponse.mapItems.count == 0) {
+            NSLog(@"No matching elements found");
+        }else{
+            for (MKMapItem *mapItem in searchResponse.mapItems) {
+                [_matchingItems addObject:mapItem];
+                MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
+                pointAnnotation.coordinate = mapItem.placemark.coordinate;
+                pointAnnotation.title = mapItem.name;
+                [_mapView addAnnotation:pointAnnotation];
             }
         }
+            
+    
     }];
+    
 }
+
 
 
 #pragma MKMapViewDelegate methods
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
     _mapView.centerCoordinate = userLocation.location.coordinate;
+    
 }
 
-- (void)mapViewWillStartLocatingUser:(MKMapView *)mapView
-{
-    // Check authorization status (with class method)
-    CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+#pragma mark - User Location
+
+-(void) mapViewWillStartLocatingUser:(MKMapView *)mapView{
+    CLAuthorizationStatus authStatus = [CLLocationManager authorizationStatus];
     
-    // User has never been asked to decide on location authorization
-    if (status == kCLAuthorizationStatusNotDetermined) {
-        NSLog(@"Requesting when in use auth");
-        [self.locationManager requestWhenInUseAuthorization];
-    }
-    // User has denied location use (either for this app or for all apps
-    else if (status == kCLAuthorizationStatusDenied) {
+    
+    if (authStatus == kCLAuthorizationStatusNotDetermined) {
+        NSLog(@"Requesting always authorization");
+        [self.locationManager requestAlwaysAuthorization];
+    
+    }else if (authStatus ==kCLAuthorizationStatusDenied){
         NSLog(@"Location services denied");
-        // Alert the user and send them to the settings to turn on location
     }
+    
 }
+
 
 @end
