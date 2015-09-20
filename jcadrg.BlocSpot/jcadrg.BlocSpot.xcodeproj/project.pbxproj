@@ -18,6 +18,8 @@
 		5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D21BAEFD0B00F09663 /* DataSource.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D61BAF022800F09663 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D51BAF022800F09663 /* Search.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D81BAF027000F09663 /* SearchViewController.m */; settings = {ASSET_TAGS = (); }; };
+		5DE767DC1BAF430600F09663 /* NewAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767DB1BAF430600F09663 /* NewAnnotation.m */; settings = {ASSET_TAGS = (); }; };
+		5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */; settings = {ASSET_TAGS = (); }; };
 		8086C2727E79159ADA828466 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2626E303E06022C8EB65B15 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +56,10 @@
 		5DE767D51BAF022800F09663 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Search.m; sourceTree = "<group>"; };
 		5DE767D71BAF027000F09663 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		5DE767D81BAF027000F09663 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
+		5DE767DA1BAF430600F09663 /* NewAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewAnnotation.h; sourceTree = "<group>"; };
+		5DE767DB1BAF430600F09663 /* NewAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewAnnotation.m; sourceTree = "<group>"; };
+		5DE767DD1BAF496E00F09663 /* NewAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewAnnotationView.h; sourceTree = "<group>"; };
+		5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewAnnotationView.m; sourceTree = "<group>"; };
 		E2626E303E06022C8EB65B15 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -127,11 +133,15 @@
 				5DE767D41BAF022800F09663 /* Search.h */,
 				5DE767D71BAF027000F09663 /* SearchViewController.h */,
 				5DE767D81BAF027000F09663 /* SearchViewController.m */,
+				5DE767DA1BAF430600F09663 /* NewAnnotation.h */,
+				5DE767DB1BAF430600F09663 /* NewAnnotation.m */,
 				5DE767D51BAF022800F09663 /* Search.m */,
 				5D8FA89E1BAA7B77008D53A1 /* Main.storyboard */,
 				5D8FA8A11BAA7B77008D53A1 /* Images.xcassets */,
 				5D8FA8A31BAA7B77008D53A1 /* LaunchScreen.xib */,
 				5D8FA8941BAA7B76008D53A1 /* Supporting Files */,
+				5DE767DD1BAF496E00F09663 /* NewAnnotationView.h */,
+				5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */,
 			);
 			path = jcadrg.BlocSpot;
 			sourceTree = "<group>";
@@ -305,9 +315,11 @@
 			files = (
 				5D8FA89D1BAA7B76008D53A1 /* ViewController.m in Sources */,
 				5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */,
+				5DE767DC1BAF430600F09663 /* NewAnnotation.m in Sources */,
 				5DE767D61BAF022800F09663 /* Search.m in Sources */,
 				5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */,
 				5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */,
+				5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */,
 				5D8FA8971BAA7B76008D53A1 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
