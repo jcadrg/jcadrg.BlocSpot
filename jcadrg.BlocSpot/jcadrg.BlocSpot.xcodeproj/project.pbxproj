@@ -20,6 +20,9 @@
 		5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D81BAF027000F09663 /* SearchViewController.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767DC1BAF430600F09663 /* NewAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767DB1BAF430600F09663 /* NewAnnotation.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */; settings = {ASSET_TAGS = (); }; };
+		5DE767E21BAF507B00F09663 /* POI.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E11BAF507B00F09663 /* POI.m */; settings = {ASSET_TAGS = (); }; };
+		5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E41BAF571800F09663 /* POITableViewController.m */; settings = {ASSET_TAGS = (); }; };
+		5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E71BAF586200F09663 /* POITableViewCell.m */; settings = {ASSET_TAGS = (); }; };
 		8086C2727E79159ADA828466 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2626E303E06022C8EB65B15 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +63,12 @@
 		5DE767DB1BAF430600F09663 /* NewAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewAnnotation.m; sourceTree = "<group>"; };
 		5DE767DD1BAF496E00F09663 /* NewAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewAnnotationView.h; sourceTree = "<group>"; };
 		5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewAnnotationView.m; sourceTree = "<group>"; };
+		5DE767E01BAF507B00F09663 /* POI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POI.h; sourceTree = "<group>"; };
+		5DE767E11BAF507B00F09663 /* POI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POI.m; sourceTree = "<group>"; };
+		5DE767E31BAF571800F09663 /* POITableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POITableViewController.h; sourceTree = "<group>"; };
+		5DE767E41BAF571800F09663 /* POITableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POITableViewController.m; sourceTree = "<group>"; };
+		5DE767E61BAF586200F09663 /* POITableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POITableViewCell.h; sourceTree = "<group>"; };
+		5DE767E71BAF586200F09663 /* POITableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POITableViewCell.m; sourceTree = "<group>"; };
 		E2626E303E06022C8EB65B15 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -142,6 +151,12 @@
 				5D8FA8941BAA7B76008D53A1 /* Supporting Files */,
 				5DE767DD1BAF496E00F09663 /* NewAnnotationView.h */,
 				5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */,
+				5DE767E01BAF507B00F09663 /* POI.h */,
+				5DE767E11BAF507B00F09663 /* POI.m */,
+				5DE767E31BAF571800F09663 /* POITableViewController.h */,
+				5DE767E41BAF571800F09663 /* POITableViewController.m */,
+				5DE767E61BAF586200F09663 /* POITableViewCell.h */,
+				5DE767E71BAF586200F09663 /* POITableViewCell.m */,
 			);
 			path = jcadrg.BlocSpot;
 			sourceTree = "<group>";
@@ -315,8 +330,11 @@
 			files = (
 				5D8FA89D1BAA7B76008D53A1 /* ViewController.m in Sources */,
 				5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */,
+				5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */,
 				5DE767DC1BAF430600F09663 /* NewAnnotation.m in Sources */,
+				5DE767E21BAF507B00F09663 /* POI.m in Sources */,
 				5DE767D61BAF022800F09663 /* Search.m in Sources */,
+				5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */,
 				5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */,
 				5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */,
 				5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */,
