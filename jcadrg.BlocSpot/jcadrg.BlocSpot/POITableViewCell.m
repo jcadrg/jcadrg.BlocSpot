@@ -9,6 +9,8 @@
 #import "POITableViewCell.h"
 #import "UIFont+FlatUI.h"
 #import <FlatUIKit/UIColor+FlatUI.h>
+#import "FlatUIKit.h"
+
 
 @interface POITableViewCell()
 
@@ -67,42 +69,42 @@ static UIColor *fontColor;
     return self;
 }
 
--(void) addLocationName{
-    self.locationName = [[UILabel alloc] init];
+-(void)addLocationName {
+    self.locationName = [UILabel new];
     self.locationName.textAlignment = NSTextAlignmentLeft;
-    self.locationName.numberOfLines =0;
-    [self.contentView addSubview:self.locationName];
+    self.locationName.numberOfLines  =0;
+    [self.contentView addSubview: self.locationName ];
     self.locationName.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.locationName.attributedText = [self locationNameString];
     
 }
 
--(void) addLocationNotes{
-    self.locationNotes = [[UILabel alloc] init];
+-(void)addLocationNotes {
+    self.locationNotes = [UILabel new];
     self.locationNotes.textAlignment = NSTextAlignmentLeft;
-    self.locationNotes.numberOfLines = 0;
-    [self.contentView addSubview:self.locationNotes];
+    self.locationNotes.numberOfLines  =0;
+    [self.contentView addSubview: self.locationNotes];
     self.locationNotes.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.locationNotes.attributedText = [self locationNotesString];
     
-}
-
--(void) addDistance{
     
-    self.distance = [[UILabel alloc] init];
+}
+-(void)addDistance {
+    self.distance = [UILabel new];
     self.distance.textAlignment = NSTextAlignmentLeft;
-    self.distance.numberOfLines = 0;
-    [self.contentView addSubview:self.distance];
+    self.distance.numberOfLines  =0;
+    [self.contentView addSubview: self.distance];
     self.distance.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.distance.attributedText = [self distanceString];
     
 }
 
--(void) addCategory{
-    self.categoryButton= [UIButton buttonWithType:UIButtonTypeCustom];
+// Category button going to be a Model button itself
+-(void)addCategory{
+    self.categoryButton =  [UIButton buttonWithType:UIButtonTypeCustom];
     [self.categoryButton setImage:[UIImage imageNamed:@"like"] forState:UIControlStateNormal];
     [self.categoryButton addTarget:self action:@selector(categoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.categoryButton];
@@ -110,95 +112,101 @@ static UIColor *fontColor;
     
 }
 
--(void) addNextView{
+-(void)addNextView {
+    self.nextViewImage = [[UIImageView alloc]init];
     
-    self.nextViewImage = [[UIImageView alloc] init];
     self.nextViewImage.image = [UIImage imageNamed:@"right"];
     [self.contentView addSubview:self.nextViewImage];
-    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.nextViewImage.translatesAutoresizingMaskIntoConstraints = NO;
     
 }
 
-#pragma mark - Strings
+#pragma mark Attributed Strings
 
--(NSAttributedString *) locationNameString{
-    CGFloat locationNameFontSize = 15;
-    NSString *string = @"Some good place";
+-(NSAttributedString *)locationNameString {
     
-    NSMutableAttributedString *locationAttributedString = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName :[regularFont fontWithSize:locationNameFontSize]}];
-    NSRange stringRange = [string rangeOfString:string];
-    [locationAttributedString addAttribute:NSForegroundColorAttributeName value:fontColor range:stringRange];
+    CGFloat placeNameFontSize = 18;
     
-    return locationAttributedString;
+    NSString *baseString = @"A random place";
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName :[lightFont fontWithSize:placeNameFontSize]}];
+    NSRange stringRange = [baseString rangeOfString:baseString];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:fontColor range:stringRange];
+    return attributedString;
+    
 }
 
--(NSAttributedString *) locationNotesString{
+
+-(NSAttributedString *)locationNotesString {
     
-    CGFloat locationNotesFontSize = 12;
-    NSString *string = @"Some guy told me that is a fun place to be";
+    CGFloat notesPlaceFontSize = 15;
     
-    NSMutableAttributedString *locationNoteAttributedString = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName :[lightFont fontWithSize:locationNotesFontSize]}];
-    NSRange stringRange = [string rangeOfString:string];
-    [locationNoteAttributedString addAttribute:NSForegroundColorAttributeName value:fontColor range:stringRange];
+    NSString *baseString = @"Some guy told me this was a good place";
     
-    return locationNoteAttributedString;
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName :[lightFont fontWithSize:notesPlaceFontSize]}];
+    NSRange stringRange = [baseString rangeOfString:baseString];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:fontColor range:stringRange];
+    
+    return attributedString;
+    
 }
 
--(NSAttributedString *) distanceString{
-    CGFloat distanceFontSize = 10;
-    NSString *string = @"1 km";
+
+-(NSAttributedString *)distanceString {
+    CGFloat fontSize = 11;
     
-    NSMutableAttributedString *distanceAttributedString = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName: [lightFont fontWithSize:distanceFontSize]}];
-    NSRange stringRange = [string rangeOfString:string];
-    [distanceAttributedString addAttribute:NSForegroundColorAttributeName value:fontColor range:stringRange];
+    NSString *baseString = @"< 1 km";
     
-    return distanceAttributedString;
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName :[lightFont fontWithSize:fontSize]}];
+    NSRange stringRange = [baseString rangeOfString:baseString];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:fontColor range:stringRange];
+    
+    return attributedString;
+    
 }
 
--(void) createConstraints{
+-(void)createConstraints {
     NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_locationName, _locationNotes, _distance, _categoryButton, _nextViewImage);
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_categoryButton][_locationName][_nextViewImage]|"
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_categoryButton]-[_locationName]-[_nextViewImage]-|"
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_categoryButton][_locationNotes][_nextViewImage(==25)]]"
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_categoryButton]-[_locationNotes]-[_nextViewImage(==28)]-|"
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_categoryButton][_distance]|"
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_categoryButton][_distance]-|"
+                                                                             options:kNilOptions
+                                                                             metrics:nil
+                                                                               views:viewDictionary]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_locationName][_locationNotes]-|"
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_locationName][_locationNotes]|"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:viewDictionary]];
-    
-    //Next View constraints
+    //Arrow Image Constraints
     self.nextViewImageHeight = [NSLayoutConstraint constraintWithItem:_nextViewImage
-                                                            attribute:NSLayoutAttributeHeight
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:nil
-                                                            attribute:NSLayoutAttributeNotAnAttribute
-                                                           multiplier:1
-                                                             constant:100];
+                                                         attribute:NSLayoutAttributeHeight
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:nil
+                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                        multiplier:1
+                                                          constant:100];
     
-    NSLayoutConstraint *midConstraint =[NSLayoutConstraint constraintWithItem:_nextViewImage
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1
-                                                                     constant:0];
+    NSLayoutConstraint *centerConstraint = [NSLayoutConstraint constraintWithItem:_nextViewImage
+                                                                        attribute:NSLayoutAttributeCenterY
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self.contentView
+                                                                        attribute:NSLayoutAttributeCenterY
+                                                                       multiplier:1
+                                                                         constant:0];
     
-    [self.contentView addConstraints:@[self.nextViewImageHeight, midConstraint]];
+    [self.contentView addConstraints:@[self.nextViewImageHeight,centerConstraint]];
     
-    
-    //Category Button Constraints
+    //Category Button
     
     self.categoryButtonHeight = [NSLayoutConstraint constraintWithItem:_categoryButton
                                                              attribute:NSLayoutAttributeHeight
@@ -207,7 +215,6 @@ static UIColor *fontColor;
                                                              attribute:NSLayoutAttributeNotAnAttribute
                                                             multiplier:1
                                                               constant:100];
-    
     self.categoryButtonWidth = [NSLayoutConstraint constraintWithItem:_categoryButton
                                                             attribute:NSLayoutAttributeWidth
                                                             relatedBy:NSLayoutRelationEqual
@@ -215,21 +222,20 @@ static UIColor *fontColor;
                                                             attribute:NSLayoutAttributeNotAnAttribute
                                                            multiplier:1
                                                              constant:100];
+    [self.contentView addConstraints:@[self.categoryButtonHeight, self.categoryButtonWidth]];
     
-    [self.contentView addConstraints:@[self.categoryButtonWidth, self.categoryButtonHeight]];
+    // How far is it label Width
+    self.distanceWidth =[NSLayoutConstraint constraintWithItem:_distance
+                                                       attribute:NSLayoutAttributeWidth
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:nil
+                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                      multiplier:1
+                                                        constant:100];
+    [self.contentView addConstraint:self.distanceWidth];
     
-    //Distance Label Constraints
-    
-    self.distanceWidth = [NSLayoutConstraint constraintWithItem:_distance
-                                                      attribute:NSLayoutAttributeWidth
-                                                      relatedBy:NSLayoutRelationEqual
-                                                         toItem:nil
-                                                      attribute:NSLayoutAttributeNotAnAttribute
-                                                     multiplier:1
-                                                       constant:100];
-    
-    [self.contentView addConstraints:@[self.distanceWidth]];
 }
+
 
 
 -(void) layoutSubviews{
@@ -238,7 +244,7 @@ static UIColor *fontColor;
     CGSize max = CGSizeMake(CGRectGetWidth(self.bounds), CGFLOAT_MAX);
     CGSize distanceLabelSize = [self.distance sizeThatFits:max];
     
-    self.nextViewImageHeight.constant = 25;
+    self.nextViewImageHeight.constant = 28;
     self.categoryButtonHeight.constant = 30;
     self.categoryButtonWidth.constant = 30;
     

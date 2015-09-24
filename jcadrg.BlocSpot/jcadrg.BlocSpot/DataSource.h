@@ -7,9 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
+
+typedef void (^SearchListCompletionBlock)(NSArray *locations, NSError *error);
 
 @interface DataSource : NSObject
 
 +(instancetype) sharedInstance;
+
+@property (nonatomic, strong) NSMutableArray *annotation;
+
++(void) getLocationWithName:(NSString *) searchTerm withLocationCoordinate:(CLLocationCoordinate2D *) coordinate completion:(SearchListCompletionBlock)completionHandler;
+
+-(void) createAnnotation;
 
 @end
