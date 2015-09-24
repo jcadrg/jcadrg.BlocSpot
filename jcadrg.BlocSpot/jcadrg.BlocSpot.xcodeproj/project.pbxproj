@@ -18,11 +18,15 @@
 		5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D21BAEFD0B00F09663 /* DataSource.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D61BAF022800F09663 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D51BAF022800F09663 /* Search.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D81BAF027000F09663 /* SearchViewController.m */; settings = {ASSET_TAGS = (); }; };
-		5DE767DC1BAF430600F09663 /* NewAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767DB1BAF430600F09663 /* NewAnnotation.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767E21BAF507B00F09663 /* POI.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E11BAF507B00F09663 /* POI.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E41BAF571800F09663 /* POITableViewController.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E71BAF586200F09663 /* POITableViewCell.m */; settings = {ASSET_TAGS = (); }; };
+		5DEF240F1BB313280073C4BC /* AnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF240E1BB313280073C4BC /* AnnotationView.m */; settings = {ASSET_TAGS = (); }; };
+		5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24111BB313D70073C4BC /* TLTagsControl.m */; settings = {ASSET_TAGS = (); }; };
+		5DEF24151BB342A70073C4BC /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24141BB342A70073C4BC /* Annotation.m */; settings = {ASSET_TAGS = (); }; };
+		5DEF24181BB3496D0073C4BC /* ComposeLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24171BB3496D0073C4BC /* ComposeLocationViewController.m */; settings = {ASSET_TAGS = (); }; };
+		5DF641D31BB300A000427AC9 /* Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF641D21BB300A000427AC9 /* Categories.m */; settings = {ASSET_TAGS = (); }; };
 		8086C2727E79159ADA828466 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2626E303E06022C8EB65B15 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -59,8 +63,6 @@
 		5DE767D51BAF022800F09663 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Search.m; sourceTree = "<group>"; };
 		5DE767D71BAF027000F09663 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		5DE767D81BAF027000F09663 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
-		5DE767DA1BAF430600F09663 /* NewAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewAnnotation.h; sourceTree = "<group>"; };
-		5DE767DB1BAF430600F09663 /* NewAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewAnnotation.m; sourceTree = "<group>"; };
 		5DE767DD1BAF496E00F09663 /* NewAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewAnnotationView.h; sourceTree = "<group>"; };
 		5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewAnnotationView.m; sourceTree = "<group>"; };
 		5DE767E01BAF507B00F09663 /* POI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POI.h; sourceTree = "<group>"; };
@@ -69,6 +71,16 @@
 		5DE767E41BAF571800F09663 /* POITableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POITableViewController.m; sourceTree = "<group>"; };
 		5DE767E61BAF586200F09663 /* POITableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POITableViewCell.h; sourceTree = "<group>"; };
 		5DE767E71BAF586200F09663 /* POITableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POITableViewCell.m; sourceTree = "<group>"; };
+		5DEF240D1BB313280073C4BC /* AnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationView.h; sourceTree = "<group>"; };
+		5DEF240E1BB313280073C4BC /* AnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationView.m; sourceTree = "<group>"; };
+		5DEF24101BB313D10073C4BC /* TLTagsControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLTagsControl.h; path = "/Users/Rata/Documents/Juanca/jcadrg.BlocSpot/Pods/../../../../Desktop/TLTagsControl-master/TLTagsContol/TLTagsControl.h"; sourceTree = "<absolute>"; };
+		5DEF24111BB313D70073C4BC /* TLTagsControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLTagsControl.m; path = "/Users/Rata/Documents/Juanca/jcadrg.BlocSpot/Pods/../../../../Desktop/TLTagsControl-master/TLTagsContol/TLTagsControl.m"; sourceTree = "<absolute>"; };
+		5DEF24131BB342A70073C4BC /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
+		5DEF24141BB342A70073C4BC /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
+		5DEF24161BB3496D0073C4BC /* ComposeLocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeLocationViewController.h; sourceTree = "<group>"; };
+		5DEF24171BB3496D0073C4BC /* ComposeLocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeLocationViewController.m; sourceTree = "<group>"; };
+		5DF641D11BB300A000427AC9 /* Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Categories.h; sourceTree = "<group>"; };
+		5DF641D21BB300A000427AC9 /* Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Categories.m; sourceTree = "<group>"; };
 		E2626E303E06022C8EB65B15 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -142,8 +154,6 @@
 				5DE767D41BAF022800F09663 /* Search.h */,
 				5DE767D71BAF027000F09663 /* SearchViewController.h */,
 				5DE767D81BAF027000F09663 /* SearchViewController.m */,
-				5DE767DA1BAF430600F09663 /* NewAnnotation.h */,
-				5DE767DB1BAF430600F09663 /* NewAnnotation.m */,
 				5DE767D51BAF022800F09663 /* Search.m */,
 				5D8FA89E1BAA7B77008D53A1 /* Main.storyboard */,
 				5D8FA8A11BAA7B77008D53A1 /* Images.xcassets */,
@@ -157,6 +167,16 @@
 				5DE767E41BAF571800F09663 /* POITableViewController.m */,
 				5DE767E61BAF586200F09663 /* POITableViewCell.h */,
 				5DE767E71BAF586200F09663 /* POITableViewCell.m */,
+				5DF641D11BB300A000427AC9 /* Categories.h */,
+				5DF641D21BB300A000427AC9 /* Categories.m */,
+				5DEF240D1BB313280073C4BC /* AnnotationView.h */,
+				5DEF240E1BB313280073C4BC /* AnnotationView.m */,
+				5DEF24111BB313D70073C4BC /* TLTagsControl.m */,
+				5DEF24101BB313D10073C4BC /* TLTagsControl.h */,
+				5DEF24131BB342A70073C4BC /* Annotation.h */,
+				5DEF24141BB342A70073C4BC /* Annotation.m */,
+				5DEF24161BB3496D0073C4BC /* ComposeLocationViewController.h */,
+				5DEF24171BB3496D0073C4BC /* ComposeLocationViewController.m */,
 			);
 			path = jcadrg.BlocSpot;
 			sourceTree = "<group>";
@@ -329,13 +349,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D8FA89D1BAA7B76008D53A1 /* ViewController.m in Sources */,
+				5DEF24181BB3496D0073C4BC /* ComposeLocationViewController.m in Sources */,
+				5DF641D31BB300A000427AC9 /* Categories.m in Sources */,
+				5DEF240F1BB313280073C4BC /* AnnotationView.m in Sources */,
 				5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */,
+				5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */,
 				5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */,
-				5DE767DC1BAF430600F09663 /* NewAnnotation.m in Sources */,
 				5DE767E21BAF507B00F09663 /* POI.m in Sources */,
 				5DE767D61BAF022800F09663 /* Search.m in Sources */,
 				5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */,
 				5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */,
+				5DEF24151BB342A70073C4BC /* Annotation.m in Sources */,
 				5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */,
 				5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */,
 				5D8FA8971BAA7B76008D53A1 /* main.m in Sources */,

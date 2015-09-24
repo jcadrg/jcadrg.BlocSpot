@@ -8,6 +8,10 @@
 
 #import "DataSource.h"
 
+@interface DataSource ()
+
+@end
+
 @implementation DataSource
 
 

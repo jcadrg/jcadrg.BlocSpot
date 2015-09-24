@@ -1,16 +1,22 @@
 PODS:
   - FlatUIKit (1.6.2)
+  - FPPopover (1.4.1)
   - Masonry (0.6.2)
+  - SMCalloutView (2.1.2)
   - SVProgressHUD (HEAD based on 1.1.3)
 
 DEPENDENCIES:
   - FlatUIKit
+  - FPPopover
   - Masonry
+  - SMCalloutView
   - SVProgressHUD (HEAD)
 
 SPEC CHECKSUMS:
   FlatUIKit: 1b41f0d4952ce8d970d8479ce79df54a960242c4
+  FPPopover: aaf34a88cad4113867c5f1d0a4f9b2f1c06e2352
   Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
+  SMCalloutView: 4078d89b847731e514b1a919fed33b383a24a106
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
 
 COCOAPODS: 0.38.2
