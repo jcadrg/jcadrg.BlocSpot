@@ -53,7 +53,7 @@ UIColor *labelColor;
         [self createTopView];
         [self creatingTextField];
         [self createTextView];
-        [self creadeDoneButton];
+        [self createDoneButton];
         [self creatingCategoryView];
         [self createConstraints];
         
@@ -129,9 +129,9 @@ UIColor *labelColor;
     
     
     self.titleTF.attributedPlaceholder =
-    [[NSAttributedString alloc] initWithString:NSLocalizedString(@"  Place Name", @"String naming Point of Interest")
+    [[NSAttributedString alloc] initWithString:NSLocalizedString(@"  Location Name", @"String naming Point of Interest")
                                     attributes:@{NSForegroundColorAttributeName: [UIColor darkGrayColor]}];
-    self.titleTF.font =[UIFont flatFontOfSize:16];
+    self.titleTF.font =[UIFont flatFontOfSize:14];
     self.titleTF.floatingLabel.font = [UIFont flatFontOfSize:11];
     self.titleTF.floatingLabelTextColor = labelColor;
     self.titleTF.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -155,7 +155,7 @@ UIColor *labelColor;
     [self.categoryIV setTintColor:[UIColor midnightBlueColor]];
     
     self.categoryLabel.numberOfLines = 0;
-    self.categoryLabel.font = [UIFont flatFontOfSize:16];
+    self.categoryLabel.font = [UIFont flatFontOfSize:14];
     self.categoryLabel.text = @"Category";
     self.categoryLabel.textColor = [UIColor midnightBlueColor];
     [self addSubview:self.categoryView];
@@ -175,29 +175,13 @@ UIColor *labelColor;
     
 }
 
-/*
- -(void)creatingTagPlaceholder {
- self.tagField.attributedPlaceholder =
- [[NSAttributedString alloc] initWithString:NSLocalizedString(@"  Category", @"Tags of what category it belongs to")
- attributes:@{NSForegroundColorAttributeName: [UIColor darkGrayColor]}];
- self.tagField.font =[UIFont flatFontOfSize:16];
- self.tagField.floatingLabel.font = [UIFont flatFontOfSize:11];
- self.tagField.floatingLabelTextColor = floatingLabelColor;
- self.tagField.clearButtonMode = UITextFieldViewModeWhileEditing;
- self.tagField.backgroundColor = [UIColor buttsColor];
- [self addSubview:self.tagField];
- self.div3.backgroundColor = [UIColor silverColor];
- [self addSubview:self.div3];
- self.tagField.translatesAutoresizingMaskIntoConstraints = NO;
- self.div3.translatesAutoresizingMaskIntoConstraints =NO;
- }
- */
+
 
 -(void)createTextView  {
     self.descriptionTV = [[JVFloatLabeledTextView alloc] init];
     self.descriptionTV.placeholder = NSLocalizedString(@"  Description", @"");
     self.descriptionTV.placeholderTextColor = [UIColor darkGrayColor];
-    self.descriptionTV.font = [UIFont flatFontOfSize:16];
+    self.descriptionTV.font = [UIFont flatFontOfSize:14];
     self.descriptionTV.floatingLabel.font = [UIFont flatFontOfSize:11];
     self.descriptionTV.floatingLabelTextColor = labelColor;
     [self addSubview:self.descriptionTV];
@@ -213,15 +197,15 @@ UIColor *labelColor;
 }
 
 
--(void)creadeDoneButton {
-    [self.doneButton setTitle:@"DONE" forState:UIControlStateNormal];
+-(void)createDoneButton {
+    [self.doneButton setTitle:@"Done" forState:UIControlStateNormal];
     [self.doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     self.doneButton.buttonColor = [UIColor midnightBlueColor];
     self.doneButton.shadowColor = [UIColor wetAsphaltColor];
     self.doneButton.shadowHeight = 3.0f;
     self.doneButton.cornerRadius = 6.0f;
-    self.doneButton.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    self.doneButton.titleLabel.font = [UIFont boldFlatFontOfSize:14];
     [self.doneButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.doneButton setTitleColor:[UIColor silverColor] forState:UIControlStateHighlighted];
     [self addSubview:self.doneButton];
@@ -252,7 +236,7 @@ UIColor *labelColor;
     
     NSString *baseString = NSLocalizedString(@"Point of Interest", @"title to the topview");
     
-    NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSForegroundColorAttributeName:[UIColor midnightBlueColor],NSFontAttributeName:[UIFont boldFlatFontOfSize:20]}];
+    NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSForegroundColorAttributeName:[UIColor midnightBlueColor],NSFontAttributeName:[UIFont boldFlatFontOfSize:18]}];
     
     return mutAttString;
     
@@ -382,6 +366,8 @@ UIColor *labelColor;
           withDescriptionText:self.descriptionTV.text
                       withTag:nil];
 }
+
+
 
 #pragma mark UITapGestureRecognizer action
 

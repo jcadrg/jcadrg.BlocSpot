@@ -15,7 +15,8 @@
 @property (nonatomic, strong) UIColor *categoryColor;
 @property (nonatomic, strong) UILabel *categoryLabel;
 
--(instancetype) initWithName:(NSString *)categoryName withColor:(UIColor *)color;
+//-(instancetype) initWithName:(NSString *)categoryName withColor:(UIColor *)color;
+-(instancetype) iniWithDictionary:(NSDictionary *)categoryDictionary;
 -(UILabel *)returnLabel;
 
 @end

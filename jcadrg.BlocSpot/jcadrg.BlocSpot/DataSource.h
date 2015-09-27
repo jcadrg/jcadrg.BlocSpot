@@ -9,17 +9,28 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import "POI.h"
+
 
 typedef void (^SearchListCompletionBlock)(NSArray *locations, NSError *error);
 
-@interface DataSource : NSObject
+@interface DataSource : NSObject{
+    NSString *_path;
+    NSMutableArray *_annotation;
+}
 
 +(instancetype) sharedInstance;
 
 @property (nonatomic, strong) NSMutableArray *annotation;
+@property (nonatomic, strong) NSString *path;
+@property (nonatomic, strong) POI *poi;
 
 +(void) getLocationWithName:(NSString *) searchTerm withLocationCoordinate:(CLLocationCoordinate2D *) coordinate completion:(SearchListCompletionBlock)completionHandler;
+-(NSArray *)annotation;
+-(void) addPOI:(POI *)poi;
 
--(void) createAnnotation;
+-(void) saveToDisk;
+
+//-(void) createAnnotation;
 
 @end

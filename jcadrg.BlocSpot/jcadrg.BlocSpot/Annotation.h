@@ -13,10 +13,16 @@
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
 
-@interface Annotation : NSObject<MKAnnotation>
+@interface Annotation : NSObject<MKAnnotation,NSCoding>
 
 @property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic, strong) NSArray *array;
+@property (nonatomic, assign) CGFloat latitude;
+@property (nonatomic, assign) CGFloat longitude;
 
 -(id) initWithCoordinate:(CLLocationCoordinate2D) coordinate;
+
+-(id) initWithArray:(NSArray *)array;
+
 
 @end

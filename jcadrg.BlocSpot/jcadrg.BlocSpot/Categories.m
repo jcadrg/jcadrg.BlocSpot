@@ -10,11 +10,10 @@
 
 @implementation Categories
 
--(instancetype) initWithName:(NSString *)categoryName withColor:(UIColor *)color{
+-(instancetype) iniWithDictionary:(NSDictionary *)categoryDictionary{
     if (self) {
-        self.categoryName = categoryName;
-        self.categoryColor = color;
-        
+        self.categoryName = categoryDictionary[@"categoryName"];
+        self.categoryColor = categoryDictionary[@"categoryColor"];
     }
     
     return self;

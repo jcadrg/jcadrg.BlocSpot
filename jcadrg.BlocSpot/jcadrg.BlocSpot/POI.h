@@ -10,6 +10,8 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "Annotation.h"
+#import "Categories.h"
+
 
 @interface POI : NSObject
 
@@ -17,7 +19,7 @@
 @property (nonatomic, strong) NSString *note;
 @property (nonatomic, assign) BOOL visitState;
 @property (nonatomic, assign) CLLocation *location;
-@property (nonatomic, strong) NSString *category;
+@property (nonatomic, strong) Categories *category;
 @property (nonatomic, strong) Annotation *annotation;
 
 

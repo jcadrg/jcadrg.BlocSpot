@@ -22,13 +22,15 @@
 #import "Annotation.h"
 #import "AnnotationView.h"
 #import "ComposeLocationViewController.h"
-#import "DataSource.h"
+
 #import "POI.h"
 #import "FPPopoverController.h"
 #import "SMCalloutView.h"
 
 #import "CustomIOSAlertView.h"
 #import "WYPopoverController.h"
+
+
 
 typedef NS_ENUM(NSInteger, ViewControllerState){
     ViewControllerStateMapContent, ViewControllerStateAddPOI
@@ -66,7 +68,6 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 
 @property(nonatomic, strong) Annotation *customAnnotation;
 @property(nonatomic, assign) ViewControllerState state;
-
 
 
 
@@ -135,17 +136,19 @@ static NSString *viewID = @"Annotation";
     
     
     
-    self.annotationView = (MKAnnotationView*)
-    [self.mapView dequeueReusableAnnotationViewWithIdentifier:viewID];
+    /*self.annotationView = (MKAnnotationView*)
+    [self.mapView dequeueReusableAnnotationViewWithIdentifier:viewID];*/
     //    self.composePlacesVC = [[BLCComposePlacesViewController alloc]init];
     //    self.popOver = [[WYPopoverController alloc]initWithContentViewController:_composePlacesVC];
     //    self.popOver.delegate = self;
     
     //View that will create a new POI
     self.createAnnotationView = [[AnnotationView alloc]init];
+    self.createAnnotationView.delegate = self;
     self.state = ViewControllerStateMapContent;
     
-    
+    self.parameters = [[NSMutableDictionary alloc] init];
+    NSLog(@"parameters = %@", self.parameters);
     
 }
 - (void)setUpSearchBar {
@@ -168,6 +171,7 @@ static NSString *viewID = @"Annotation";
         case ViewControllerStateMapContent: {
             
             [self.createAnnotationView setHidden:YES];
+            [self.createAnnotationView resignFirstResponder];
             self.mapView.scrollEnabled = YES;
             
         } break;
@@ -397,12 +401,18 @@ didPressDoneButton:(FUIButton *)button
 withDescriptionText:(NSString *)descriptionText
           withTag:(NSString *)tag
 {
-    [self.createAnnotationView resignFirstResponder];
-    self.parameters = [NSDictionary mutableCopy];
+    /*[self.createAnnotationView resignFirstResponder];
+    self.parameters = [NSDictionary mutableCopy];*/
     
-    [self.parameters setObject:titleText forKey:@"place"];
-    [self.parameters setObject:descriptionText forKey:@"description"];
-    [self.parameters setObject:tag forKey:@"category"];
+    [self.parameters setObject:titleText forKey:@"location"];
+    [self.parameters setObject:descriptionText forKey:@"notes"];
+    //[self.parameters setObject:tag forKey:@"category"];
+    [self setState:ViewControllerStateMapContent animated:YES];
+    self.poi = [[POI alloc] initWithDictionary:self.parameters];
+    
+    [[DataSource sharedInstance] addPOI:self.poi];
+    [self.mapView reloadInputViews];
+    
     NSLog(@"parameters = %@", self.parameters);
 }
 
@@ -428,14 +438,23 @@ withDescriptionText:(NSString *)descriptionText
         self.point = [sender locationInView:self.mapView];
         self.coordinates = [self.mapView convertPoint:self.point toCoordinateFromView:self.mapView];
         
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:self.coordinates.latitude longitude:self.coordinates.longitude];
+        [self zoomToLocation:location radius:2000];
+                                
+        
         self.customAnnotation = [[Annotation alloc]initWithCoordinate:_coordinates];
         [self.parameters setObject:self.customAnnotation forKey:@"annotation"];
         
-        self.poi = [[POI alloc] initWithDictionary:self.parameters];
+        //self.poi = [[POI alloc] initWithDictionary:self.parameters];
         
-        [self.mapView addAnnotation:self.poi.annotation];
+        [self.mapView addAnnotation:self.customAnnotation];
         
     }
+}
+
+-(void)setPoi:(POI *)poi{
+    _poi = poi;
+    poi = [[POI alloc] initWithDictionary:self.parameters];
 }
 
 
@@ -534,13 +553,30 @@ withDescriptionText:(NSString *)descriptionText
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-    // this part is boilerplate code used to create or reuse a pin annotation
-    _annotationView = [[MKAnnotationView alloc]
-                       initWithAnnotation:annotation reuseIdentifier:viewID];
+    MKAnnotationView *pinAnnotation = nil;
+    if (annotation !=mapView.userLocation) {
+        pinAnnotation=(MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:viewID];
+        
+        pinAnnotation.image =[UIImage imageNamed:@"like"];
     
-    // set your custom image
-    _annotationView.image = [UIImage imageNamed:@"like"];
-    return _annotationView;
+    }else{
+        [mapView.userLocation setTitle:@"I'm here!"];
+    }
+    
+    return pinAnnotation;
+}
+
+-(void) mapViewWillStartRenderingMap:(MKMapView *)mapView{
+    
+    _mapView = mapView;
+    
+    for (POI *poi in [DataSource sharedInstance].annotation ) {
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(poi.annotation.latitude, poi.annotation.longitude);
+        Annotation *annotation = [[Annotation alloc] initWithCoordinate:coordinate];
+        
+        [mapView addAnnotation:annotation];
+    }
+    
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view

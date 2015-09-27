@@ -30,13 +30,47 @@
 
 
 
--(instancetype) init{
+-(id) init{
     self = [super init];
     if (self) {
+        
+        NSString *directory =nil;
+        NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        directory = [path objectAtIndex:0];
+        _path = [directory stringByAppendingPathComponent:@"poi.dat"];
+        NSLog(@"Saving bookmarks in %@", _path);
         
     }
     
     return self;
 }
+
+-(void) loadPOI{
+    _annotation = [NSKeyedUnarchiver unarchiveObjectWithFile:_path];
+    if (!_annotation) {
+        _annotation = [NSMutableArray array];
+    }
+}
+
+-(NSArray *) annotation{
+    if (!_annotation) {
+        [self loadPOI];
+    }
+    
+    return _annotation;
+}
+
+-(void) addPOI:(POI *)poi{
+    if (!_annotation) {
+        [self loadPOI];
+        NSLog(@"Adding Point of Interest: [name: %@] [description: %@] [annotation: %@]", poi.locationName, poi.note, poi.annotation);
+        
+        [_annotation addObject:poi];
+        [NSKeyedArchiver archiveRootObject:_annotation toFile:_path];
+        NSLog(@"Annotations: %@", _annotation);
+    }
+}
+
+
 
 @end

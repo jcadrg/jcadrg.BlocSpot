@@ -14,9 +14,27 @@
     self = [super init];
     if (self) {
         self.coordinate = coordinate;
+        self.latitude = self.coordinate.latitude;
+        self.longitude = self.coordinate.longitude;
     }
     
     return self;
 }
+
+-(id) initWithCoder:(NSCoder *)aDecoder{
+    self = [super init];
+    if (self) {
+        self.latitude = [aDecoder decodeFloatForKey:@"latitude"];
+        self.longitude = [aDecoder decodeFloatForKey:@"longitude"];
+    }
+    
+    return self;
+}
+
+-(void) encodeWithCoder:(NSCoder *)aCoder{
+    [aCoder encodeFloat:self.latitude forKey:@"latitude"];
+    [aCoder encodeFloat:self.longitude forKey:@"longitude"];
+}
+
 
 @end
