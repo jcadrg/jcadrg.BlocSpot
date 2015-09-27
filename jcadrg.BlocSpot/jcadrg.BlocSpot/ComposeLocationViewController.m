@@ -13,6 +13,7 @@
 @interface ComposeLocationViewController ()
 
 @property (nonatomic, strong) AnnotationView *createAnnotation;
+@property (nonatomic, strong) UINavigationController *navController;
 
 @end
 
@@ -24,7 +25,8 @@
     
     self.createAnnotation = [[AnnotationView alloc] init];
     _createAnnotation.translatesAutoresizingMaskIntoConstraints = NO;
-    self.view.userInteractionEnabled = YES;
+    
+    //self.view.userInteractionEnabled = YES;
     
     [self.view addSubview:_createAnnotation];
     [self createConstraints];

@@ -27,10 +27,17 @@
 #import "FPPopoverController.h"
 #import "SMCalloutView.h"
 
+#import "CustomIOSAlertView.h"
+#import "WYPopoverController.h"
+
+typedef NS_ENUM(NSInteger, ViewControllerState){
+    ViewControllerStateMapContent, ViewControllerStateAddPOI
+};
 
 
 
-@interface ViewController () <MKMapViewDelegate, UIViewControllerTransitioningDelegate, UISearchBarDelegate, UISearchControllerDelegate, UITabBarControllerDelegate, UIGestureRecognizerDelegate, AnnotationViewDelegate, FPPopoverControllerDelegate>
+
+@interface ViewController () <MKMapViewDelegate, UIViewControllerTransitioningDelegate, UISearchBarDelegate, UISearchControllerDelegate, UITabBarControllerDelegate, UIGestureRecognizerDelegate, AnnotationViewDelegate, FPPopoverControllerDelegate, UIPopoverControllerDelegate, WYPopoverControllerDelegate>
 
 @property (nonatomic, strong) MKMapView *mapView;
 
@@ -50,12 +57,15 @@
 @property(nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
 @property(nonatomic, strong) UILongPressGestureRecognizer *longTapRecognizer;
 
-@property(nonatomic, strong) AnnotationView *createAnnotation;
+//@property(nonatomic, strong) AnnotationView *createAnnotation;
 @property(nonatomic, strong) POI *poi;
 @property(nonatomic, strong) NSMutableDictionary *parameters;
 @property(nonatomic, assign) CLLocationCoordinate2D coordinates;
 @property(nonatomic, assign) CGPoint point;
 @property(nonatomic, strong) MKAnnotationView *annotationView;
+
+@property(nonatomic, strong) Annotation *customAnnotation;
+@property(nonatomic, assign) ViewControllerState state;
 
 
 
@@ -76,89 +86,178 @@ static NSString *viewID = @"Annotation";
     return self;
 }
 
-- (void)viewDidLoad {
+-(void)viewDidLoad {
     [super viewDidLoad];
+    // set the tab bar color
+    self.poiTableVC =[[ POITableViewController alloc]init];
+    self.navigationItem.hidesBackButton = YES;
     
-    self.poiTableVC = [[POITableViewController alloc] init];
-    
-    self.mapView = [[MKMapView alloc] init];
-    self.mapView.userInteractionEnabled=YES;
+    // create a mapview
+    self.mapView = [[MKMapView alloc]init];
+    self.mapView.userInteractionEnabled =YES;
     [self.mapView setDelegate:self];
-    [self.view addSubview:self.mapView];
-    self.mapView.showsUserLocation=YES;
+    [self.view addSubview:self.mapView ];
+    self.mapView.showsUserLocation = YES;
     self.mapView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-    self.locationManager.desiredAccuracy=kCLLocationAccuracyNearestTenMeters;
-    [self.locationManager requestAlwaysAuthorization];
-    [self.locationManager startUpdatingLocation];
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
     self.tapRecognizer.delegate = self;
     self.tapRecognizer.numberOfTapsRequired = 1;
     
-    self.longTapRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longTapFired:)];
-    self.longTapRecognizer.delegate=self;
-    [self.view addGestureRecognizer:self.longTapRecognizer];
-    [self.view addGestureRecognizer:self.tapRecognizer];
+    self.longTapRecognizer = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(addAnnotation:)];
+    self.longTapRecognizer.delegate = self;
+    self.longTapRecognizer.minimumPressDuration = 0.5;
+    [self.mapView addGestureRecognizer:self.longTapRecognizer];
     
-    //[self updateLocation];
-    [self setUpSearchBar];
-    [self addButtons];
-    [self addListViewButton];
+    [self.mapView addGestureRecognizer:self.tapRecognizer];
+    
+    // Code to change an icons color
+    /*
+     UIImage *image =[UIImage imageNamed:@"like"];
+     UIImageView *theImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, 100, 44, 44)];
+     theImageView.image = image;4
+     theImageView.image = [theImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+     [theImageView setTintColor:[UIColor redColor]];
+     UIImage *doneImage =[UIImage imageNamed:@"done-white"];
+     UIImageView *doneImageView = [[UIImageView alloc]initWithFrame:CGRectMake(24, 100, 36, 36)];
+     doneImageView.image = doneImage;
+     [self.view addSubview:theImageView];
+     [self.view addSubview:doneImageView];
+     */
+    
+    [self updateLocation];
     [self createConstraints];
-    self.searchVC = [[SearchViewController alloc] init];
     
-    self.createAnnotationView = [[AnnotationView alloc] init];
-    self.annotationView = (MKAnnotationView *)
+    [self createTabBarButtons];
+    [self createListViewBarButton];
+    [self setUpSearchBar];
+    
+    
+    
+    self.annotationView = (MKAnnotationView*)
     [self.mapView dequeueReusableAnnotationViewWithIdentifier:viewID];
-
+    //    self.composePlacesVC = [[BLCComposePlacesViewController alloc]init];
+    //    self.popOver = [[WYPopoverController alloc]initWithContentViewController:_composePlacesVC];
+    //    self.popOver.delegate = self;
     
-    /*UIBarButtonItem *searchBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"location"] style:UIBarButtonItemStylePlain target:self action:@selector(searchButtonFired:)];
-    UIBarButtonItem *listBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"align_justify_filled"] style:UIBarButtonItemStylePlain target:self action:@selector(listButtonFired:)];
+    //View that will create a new POI
+    self.createAnnotationView = [[AnnotationView alloc]init];
+    self.state = ViewControllerStateMapContent;
     
-    self.navigationItem.rightBarButtonItem =searchBarButton;
-    self.navigationItem.leftBarButtonItem = listBarButton;
-    [self.navigationController.navigationBar configureFlatNavigationBarWithColor:[UIColor midnightBlueColor]];*/
-
+    
+    
 }
-
-- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
-    MKCoordinateRegion mapRegion;
-    mapRegion.center = mapView.userLocation.coordinate;
-    mapRegion.span = MKCoordinateSpanMake(0.015, 0.015);
-    [mapView setRegion:mapRegion animated: YES];
-}
-
--(void) setUpSearchBar{
+- (void)setUpSearchBar {
     self.searchBar = [[UISearchBar alloc] init];
     _searchBar.showsCancelButton = YES;
     _searchBar.delegate = self;
 }
 
--(void) fetchVenuesForLocation:(CLLocation *) location{
+
+-(void)layoutViews {
+    CGFloat padding = 10;
+    
+    CGFloat viewHeight = CGRectGetHeight(self.view.bounds);
+    CGFloat viewWidth = CGRectGetWidth(self.view.bounds);
+    CGFloat yOffset = 0.f;
+    
+    
+    
+    switch (self.state) {
+        case ViewControllerStateMapContent: {
+            
+            [self.createAnnotationView setHidden:YES];
+            self.mapView.scrollEnabled = YES;
+            
+        } break;
+        case ViewControllerStateAddPOI: {
+            
+            [self.mapView addSubview:self.createAnnotationView];
+            self.createAnnotationView.translatesAutoresizingMaskIntoConstraints = NO;
+            NSLog(@"viewHeight = %f", viewHeight );
+            [self.createAnnotationView setHidden:NO];
+            self.mapView.scrollEnabled = NO;
+            [self setLayoutOfCreateAnnotationView];
+            
+            
+            yOffset = 70.f;
+        } break;
+            
+    }
+    
     
 }
 
--(void) addListViewButton{
-    UILabel *label = [[UILabel alloc] init];
-    label.attributedText = [self titleString];
+// Hide tab bar when lanscape mode
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    if (self.state == ViewControllerStateAddPOI) {
+        if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
+            [self.navigationController.navigationBar setHidden:YES];
+        }   else{
+            [self.navigationController.navigationBar setHidden:NO];
+        }
+    }
     
-    CGSize max = CGSizeMake(CGRectGetWidth(self.view.bounds),CGFLOAT_MAX);
-    CGSize labelMax = [label sizeThatFits:max];
-    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, labelMax.width, labelMax.height)];
+}
+
+-(void) setLayoutOfCreateAnnotationView
+{
+    [self.mapView addConstraints:({
+        @[ [NSLayoutConstraint
+            constraintWithItem:_createAnnotationView
+            attribute:NSLayoutAttributeCenterX
+            relatedBy:NSLayoutRelationEqual
+            toItem:self.mapView
+            attribute:NSLayoutAttributeCenterX
+            multiplier:1.f constant:0.f],
+           
+           [NSLayoutConstraint
+            constraintWithItem:_createAnnotationView
+            attribute:NSLayoutAttributeCenterY
+            relatedBy:NSLayoutRelationEqual
+            toItem:self.mapView
+            attribute:NSLayoutAttributeCenterY
+            multiplier:1.f constant:0] ];
+    })];
+    NSLayoutConstraint *viewHeightConstraint = [NSLayoutConstraint constraintWithItem:_createAnnotationView
+                                                                            attribute:NSLayoutAttributeHeight
+                                                                            relatedBy:NSLayoutRelationEqual
+                                                                               toItem:nil
+                                                                            attribute:NSLayoutAttributeNotAnAttribute
+                                                                           multiplier:1.0
+                                                                             constant:(44*4)+ 100];
+    [self.mapView addConstraint:viewHeightConstraint ];
+    NSLayoutConstraint *viewWidthConstraint = [NSLayoutConstraint constraintWithItem:_createAnnotationView
+                                                                           attribute:NSLayoutAttributeWidth
+                                                                           relatedBy:NSLayoutRelationEqual
+                                                                              toItem:nil
+                                                                           attribute:NSLayoutAttributeNotAnAttribute
+                                                                          multiplier:1.0
+                                                                            constant:CGRectGetWidth(self.view.bounds)- 20];
+    [self.mapView addConstraint:viewWidthConstraint];
+}
+
+-(void)createListViewBarButton {
+    UILabel *label = [[UILabel alloc]init];
+    label.attributedText = [self titleLabelString];
     
-    label.frame = CGRectMake(0, 0, labelMax.width, labelMax.height);
+    
+    CGSize maxSize = CGSizeMake(CGRectGetWidth(self.view.bounds), CGFLOAT_MAX);
+    CGSize labelMaxSize = [label sizeThatFits:maxSize];
+    
+    
+    UIView *customView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, labelMaxSize.width, labelMaxSize.height)];
+    label.frame = CGRectMake(0, 0, labelMaxSize.width, labelMaxSize.height);
     
     [customView addSubview:label];
     _labelButton = [[UIBarButtonItem alloc] initWithCustomView:customView];
     
-    UIImage *listImage = [UIImage imageNamed:@"list_filled"];
+    UIImage *listImage = [UIImage imageNamed:@"align_justify_filled"];
     self.listButton = [[UIBarButtonItem alloc]initWithImage:listImage
                                                              style:UIBarButtonItemStylePlain
                                                             target:self
-                                                            action:@selector(listPressed:)];
+                                                            action:@selector(listViewPressed:)];
     [_listButton setTintColor:[UIColor whiteColor]];
     self.navigationItem.leftBarButtonItems = @[_listButton, _labelButton];
     
@@ -168,18 +267,67 @@ static NSString *viewID = @"Annotation";
     
 }
 
--(NSAttributedString *)titleString  {
+#pragma mark - Overrides
+
+-(void)setState:(ViewControllerState)state animated:(BOOL)animated {
+    _state = state;
+    if (animated) {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             [self layoutViews];
+                         }];
+        
+    } else {
+        [self layoutViews];
+    }
     
-    NSString *baseString = @"BlocSpot";
-    
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSForegroundColorAttributeName:[UIColor midnightBlueColor],NSFontAttributeName:[UIFont boldFlatFontOfSize:20]}];
-    
-    return attributedString;
+}
+-(void)setState:(ViewControllerState)state{
+    [self setState:state animated:NO];
+}
+
+#pragma Location delegate methods call
+
+- (CLLocationManager *)locationManager {
+    if (!_locationManager) {
+        self.locationManager=[[CLLocationManager alloc] init];
+        self.locationManager.delegate=self;
+        
+        self.locationManager.desiredAccuracy=kCLLocationAccuracyNearestTenMeters;
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+    return _locationManager;
+}
+
+-(void)updateLocation {
+    [self.locationManager startUpdatingLocation];
     
 }
 
--(void) addButtons {
-    UIImage *searchImage =[UIImage imageNamed:@"quest"];
+-(void)fetchVenuesForLocation:(CLLocation *)location {
+    
+}
+
+-(void)zoomToLocation:(CLLocation *)location radius:(CGFloat)radius {
+    
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(location.coordinate, radius*2, radius*2);
+    [self.mapView setRegion:region];
+    
+}
+
+
+-(NSAttributedString *)titleLabelString  {
+    
+    NSString *baseString = @"BlocSpot";
+    
+    NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSForegroundColorAttributeName:[UIColor midnightBlueColor],NSFontAttributeName:[UIFont boldFlatFontOfSize:20]}];
+    
+    return mutAttString;
+    
+}
+
+-(void) createTabBarButtons {
+    UIImage *searchImage =[UIImage imageNamed:@"search"];
     
     self.searchButton   = [[UIBarButtonItem alloc]initWithImage:searchImage
                                                           style:UIBarButtonItemStylePlain
@@ -206,8 +354,14 @@ static NSString *viewID = @"Annotation";
     [self.navigationItem setRightBarButtonItems:@[_filterButton, _searchButton]];
 }
 
+
+// Setting auto Layout constraints
+
+
+
 -(void)createConstraints {
     NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mapView);
+    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mapView]|"
                                                                       options:kNilOptions
                                                                       metrics:nil
@@ -216,13 +370,15 @@ static NSString *viewID = @"Annotation";
                                                                       options:kNilOptions
                                                                       metrics:nil
                                                                         views:viewDictionary]];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    self.locationManager = nil;
     
-    self.locationManager= nil;
 }
 
 
@@ -233,34 +389,55 @@ static NSString *viewID = @"Annotation";
     
     
 }
+#pragma BLCCustomAnnotationsViewDelegate
+
+-(void)customView:(AnnotationView *)view
+didPressDoneButton:(FUIButton *)button
+    withTitleText:(NSString *)titleText
+withDescriptionText:(NSString *)descriptionText
+          withTag:(NSString *)tag
+{
+    [self.createAnnotationView resignFirstResponder];
+    self.parameters = [NSDictionary mutableCopy];
+    
+    [self.parameters setObject:titleText forKey:@"place"];
+    [self.parameters setObject:descriptionText forKey:@"description"];
+    [self.parameters setObject:tag forKey:@"category"];
+    NSLog(@"parameters = %@", self.parameters);
+}
 
 #pragma mark tap gesture recognizer
 
--(void)tapFired:(UITapGestureRecognizer *)sender {
+-(void)tapFired:(UITapGestureRecognizer *)sender
+{
     [_searchBar resignFirstResponder];
     _searchBar.alpha = 0.0;
     self.navigationItem.titleView = nil;
     self.navigationItem.leftBarButtonItems = @[_listButton, _labelButton];
     self.navigationItem.rightBarButtonItems =@[_filterButton, _searchButton];
+    [self setState:ViewControllerStateMapContent animated:NO];
 }
 
-/*- (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return self.isEditing == NO;
-}*/
 
--(void) longTapFired: (UILongPressGestureRecognizer *)sender {
+-(void) addAnnotation: (UILongPressGestureRecognizer *)sender
+{
+    
     if (sender.state == UIGestureRecognizerStateBegan) {
+        [self setState:ViewControllerStateAddPOI animated:YES];
+        
         self.point = [sender locationInView:self.mapView];
-        self.coordinates =[self.mapView convertPoint:self.point toCoordinateFromView:self.mapView];
+        self.coordinates = [self.mapView convertPoint:self.point toCoordinateFromView:self.mapView];
+        
+        self.customAnnotation = [[Annotation alloc]initWithCoordinate:_coordinates];
+        [self.parameters setObject:self.customAnnotation forKey:@"annotation"];
         
         self.poi = [[POI alloc] initWithDictionary:self.parameters];
-        Annotation *customAnnotation = [[Annotation alloc] initWithCoordinate:self.coordinates];
         
-        [self.mapView addAnnotation:customAnnotation];
+        [self.mapView addAnnotation:self.poi.annotation];
         
     }
-    
 }
+
 
 #pragma mark UITabBar button actions
 -(void)searchButtonPressed:(id)sender{
@@ -272,7 +449,7 @@ static NSString *viewID = @"Annotation";
                         options:kNilOptions
                      animations:^{
                          _searchBar.alpha = 1.0;
-                         // remove other buttons
+                         
                          
                          self.navigationItem.rightBarButtonItems = nil;
                          self.navigationItem.leftBarButtonItems = nil;
@@ -283,7 +460,6 @@ static NSString *viewID = @"Annotation";
                          
                      } completion:^(BOOL finished) {
                          
-                         // add the search bar (which will start out hidden).
                          
                          
                      }];
@@ -292,8 +468,7 @@ static NSString *viewID = @"Annotation";
 
 
 
--(void)listPressed:(id)sender{
-    
+-(void)listViewPressed:(id)sender{
     CATransition *transition = [CATransition animation];
     transition.duration = 0.45;
     transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionDefault];
@@ -335,45 +510,77 @@ static NSString *viewID = @"Annotation";
     
 }
 
-#pragma mark Annotations Delegate
+#pragma mark MapViewDelegate
+/*
+ -(void)mapView:(MKMapView *)mapV didUpdateUserLocation:(MKUserLocation *)userLocation
+ {
+ NSLog(@"map new location: %f %f", userLocation.coordinate.latitude, userLocation.coordinate.longitude);
+ CLLocationCoordinate2D location = userLocation.coordinate;
+ 
+ MKCoordinateRegion region;
+ region.center = location;
+ MKCoordinateSpan span;
+ span.latitudeDelta=0.1;
+ span.longitudeDelta=0.1;
+ region.span=span;
+ te
+ [mapV setRegion:region animated:TRUE];
+ }
+ */
+//
+//- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
+//    MKAnnotationView* newAnnotation = [views firstObject];
+//}
 
--(void) customView:(AnnotationView *)view didPressDoneButton:(FUIButton *)button withTitleText:(NSString *)titleText withDescriptionText:(NSString *)descriptionText withTag:(NSString *)tag{
-    self.parameters = [NSDictionary mutableCopy];
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    // this part is boilerplate code used to create or reuse a pin annotation
+    _annotationView = [[MKAnnotationView alloc]
+                       initWithAnnotation:annotation reuseIdentifier:viewID];
     
-    [self.parameters setObject:titleText forKey:@"title"];
-    [self.parameters setObject:descriptionText forKey:@"description"];
-    [self.parameters setObject:tag forKey:@"category"];
-    
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:self.coordinates.latitude longitude:self.coordinates.longitude];
-    [self.parameters setObject:location forKey:@"location"];
-    
-    NSLog(@"%@", self.parameters);
-}
-
--(MKAnnotationView *) mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
-    _annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:viewID];
-    
+    // set your custom image
     _annotationView.image = [UIImage imageNamed:@"like"];
     return _annotationView;
 }
 
--(void) mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
+{
     
-    ComposeLocationViewController *composeLocationVC = [[ComposeLocationViewController alloc] init];
+    //SMCalloutView *callOutView = [[SMCalloutView alloc] init];
+    //callOutView.contentView = composePlacesVC.view;
+    //[callOutView presentCalloutFromRect:self.view.frame inView:mapView constrainedToView:mapView permittedArrowDirections:SMCalloutArrowDirectionUp animated:YES];
+    //    self.popOver.popoverContentSize = self.composePlacesVC.view.bounds.size;
+    //
+    //    [self.popOver presentPopoverFromRect:view.frame
+    //                                  inView:mapView
+    //                permittedArrowDirections:WYPopoverArrowDirectionAny
+    //                                animated:YES
+    //                                 options:WYPopoverAnimationOptionScale
+    //                              completion:nil];
     
-    FPPopoverController *popoverController = [[FPPopoverController alloc] initWithViewController:composeLocationVC];
-    popoverController.delegate = self;
-    popoverController.border = NO;
-    popoverController.arrowDirection = FPPopoverArrowDirectionIsVertical(FPPopoverArrowDirectionUp);
-    popoverController.origin = view.frame.origin;
     
-    [popoverController presentPopoverFromPoint:view.frame.origin];
+    //   EXTERNAL LIBRARY POPOVER
+    //    FPPopoverController *popover = [[FPPopoverController alloc] initWithViewController:composePlacesVC ];
+    //    popover.delegate = self;
+    //    popover.border = NO;
+    //    popover.arrowDirection = FPPopoverArrowDirectionIsVertical(FPPopoverArrowDirectionUp);
+    //    popover.origin = view.frame.origin;
+    //    //[popover setShadowsHidden:YES];
+    //    [popover presentPopoverFromPoint:view.frame.origin];
+    
+    
+    
+    
     
 }
 
--(void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(nonnull MKAnnotationView *)view{
-    view.image = [UIImage imageNamed:@"like"];
+#pragma mark CLLocationManagerDelegate Methods
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    CLLocation *location = [locations lastObject];
+    [self fetchVenuesForLocation:location];
+    [self zoomToLocation:location radius:2000];
+    [self.locationManager stopUpdatingLocation];
+    
 }
-
 
 @end

@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AnnotationView.h"
-#import "POI.h"
+//#import "AnnotationView.h"
+//#import "POI.h"
 
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>

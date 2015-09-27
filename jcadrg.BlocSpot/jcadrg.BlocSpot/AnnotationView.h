@@ -29,8 +29,8 @@
 @property(nonatomic, strong) id<AnnotationViewDelegate> delegate;
 
 @property(nonatomic, strong) POI *poi;
-@property(nonatomic, strong) FUITextField *titleText;
-@property(nonatomic, strong) UITextView *descriptionText;
+//@property(nonatomic, strong) FUITextField *titleText;
+//@property(nonatomic, strong) UITextView *descriptionText;
 @property(nonatomic, strong) UIView *tagView;
 
 @property(nonatomic, strong) NSMutableArray *colors;
