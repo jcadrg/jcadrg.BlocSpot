@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "AnnotationView.h"
+#import "DataSource.h"
 
 @class ViewController, POI;
 
@@ -27,6 +28,9 @@
 
 @property (nonatomic, strong) AnnotationView *createAnnotationView;
 @property (nonatomic, weak) id<ViewControllerDelegate> delegate;
+
+@property (nonatomic, strong) DataSource *data;
+@property (nonatomic, strong) NSArray *diskArray;
 
 
 @end
