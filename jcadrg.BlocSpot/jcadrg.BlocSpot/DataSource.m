@@ -38,7 +38,9 @@
         NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         directory = [path objectAtIndex:0];
         _path = [directory stringByAppendingPathComponent:@"poi.dat"];
+        _categoryPath = [directory stringByAppendingPathComponent:@"categories_path.dat"];
         NSLog(@"Saving bookmarks in %@", _path);
+        NSLog(@"Saving categories in %@", _categoryPath);
         
     }
     
@@ -52,6 +54,13 @@
     }
 }
 
+-(void) loadCategory{
+    _category = [NSKeyedUnarchiver unarchiveObjectWithFile:_categoryPath];
+    if (!_category) {
+        _category = [NSMutableArray array];
+    }
+}
+
 -(NSArray *) annotation{
     if (!_annotation) {
         [self loadPOI];
@@ -60,16 +69,55 @@
     return _annotation;
 }
 
+-(NSArray *) category{
+    if (!_category) {
+        [self loadCategory];
+    }
+    return _category;
+}
+
 -(void) addPOI:(POI *)poi{
     if (!_annotation) {
         [self loadPOI];
-        NSLog(@"Adding Point of Interest: [name: %@] [description: %@] [annotation: %@]", poi.locationName, poi.note, poi.annotation);
+        NSLog(@"Adding Point of Interest: [name: %@] [description: %@] [annotation: %@] [category name: %@] [category color: %@]", poi.locationName, poi.note, poi.annotation, poi.category.categoryName, poi.category.categoryColor);
         
         [_annotation addObject:poi];
         [NSKeyedArchiver archiveRootObject:_annotation toFile:_path];
         NSLog(@"Annotations: %@", _annotation);
     }
 }
+
+
+-(void) addPOI:(POI *)poi toCategoryArray:(Categories *)category{
+    
+    [category.poi addObject:poi];
+    
+}
+
+-(void) addCategory:(Categories *)categories{
+    [self loadCategory];
+    
+    [_category addObject:categories];
+    [NSKeyedArchiver archiveRootObject:_category toFile:_categoryPath];
+}
+
+    //Removing objects
+
+-(void) removeCategory:(Categories *)categories{
+    [self loadCategory];
+    
+    [_category removeObject:categories];
+    [NSKeyedArchiver archiveRootObject:_category toFile:_categoryPath];
+}
+
+-(void) removePOI:(POI *)poi{
+    [self loadCategory];
+    [_annotation removeObject:poi];
+    [NSKeyedArchiver archiveRootObject:_annotation toFile:_path];
+}
+
+
+
 
 
 

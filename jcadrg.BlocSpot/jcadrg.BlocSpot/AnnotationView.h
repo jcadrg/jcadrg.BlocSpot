@@ -13,18 +13,22 @@
 #import "TLTagsControl.h"
 #import "Categories.h"
 #import "POI.h"
+#import "DataSource.h"
 
 @class AnnotationView;
+@class Categories;
 
 @protocol AnnotationViewDelegate <NSObject>
 
--(void) customView:(AnnotationView *)view didPressDoneButton:(FUIButton *)button withTitleText:(NSString *)titleText withDescriptionText:(NSString *)descriptionText withTag:(NSString *)tag;
+-(void) customView:(AnnotationView *)view didPressDoneButton:(FUIButton *)button withTitleText:(NSString *)titleText withDescriptionText:(NSString *)descriptionText;
+-(void) customViewDidPressAddCategoryView:(AnnotationView *)categoryView;
+-(Categories *) categoryPicked;
 
 @end
 
 
 
-@interface AnnotationView : UIView
+@interface AnnotationView : UIView<UIGestureRecognizerDelegate>
 
 @property(nonatomic, strong) id<AnnotationViewDelegate> delegate;
 
@@ -39,6 +43,11 @@
 @property(nonatomic, strong) FUIButton *doneButton;
 @property(nonatomic, strong) Categories *category;
 @property(nonatomic, strong) TLTagsControl *tagsControl;
+@property(nonatomic, strong) UIView *categoryView;
+@property(nonatomic, strong) FUIButton *categoryButton;
+@property(nonatomic, strong) UILabel *titleLabel;
+
+-(NSAttributedString *)titleLabelStringWithCategory:(NSString *) categoryString withColor:(UIColor *) color;
 
 
 

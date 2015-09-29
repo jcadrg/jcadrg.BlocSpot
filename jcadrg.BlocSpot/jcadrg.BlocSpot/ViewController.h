@@ -17,6 +17,7 @@
 @protocol ViewControllerDelegate <NSObject>
 
 -(void) viewController:(ViewController *) viewController didLongPressOnMap:(MKMapView *)map;
+-(void) controller:(ViewController *) controller didComeFromVC:(BOOL) confirmation;
 
 @end
 
@@ -31,6 +32,9 @@
 
 @property (nonatomic, strong) DataSource *data;
 @property (nonatomic, strong) NSArray *diskArray;
+
+@property (nonatomic, assign) BOOL addAnnotationState;
+@property (nonatomic, assign) BOOL ViewState;
 
 
 @end

@@ -1,14 +1,15 @@
 //
-//  NewAnnotationView.m
+//  CallOutView.m
 //  jcadrg.BlocSpot
 //
-//  Created by Mac on 9/20/15.
+//  Created by Mac on 9/29/15.
 //  Copyright © 2015 Mac. All rights reserved.
 //
 
-#import "NewAnnotationView.h"
+#import "CallOutView.h"
 
-@implementation NewAnnotationView
+
+@implementation CallOutView
 
 /*
 // Only override drawRect: if you perform custom drawing.

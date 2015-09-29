@@ -10,8 +10,11 @@
 #import "IQKeyboardManager.h"
 #import "JVFloatLabeledTextView.h"
 #import "JVFloatLabeledTextField.h"
+#import "CategoryTableViewCell.h"
+#import "CategoryViewController.h"
 
-@interface AnnotationView() <UITextFieldDelegate, UITextViewDelegate, AnnotationViewDelegate, UIGestureRecognizerDelegate>
+
+@interface AnnotationView() <UITextFieldDelegate, UITextViewDelegate, CategoryTableViewCellDelegate>
 
 @property(nonatomic, strong) NSLayoutConstraint *tagWidth;
 
@@ -22,16 +25,19 @@
 @property(nonatomic, strong) UIView *div2;
 @property(nonatomic, strong) UIView *div3;
 
+@property(nonatomic, strong) IQKeyboardManager *keyboardManager;
+@property(nonatomic, strong) NSString *tagTitle;
+
 @property(nonatomic, strong) UIColor *labelColor;
-@property(nonatomic, strong) UILabel *titleLabel;
+//@property(nonatomic, strong) UILabel *titleLabel;
 @property(nonatomic, strong) NSDictionary *metrics;
 
-@property(nonatomic, strong) UIView *categoryView;
+//@property(nonatomic, strong) UIView *categoryView;
 @property(nonatomic, strong) UIView *backView;
 @property(nonatomic, strong) UIImageView *categoryIV;
 @property(nonatomic, strong) UILabel *categoryLabel;
 
-@property(nonatomic, strong) UITapGestureRecognizer *tapGR;
+//@property(nonatomic, strong) UITapGestureRecognizer *tapGR;
 
 
 @end
@@ -55,12 +61,13 @@ UIColor *labelColor;
         [self createTextView];
         [self createDoneButton];
         [self creatingCategoryView];
+        [self addCategoryButton];
         [self createConstraints];
         
-        IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager];
-        keyboardManager.keyboardDistanceFromTextField = 4;
-        keyboardManager.canAdjustTextView = YES;
-        keyboardManager.shouldResignOnTouchOutside =YES;
+        self.keyboardManager = [IQKeyboardManager sharedManager];
+        self.keyboardManager.keyboardDistanceFromTextField = 4;
+        self.keyboardManager.canAdjustTextView = YES;
+        self.keyboardManager.shouldResignOnTouchOutside =YES;
     }
     return self;
 }
@@ -71,21 +78,8 @@ UIColor *labelColor;
     self.descriptionTV = [[JVFloatLabeledTextView alloc]init];
     
     
-    
-    // ARRAY STORING ALL THE COLORS LATER TO BE AVAILABLE FOR THE USER
-    
-    //    NSMutableArray *colorsArray = [NSMutableArray arrayWithObjects:[UIColor turquoiseColor],
-    //                                   [UIColor emerlandColor],
-    //                                   [UIColor  peterRiverColor],
-    //                                   [UIColor amethystColor],
-    //                                   [UIColor sunflowerColor],
-    //                                   [UIColor carrotColor],
-    //                                   [UIColor alizarinColor],
-    //                                   [UIColor concreteColor], nil];
-    
-    
-    
     self.doneButton = [FUIButton buttonWithType:UIButtonTypeCustom];
+    self.categoryButton = [FUIButton buttonWithType:UIButtonTypeCustom];
     self.topView = [UIView new];
     self.titleLabel = [UILabel new];
     
@@ -98,21 +92,10 @@ UIColor *labelColor;
     self.categoryIV = [[UIImageView alloc]init];
     self.categoryLabel = [[UILabel alloc]init];
     self.backView = [UIView new];
+
     
     
 }
-/*
- UIImage *image =[UIImage imageNamed:@"heart"];
- UIImageView *theImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, 100, 44, 44)];
- theImageView.image = image;4
- theImageView.image = [theImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
- [theImageView setTintColor:[UIColor redColor]];
- UIImage *doneImage =[UIImage imageNamed:@"done-white"];
- UIImageView *doneImageView = [[UIImageView alloc]initWithFrame:CGRectMake(24, 100, 36, 36)];
- doneImageView.image = doneImage;
- [self.view addSubview:theImageView];
- [self.view addSubview:doneImageView];
- */
 
 -(void)createTopView
 {
@@ -123,6 +106,8 @@ UIColor *labelColor;
     [self addSubview:self.titleLabel];
     self.topView.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.categoryView.userInteractionEnabled = NO;
+    self.backView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
 -(void)creatingTextField {
@@ -167,10 +152,12 @@ UIColor *labelColor;
     self.backView.translatesAutoresizingMaskIntoConstraints = NO;
     self.categoryIV.translatesAutoresizingMaskIntoConstraints= NO;
     self.categoryLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.categoryView.userInteractionEnabled = NO;
     
     self.div3.backgroundColor = [UIColor silverColor];
     [self addSubview:self.div3];
     self.div3.translatesAutoresizingMaskIntoConstraints =NO;
+    
     
     
 }
@@ -215,7 +202,7 @@ UIColor *labelColor;
 }
 
 
--(void)createTapGesture {
+/*-(void)createTapGesture {
     
     self.tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
     self.tapGR.delegate = self;
@@ -225,6 +212,28 @@ UIColor *labelColor;
     [self.categoryIV addGestureRecognizer:self.tapGR];
     [self.categoryLabel addGestureRecognizer:self.tapGR];
     
+}*/
+
+-(void) addCategoryButton{
+    
+    [self.categoryButton addTarget:self
+                            action:@selector(addCategoryButtonPressed:)
+                  forControlEvents:UIControlEventTouchUpInside];
+    
+    self.categoryButton.buttonColor = [UIColor cloudsColor];
+    self.categoryButton.shadowColor = [UIColor silverColor];
+    self.categoryButton.shadowHeight = 1.0f;
+    self.categoryButton.cornerRadius = 3.0f;
+    self.categoryButton.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    [self.categoryButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
+    [self.categoryButton setTitleColor:[UIColor silverColor] forState:UIControlStateHighlighted];
+    
+    [self addSubview:self.categoryButton];
+    [self.categoryButton addSubview:self.categoryView];
+    self.categoryButton.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    
+
 }
 
 
@@ -242,12 +251,21 @@ UIColor *labelColor;
     
 }
 
+-(NSAttributedString *)titleLabelStringWithCategory:(NSString *)categoryString withColor:(UIColor *)color{
+    NSString *string = [categoryString uppercaseString];
+    
+    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:string
+                                                                                                attributes:@{NSForegroundColorAttributeName:color, NSFontAttributeName:[UIFont boldFlatFontOfSize:20]}];
+    
+    return mutableAttributedString;
+}
+
 // Creating  auto layout constraints for each view
 
 -(void)createConstraints  {
     
     
-    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_titleTF, _descriptionTV, _doneButton, _div1, _div2,_div3, _categoryView,_categoryIV, _categoryLabel,_backView  ,_topView, _titleLabel);
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_titleTF, _descriptionTV, _doneButton, _div1, _div2,_div3, _categoryView,_categoryIV, _categoryLabel,_backView  ,_topView, _titleLabel,_categoryButton);
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_topView]|"
                                                                  options:kNilOptions
                                                                  metrics:self.metrics
@@ -274,7 +292,7 @@ UIColor *labelColor;
                                                                  options:kNilOptions
                                                                  metrics:nil
                                                                    views:viewDictionary]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_categoryView]|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_categoryButton]|"
                                                                  options:kNilOptions
                                                                  metrics:nil
                                                                    views:viewDictionary]];
@@ -287,23 +305,26 @@ UIColor *labelColor;
                                                                  options:kNilOptions
                                                                  metrics:nil
                                                                    views:viewDictionary]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel(==44)][_div3(==0.5)][_titleTF(==44)][_div1(==0.5)][_descriptionTV(==100)][_div2(==0.5)][_categoryView(==44)][_doneButton(==44)]"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel(==44)][_div3(==0.5)][_titleTF(==44)][_div1(==0.5)][_descriptionTV(==100)][_div2(==0.5)][_categoryButton(==44)][_doneButton(==44)]"
                                                                  options:kNilOptions
                                                                  metrics:nil
                                                                    views:viewDictionary]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_topView(==44)][_div3(==0.5)][_titleTF(==44)][_div1(==0.5)][_descriptionTV(==100)][_div2(==0.5)][_categoryView(==44)][_doneButton(==44)]"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_topView(==44)][_div3(==0.5)]"
                                                                  options:kNilOptions
                                                                  metrics:nil
                                                                    views:viewDictionary]];
-    //    [self.categoryView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_backView]|"
-    //                                                                 options:kNilOptions
-    //                                                                 metrics:nil
-    //                                                                   views:viewDictionary]];
-    //    [self.categoryView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_backView]"
-    //                                                                              options:kNilOptions
-    //                                                                              metrics:nil
-    //                                                                                views:viewDictionary]];
-    [self.categoryView addConstraints:({
+    
+    [self.categoryButton addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_categoryView]|"
+                                                                     options:kNilOptions
+                                                                     metrics:nil
+                                                                       views:viewDictionary]];
+    
+        [self.categoryButton addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_categoryView]"
+                                                                                  options:kNilOptions
+                                                                                  metrics:nil
+                                                                                    views:viewDictionary]];
+
+     [self.categoryView addConstraints:({
         @[ [NSLayoutConstraint
             constraintWithItem:_backView
             attribute:NSLayoutAttributeCenterX
@@ -351,6 +372,7 @@ UIColor *labelColor;
     _poi.locationName = _titleTF.text;
     _poi.note = _descriptionTV.text;
     //_POI.category = [_tagsControl.tags lastObject];
+    _poi.category =_category;
     
     
 }
@@ -363,18 +385,24 @@ UIColor *labelColor;
     [self.delegate customView:self
            didPressDoneButton:self.doneButton
                 withTitleText:self.titleTF.text
-          withDescriptionText:self.descriptionTV.text
-                      withTag:nil];
+          withDescriptionText:self.descriptionTV.text];
+    
+    self.titleTF.text = @"";
+    self.descriptionTV.text =@"";
 }
 
 
 
 #pragma mark UITapGestureRecognizer action
 
--(void)tapFired:(UITapGestureRecognizer *)sender
+/*-(void)tapFired:(UITapGestureRecognizer *)sender
 {
     
     //TO DO : present the table view from the top down representing current categories and the opportunity to create more
+}*/
+
+-(void) addCategoryButtonPressed:(FUIButton*)sender{
+    [self.delegate customViewDidPressAddCategoryView:self];
 }
 
 

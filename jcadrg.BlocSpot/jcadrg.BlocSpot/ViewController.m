@@ -21,7 +21,7 @@
 
 #import "Annotation.h"
 #import "AnnotationView.h"
-#import "ComposeLocationViewController.h"
+
 
 #import "POI.h"
 #import "FPPopoverController.h"
@@ -29,6 +29,9 @@
 
 #import "CustomIOSAlertView.h"
 #import "WYPopoverController.h"
+
+#import "CategoryViewController.h"
+
 
 
 
@@ -39,13 +42,14 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 
 
 
-@interface ViewController () <MKMapViewDelegate, UIViewControllerTransitioningDelegate, UISearchBarDelegate, UISearchControllerDelegate, UITabBarControllerDelegate, UIGestureRecognizerDelegate, AnnotationViewDelegate, FPPopoverControllerDelegate, UIPopoverControllerDelegate, WYPopoverControllerDelegate>
+@interface ViewController () <MKMapViewDelegate, UIViewControllerTransitioningDelegate, UISearchBarDelegate, UISearchControllerDelegate, UITabBarControllerDelegate, UIGestureRecognizerDelegate, AnnotationViewDelegate, FPPopoverControllerDelegate, UIPopoverControllerDelegate, WYPopoverControllerDelegate, CategoryViewControllerDelegate>
 
 @property (nonatomic, strong) MKMapView *mapView;
 
 @property(nonatomic, strong) POITableViewController *poiTableVC;
 @property(nonatomic, strong) SearchViewController *searchVC;
 @property(nonatomic, strong) NSMutableArray *matchingItems;
+
 
 @property(nonatomic, strong) UISearchController *searchController;
 @property(nonatomic, strong) UISearchBar *searchBar;
@@ -69,11 +73,20 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 @property(nonatomic, strong) Annotation *customAnnotation;
 @property(nonatomic, assign) ViewControllerState state;
 
+@property(nonatomic, strong) CategoryViewController *categoryVC;
+@property(nonatomic, strong) CategoryViewController *popup;
+@property(nonatomic, strong) WYPopoverController *popover;
+
+@property(nonatomic, strong) Categories *category;
+@property(nonatomic, strong) UINavigationController *navVC;
+@property(nonatomic, strong) UIColor *pinColor;
+@property(nonatomic, strong) UIImageView *likeIV;
+
 
 
 @end
 
-static NSString *viewID = @"Annotation";
+static NSString *viewID = @"LikeAnnotation";
 
 @implementation ViewController
 
@@ -113,19 +126,6 @@ static NSString *viewID = @"Annotation";
     
     [self.mapView addGestureRecognizer:self.tapRecognizer];
     
-    // Code to change an icons color
-    /*
-     UIImage *image =[UIImage imageNamed:@"like"];
-     UIImageView *theImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, 100, 44, 44)];
-     theImageView.image = image;4
-     theImageView.image = [theImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-     [theImageView setTintColor:[UIColor redColor]];
-     UIImage *doneImage =[UIImage imageNamed:@"done-white"];
-     UIImageView *doneImageView = [[UIImageView alloc]initWithFrame:CGRectMake(24, 100, 36, 36)];
-     doneImageView.image = doneImage;
-     [self.view addSubview:theImageView];
-     [self.view addSubview:doneImageView];
-     */
     
     [self updateLocation];
     [self createConstraints];
@@ -133,6 +133,31 @@ static NSString *viewID = @"Annotation";
     [self createTabBarButtons];
     [self createListViewBarButton];
     [self setUpSearchBar];
+    
+    
+    if (!_categoryVC) {
+        self.categoryVC = [[CategoryViewController alloc] init];
+        self.categoryVC.delegate = self;
+    }
+    
+    if (!_popup) {
+        self.popup = [[CategoryViewController alloc] init];
+        self.categoryVC.delegate = self;
+    }
+    
+    self.navVC = [[UINavigationController alloc] initWithRootViewController:self.categoryVC];
+    UINavigationController *navPopup = [[UINavigationController alloc] initWithRootViewController:self.popup];
+    UIBarButtonItem *leftBarPopup = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(popupBarButtonItemDonePressed:)];
+    
+    self.popup.navigationItem.leftBarButtonItem = leftBarPopup;
+    
+    if (!_popover) {
+        self.popover = [[WYPopoverController alloc] initWithContentViewController:navPopup];
+        self.popover.delegate = self;
+        self.popover.popoverContentSize = CGSizeMake(self.popover.contentViewController.view.frame.size.width, 44*7 + 20);
+    }
+    
+    _annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:viewID];
     
     
     
@@ -143,12 +168,22 @@ static NSString *viewID = @"Annotation";
     //    self.popOver.delegate = self;
     
     //View that will create a new POI
-    self.createAnnotationView = [[AnnotationView alloc]init];
-    self.createAnnotationView.delegate = self;
-    self.state = ViewControllerStateMapContent;
     
-    self.parameters = [[NSMutableDictionary alloc] init];
-    NSLog(@"parameters = %@", self.parameters);
+    if (!_createAnnotationView) {
+        self.createAnnotationView = [[AnnotationView alloc]init];
+        self.createAnnotationView.delegate = self;
+        self.state = ViewControllerStateMapContent;
+    }
+    
+    if (!_category) {
+        self.category = [[Categories alloc] init];
+    }
+    
+    self.state = ViewControllerStateMapContent;
+    if (!self.parameters) {
+        self.parameters = [NSMutableDictionary new];
+    }
+
     
 }
 - (void)setUpSearchBar {
@@ -159,12 +194,7 @@ static NSString *viewID = @"Annotation";
 
 
 -(void)layoutViews {
-    CGFloat padding = 10;
-    
-    CGFloat viewHeight = CGRectGetHeight(self.view.bounds);
-    CGFloat viewWidth = CGRectGetWidth(self.view.bounds);
-    CGFloat yOffset = 0.f;
-    
+
     
     
     switch (self.state) {
@@ -173,19 +203,21 @@ static NSString *viewID = @"Annotation";
             [self.createAnnotationView setHidden:YES];
             [self.createAnnotationView resignFirstResponder];
             self.mapView.scrollEnabled = YES;
+            [self.navigationController.navigationBar setHidden:NO];
             
         } break;
         case ViewControllerStateAddPOI: {
             
+            [self.createAnnotationView removeGestureRecognizer:self.tapRecognizer];
             [self.mapView addSubview:self.createAnnotationView];
             self.createAnnotationView.translatesAutoresizingMaskIntoConstraints = NO;
-            NSLog(@"viewHeight = %f", viewHeight );
+
             [self.createAnnotationView setHidden:NO];
             self.mapView.scrollEnabled = NO;
             [self setLayoutOfCreateAnnotationView];
+            [self.navigationController.navigationBar setHidden:YES];
             
             
-            yOffset = 70.f;
         } break;
             
     }
@@ -199,7 +231,7 @@ static NSString *viewID = @"Annotation";
         if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
             [self.navigationController.navigationBar setHidden:YES];
         }   else{
-            [self.navigationController.navigationBar setHidden:NO];
+            [self.navigationController.navigationBar setHidden:YES];
         }
     }
     
@@ -239,6 +271,42 @@ static NSString *viewID = @"Annotation";
                                                                            attribute:NSLayoutAttributeNotAnAttribute
                                                                           multiplier:1.0
                                                                             constant:CGRectGetWidth(self.view.bounds)- 20];
+    [self.mapView addConstraint:viewWidthConstraint];
+}
+
+-(void) setLayoutCategoriesVC{
+    [self.mapView addConstraints:({
+        @[ [NSLayoutConstraint
+                     constraintWithItem:_categoryVC
+                     attribute:NSLayoutAttributeCenterX
+                     relatedBy:NSLayoutRelationEqual
+                     toItem:self.mapView
+                     attribute:NSLayoutAttributeCenterX
+                     multiplier:1.f constant:0.f],
+           
+                    [NSLayoutConstraint
+                                 constraintWithItem:_categoryVC
+                                 attribute:NSLayoutAttributeCenterY
+                                 relatedBy:NSLayoutRelationEqual
+                                 toItem:self.mapView
+                                 attribute:NSLayoutAttributeCenterY
+                                 multiplier:1.f constant:0] ];
+        })];
+    NSLayoutConstraint *viewHeightConstraint = [NSLayoutConstraint constraintWithItem:_categoryVC
+                                                     attribute:NSLayoutAttributeHeight
+                                                     relatedBy:NSLayoutRelationEqual
+                                                     toItem:nil
+                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                     multiplier:1.0
+                                                     constant:(44*4)+ 100];
+    [self.mapView addConstraint:viewHeightConstraint ];
+    NSLayoutConstraint *viewWidthConstraint = [NSLayoutConstraint constraintWithItem:_categoryVC
+                                                    attribute:NSLayoutAttributeWidth
+                                                    relatedBy:NSLayoutRelationEqual
+                                                    toItem:nil
+                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                    multiplier:1.0
+                                                    constant:CGRectGetWidth(self.view.bounds)- 20];
     [self.mapView addConstraint:viewWidthConstraint];
 }
 
@@ -398,22 +466,77 @@ static NSString *viewID = @"Annotation";
 -(void)customView:(AnnotationView *)view
 didPressDoneButton:(FUIButton *)button
     withTitleText:(NSString *)titleText
-withDescriptionText:(NSString *)descriptionText
-          withTag:(NSString *)tag
-{
+withDescriptionText:(NSString *)descriptionText{
     /*[self.createAnnotationView resignFirstResponder];
     self.parameters = [NSDictionary mutableCopy];*/
     
     [self.parameters setObject:titleText forKey:@"location"];
     [self.parameters setObject:descriptionText forKey:@"notes"];
     //[self.parameters setObject:tag forKey:@"category"];
-    [self setState:ViewControllerStateMapContent animated:YES];
+    //[self setState:ViewControllerStateMapContent animated:YES];
     self.poi = [[POI alloc] initWithDictionary:self.parameters];
     
     [[DataSource sharedInstance] addPOI:self.poi];
+    
+    self.customAnnotation = [[Annotation alloc]initWithCoordinate:_coordinates];
+    [self.parameters setObject:self.customAnnotation forKey:@"annotation"];
+    [self setState:ViewControllerStateMapContent animated:YES];
+    [self.mapView addAnnotation:self.customAnnotation ];
     [self.mapView reloadInputViews];
     
     NSLog(@"parameters = %@", self.parameters);
+    
+    self.createAnnotationView.titleLabel.attributedText = [self titleLabelString];
+    Categories *category = self.parameters[@"category"];
+    [[DataSource sharedInstance] addPOI:self.poi toCategoryArray:category];
+}
+
+-(void)customViewDidPressAddCategoryView:(UIView *)categoryView{
+    NSLog(@"tap being fired DELEGATE");
+    self.addAnnotationState  =YES;
+    
+    
+    [UIView animateWithDuration:1
+          delay:0
+          usingSpringWithDamping:.75
+          initialSpringVelocity:10
+          options:kNilOptions
+          animations:^{
+              
+              [self.navigationController presentViewController:self.navVC animated:NO completion:nil];
+              
+              
+
+              } completion:^(BOOL finished) {
+                  
+                  
+                  
+                  }];
+}
+
+#pragma mark BLCCategoriesViewControllerDelegate
+
+-(void)controllerDidDismiss:(CategoryViewController *)controller{
+    
+    [self.navVC dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+
+-(void)category:(Categories *)categories  {
+
+
+    [self.parameters setObject:categories forKey:@"category"];
+    self.pinColor = [[UIColor alloc]init];
+    self.pinColor = categories.categoryColor;
+    self.createAnnotationView.titleLabel.attributedText = [self.createAnnotationView titleLabelStringWithCategory:categories.categoryName withColor:categories.categoryColor];
+    
+}
+
+-(void)didCompleteWithImageView:(UIImageView *)image {
+    self.likeIV = [[UIImageView alloc]init];
+    _likeIV.image = image.image;
+    
 }
 
 #pragma mark tap gesture recognizer
@@ -452,11 +575,11 @@ withDescriptionText:(NSString *)descriptionText
     }
 }
 
--(void)setPoi:(POI *)poi{
+/*-(void)setPoi:(POI *)poi{
     _poi = poi;
     poi = [[POI alloc] initWithDictionary:self.parameters];
 }
-
+*/
 
 #pragma mark UITabBar button actions
 -(void)searchButtonPressed:(id)sender{
@@ -503,6 +626,26 @@ withDescriptionText:(NSString *)descriptionText
 }
 -(void)filterButtonPressed:(id)sender {
     
+    [UIView animateWithDuration:1
+                          delay:0
+                        usingSpringWithDamping:.75
+                        initialSpringVelocity:10
+                        options:kNilOptions
+                     animations:^{
+         
+         [self.navVC.navigationItem.leftBarButtonItem setEnabled:NO];
+         [_popover presentPopoverFromBarButtonItem:self.filterButton
+                                permittedArrowDirections:WYPopoverArrowDirectionDown
+                               animated:NO];
+         
+            } completion:^(BOOL finished) {
+ 
+            }];
+    
+}
+
+-(void)popupBarButtonItemDonePressed:(id)sender{
+    [self.popover dismissPopoverAnimated:YES];
 }
 
 
@@ -551,19 +694,39 @@ withDescriptionText:(NSString *)descriptionText
 //    MKAnnotationView* newAnnotation = [views firstObject];
 //}
 
+-(UIImageView *) returnImageColored{
+    UIImage *image = [UIImage imageNamed:@"hearts_filled"];
+    UIImageView *imageView = [[UIImageView alloc]init];
+    imageView.image = image;
+    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [imageView setTintColor:[UIColor yellowColor]];
+    return imageView;
+}
+
+
+#pragma mark MKMapViewDelegate
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-    MKAnnotationView *pinAnnotation = nil;
-    if (annotation !=mapView.userLocation) {
-        pinAnnotation=(MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:viewID];
+    //MKAnnotationView *pinAnnotation = nil;
+    if (annotation !=mapView.userLocation && [annotation isKindOfClass:[Annotation class]]) {
+        _annotationView = [[MKAnnotationView alloc]
+                           initWithAnnotation:annotation reuseIdentifier:viewID];
+        _annotationView.canShowCallout = NO;
+        _annotationView.image = _likeIV.image;
+        //[_annotationView setTintColor:[UIColor redColor]];
+        _annotationView.annotation = self.customAnnotation;
         
-        pinAnnotation.image =[UIImage imageNamed:@"like"];
+        //_annotationView.tintColor = [UIColor yellowColor];
+        //_annotationView.backgroundColor = [UIColor clearColor];
+        [_annotationView addSubview:[self returnImageColored]];
+        _annotationView.image = [self returnImageColored].image;
     
     }else{
         [mapView.userLocation setTitle:@"I'm here!"];
     }
     
-    return pinAnnotation;
+    return _annotationView;
 }
 
 -(void) mapViewWillStartRenderingMap:(MKMapView *)mapView{
@@ -574,6 +737,11 @@ withDescriptionText:(NSString *)descriptionText
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(poi.annotation.latitude, poi.annotation.longitude);
         Annotation *annotation = [[Annotation alloc] initWithCoordinate:coordinate];
         
+        //[mapView addAnnotation:annotation];
+        _annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation
+                                                       reuseIdentifier:viewID];
+        
+        [_annotationView setTintColor:poi.category.categoryColor];
         [mapView addAnnotation:annotation];
     }
     

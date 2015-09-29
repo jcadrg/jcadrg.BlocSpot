@@ -15,17 +15,19 @@
 		5D8FA8A51BAA7B77008D53A1 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D8FA8A31BAA7B77008D53A1 /* LaunchScreen.xib */; };
 		5D8FA8B11BAA7B77008D53A1 /* jcadrg_BlocSpotTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D8FA8B01BAA7B77008D53A1 /* jcadrg_BlocSpotTests.m */; };
 		5D8FA8BB1BAB0EE6008D53A1 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8FA8BA1BAB0EE6008D53A1 /* MapKit.framework */; };
+		5DB344521BB9C35900B26D98 /* CategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB344511BB9C35900B26D98 /* CategoryViewController.m */; settings = {ASSET_TAGS = (); }; };
+		5DB344551BB9C8B700B26D98 /* CategoryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB344541BB9C8B700B26D98 /* CategoryTableViewCell.m */; settings = {ASSET_TAGS = (); }; };
+		5DB344581BB9EA7900B26D98 /* ColorCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB344571BB9EA7900B26D98 /* ColorCollectionViewCell.m */; settings = {ASSET_TAGS = (); }; };
+		5DB3445B1BBA53E100B26D98 /* CallOutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB3445A1BBA53E100B26D98 /* CallOutView.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D21BAEFD0B00F09663 /* DataSource.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D61BAF022800F09663 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D51BAF022800F09663 /* Search.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D81BAF027000F09663 /* SearchViewController.m */; settings = {ASSET_TAGS = (); }; };
-		5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767E21BAF507B00F09663 /* POI.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E11BAF507B00F09663 /* POI.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E41BAF571800F09663 /* POITableViewController.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E71BAF586200F09663 /* POITableViewCell.m */; settings = {ASSET_TAGS = (); }; };
 		5DEF240F1BB313280073C4BC /* AnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF240E1BB313280073C4BC /* AnnotationView.m */; settings = {ASSET_TAGS = (); }; };
 		5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24111BB313D70073C4BC /* TLTagsControl.m */; settings = {ASSET_TAGS = (); }; };
 		5DEF24151BB342A70073C4BC /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24141BB342A70073C4BC /* Annotation.m */; settings = {ASSET_TAGS = (); }; };
-		5DEF24181BB3496D0073C4BC /* ComposeLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24171BB3496D0073C4BC /* ComposeLocationViewController.m */; settings = {ASSET_TAGS = (); }; };
 		5DF641D31BB300A000427AC9 /* Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF641D21BB300A000427AC9 /* Categories.m */; settings = {ASSET_TAGS = (); }; };
 		8086C2727E79159ADA828466 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2626E303E06022C8EB65B15 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -57,14 +59,20 @@
 		5D8FA8AF1BAA7B77008D53A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D8FA8B01BAA7B77008D53A1 /* jcadrg_BlocSpotTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = jcadrg_BlocSpotTests.m; sourceTree = "<group>"; };
 		5D8FA8BA1BAB0EE6008D53A1 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		5DB344501BB9C35900B26D98 /* CategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryViewController.h; sourceTree = "<group>"; };
+		5DB344511BB9C35900B26D98 /* CategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryViewController.m; sourceTree = "<group>"; };
+		5DB344531BB9C8B700B26D98 /* CategoryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryTableViewCell.h; sourceTree = "<group>"; };
+		5DB344541BB9C8B700B26D98 /* CategoryTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryTableViewCell.m; sourceTree = "<group>"; };
+		5DB344561BB9EA7900B26D98 /* ColorCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorCollectionViewCell.h; sourceTree = "<group>"; };
+		5DB344571BB9EA7900B26D98 /* ColorCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorCollectionViewCell.m; sourceTree = "<group>"; };
+		5DB344591BBA53E100B26D98 /* CallOutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallOutView.h; sourceTree = "<group>"; };
+		5DB3445A1BBA53E100B26D98 /* CallOutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallOutView.m; sourceTree = "<group>"; };
 		5DE767D11BAEFD0B00F09663 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
 		5DE767D21BAEFD0B00F09663 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 		5DE767D41BAF022800F09663 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Search.h; sourceTree = "<group>"; };
 		5DE767D51BAF022800F09663 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Search.m; sourceTree = "<group>"; };
 		5DE767D71BAF027000F09663 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		5DE767D81BAF027000F09663 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
-		5DE767DD1BAF496E00F09663 /* NewAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewAnnotationView.h; sourceTree = "<group>"; };
-		5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewAnnotationView.m; sourceTree = "<group>"; };
 		5DE767E01BAF507B00F09663 /* POI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POI.h; sourceTree = "<group>"; };
 		5DE767E11BAF507B00F09663 /* POI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POI.m; sourceTree = "<group>"; };
 		5DE767E31BAF571800F09663 /* POITableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POITableViewController.h; sourceTree = "<group>"; };
@@ -77,8 +85,6 @@
 		5DEF24111BB313D70073C4BC /* TLTagsControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLTagsControl.m; path = "/Users/Rata/Documents/Juanca/jcadrg.BlocSpot/Pods/../../../../Desktop/TLTagsControl-master/TLTagsContol/TLTagsControl.m"; sourceTree = "<absolute>"; };
 		5DEF24131BB342A70073C4BC /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
 		5DEF24141BB342A70073C4BC /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
-		5DEF24161BB3496D0073C4BC /* ComposeLocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeLocationViewController.h; sourceTree = "<group>"; };
-		5DEF24171BB3496D0073C4BC /* ComposeLocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeLocationViewController.m; sourceTree = "<group>"; };
 		5DF641D11BB300A000427AC9 /* Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Categories.h; sourceTree = "<group>"; };
 		5DF641D21BB300A000427AC9 /* Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Categories.m; sourceTree = "<group>"; };
 		E2626E303E06022C8EB65B15 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,8 +165,6 @@
 				5D8FA8A11BAA7B77008D53A1 /* Images.xcassets */,
 				5D8FA8A31BAA7B77008D53A1 /* LaunchScreen.xib */,
 				5D8FA8941BAA7B76008D53A1 /* Supporting Files */,
-				5DE767DD1BAF496E00F09663 /* NewAnnotationView.h */,
-				5DE767DE1BAF496E00F09663 /* NewAnnotationView.m */,
 				5DE767E01BAF507B00F09663 /* POI.h */,
 				5DE767E11BAF507B00F09663 /* POI.m */,
 				5DE767E31BAF571800F09663 /* POITableViewController.h */,
@@ -175,8 +179,14 @@
 				5DEF24101BB313D10073C4BC /* TLTagsControl.h */,
 				5DEF24131BB342A70073C4BC /* Annotation.h */,
 				5DEF24141BB342A70073C4BC /* Annotation.m */,
-				5DEF24161BB3496D0073C4BC /* ComposeLocationViewController.h */,
-				5DEF24171BB3496D0073C4BC /* ComposeLocationViewController.m */,
+				5DB344501BB9C35900B26D98 /* CategoryViewController.h */,
+				5DB344511BB9C35900B26D98 /* CategoryViewController.m */,
+				5DB344531BB9C8B700B26D98 /* CategoryTableViewCell.h */,
+				5DB344541BB9C8B700B26D98 /* CategoryTableViewCell.m */,
+				5DB344561BB9EA7900B26D98 /* ColorCollectionViewCell.h */,
+				5DB344571BB9EA7900B26D98 /* ColorCollectionViewCell.m */,
+				5DB344591BBA53E100B26D98 /* CallOutView.h */,
+				5DB3445A1BBA53E100B26D98 /* CallOutView.m */,
 			);
 			path = jcadrg.BlocSpot;
 			sourceTree = "<group>";
@@ -348,20 +358,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DB344521BB9C35900B26D98 /* CategoryViewController.m in Sources */,
+				5DB344551BB9C8B700B26D98 /* CategoryTableViewCell.m in Sources */,
 				5D8FA89D1BAA7B76008D53A1 /* ViewController.m in Sources */,
-				5DEF24181BB3496D0073C4BC /* ComposeLocationViewController.m in Sources */,
 				5DF641D31BB300A000427AC9 /* Categories.m in Sources */,
 				5DEF240F1BB313280073C4BC /* AnnotationView.m in Sources */,
 				5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */,
+				5DB344581BB9EA7900B26D98 /* ColorCollectionViewCell.m in Sources */,
 				5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */,
 				5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */,
 				5DE767E21BAF507B00F09663 /* POI.m in Sources */,
 				5DE767D61BAF022800F09663 /* Search.m in Sources */,
+				5DB3445B1BBA53E100B26D98 /* CallOutView.m in Sources */,
 				5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */,
 				5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */,
 				5DEF24151BB342A70073C4BC /* Annotation.m in Sources */,
 				5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */,
-				5DE767DF1BAF496E00F09663 /* NewAnnotationView.m in Sources */,
 				5D8FA8971BAA7B76008D53A1 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
