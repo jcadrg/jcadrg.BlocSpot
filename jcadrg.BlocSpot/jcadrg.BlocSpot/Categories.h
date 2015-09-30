@@ -9,23 +9,23 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, CategoryState){
-    CategoryUnselectedState,
-    CategorySelectedState
+typedef NS_ENUM(NSInteger, CategoriesState) {
+    CategoriesUnselectedState,
+    CategoriesSelectedState
 };
-
-@interface Categories : NSObject<NSCoding>
+@interface Categories : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *categoryName;
-@property (nonatomic, strong) UIColor *categoryColor;
+@property (nonatomic, strong) UIColor *color;
 @property (nonatomic, strong) UILabel *categoryLabel;
+@property (nonatomic, assign) CategoriesState state;
 @property (nonatomic, strong) NSArray *selectedCategory;
-@property (nonatomic, strong) NSMutableArray *poi;
-@property (nonatomic, strong) NSMutableArray *categoryColorsArray;
-@property (nonatomic, assign) CategoryState state;
+@property (nonatomic, strong) NSMutableArray *pointsOfInterest;
+@property (nonatomic, strong) NSMutableArray *colorList;
 
-//-(instancetype) initWithName:(NSString *)categoryName withColor:(UIColor *)color;
--(instancetype) iniWithDictionary:(NSDictionary *)categoryDictionary;
+
+-(instancetype)initWithDictionary:(NSDictionary *)categoryDictionary;
+
 -(UILabel *)returnLabel;
 
 @end

@@ -10,34 +10,43 @@
 
 @implementation Categories
 
--(instancetype) iniWithDictionary:(NSDictionary *)categoryDictionary{
-    if (self) {
+
+-(instancetype)initWithDictionary:(NSDictionary *)categoryDictionary{
+    if (self){
+        
         self.categoryName = categoryDictionary[@"categoryName"];
-        self.categoryColor = categoryDictionary[@"categoryColor"];
-        self.poi = categoryDictionary[@"poi"];
-    }
-    
-    return self;
-}
-
-#pragma mark - NSCoding
-
--(id) initWithCoder:(NSCoder *)aDecoder{
-    self =[super init];
-    if (self) {
-        self.categoryName = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(categoryName))];
-        self.categoryColor = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(categoryColor))];
-        self.poi = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(poi))];
+        self.color = categoryDictionary[@"categoryColor"];
+        //        self.isSelected = categoryDictionary[@"selected"];
+        self.pointsOfInterest = categoryDictionary[@"pointsOfInterest"];
         
     }
     
     return self;
 }
 
--(void) encodeWithCoder:(NSCoder *)aCoder{
-    [aCoder encodeObject:self.categoryName forKey:NSStringFromSelector(@selector(categoryName))];
-    [aCoder encodeObject:self.categoryColor forKey:NSStringFromSelector(@selector(categoryColor))];
-    [aCoder encodeObject:self.poi forKey:NSStringFromSelector(@selector(poi))];
+
+
+#pragma mark NSCoding
+
+
+-(id) initWithCoder:(NSCoder *)aDecoder {
+    
+    self = [super init];
+    if (self) {
+        self.categoryName = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(categoryName))];
+        self.color = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(color))];
+        self.pointsOfInterest = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(pointsOfInterest))];
+        
+    }
+    return self;
 }
+
+-(void) encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.categoryName forKey:NSStringFromSelector(@selector(categoryName))];
+    [aCoder encodeObject:self.color forKey:NSStringFromSelector(@selector(color))];
+    [aCoder encodeObject:self.pointsOfInterest forKey:NSStringFromSelector(@selector(pointsOfInterest))];
+    
+}
+
 
 @end

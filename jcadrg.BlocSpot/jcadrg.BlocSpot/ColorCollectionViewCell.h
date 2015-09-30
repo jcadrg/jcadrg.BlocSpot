@@ -16,7 +16,7 @@
 @property (nonatomic, strong) UIView *colorCollectionView;
 @property (nonatomic, strong) UIView *colorCollectionViewWithImage;
 
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *checkImageView;
 @property (nonatomic, assign) CGFloat specificSize;
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, strong) UIColor *backgroundCollectionColor;
