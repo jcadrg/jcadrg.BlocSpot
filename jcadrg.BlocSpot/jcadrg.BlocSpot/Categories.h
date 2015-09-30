@@ -23,6 +23,8 @@ typedef NS_ENUM(NSInteger, CategoriesState) {
 @property (nonatomic, strong) NSMutableArray *pointsOfInterest;
 @property (nonatomic, strong) NSMutableArray *colorList;
 
+@property (nonatomic, strong) UIImageView *categoryImage;
+
 
 -(instancetype)initWithDictionary:(NSDictionary *)categoryDictionary;
 

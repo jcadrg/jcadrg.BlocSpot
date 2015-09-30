@@ -21,7 +21,7 @@
 
 
 
-@interface CategoryViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, CategoryTableViewCellDelegate, AnnotationViewDelegate>
+@interface CategoryViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, CategoryTableViewCellDelegate>
 
 
 @property (nonatomic, strong) CategoryTableViewCell *cell;
@@ -154,7 +154,7 @@ static NSString *kFullTagLabel = @"heart_label_full";
                                    [UIColor pumpkinColor],
                                    [UIColor pomegranateColor],
                                    [UIColor asbestosColor],nil];
-        self.categories =[NSDictionary new];
+        self.categories =[NSMutableDictionary new];
         self.categoriesCreated =[NSMutableArray new];
         
         UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -466,6 +466,18 @@ static NSString *kFullTagLabel = @"heart_label_full";
     
 }
 
+-(UIImageView *) returnImageColoredForColor:(UIColor *) color{
+    UIImageView *imageView = [UIImageView new];
+    UIImage *image = [UIImage imageNamed:@"hearts_filled"];
+    imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+    imageView.image = image;
+    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    [imageView setTintColor:color];
+    
+    return imageView;
+}
+
 
 #pragma mark UIButton action
 -(void)doneButtonPressed:(UIButton *)sender
@@ -487,28 +499,33 @@ static NSString *kFullTagLabel = @"heart_label_full";
         [self.doneButton removeFromSuperview];
         [self.colorsCollectionView removeFromSuperview];
         
-        // create a temporary dictionary
-        NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
+        
+        /*NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
         
         [tempDic setObject:self.addCategoryField.text forKey:@"categoryName"];
         [tempDic setObject:self.categoryChosenColor forKey:@"categoryColor"];
         
+
+        self.categories = tempDic;*/
         
-        //        [tempDic setObject:0 forKey:@"selected"];
-        // make temp dictionary equal to categories dictionary
-        self.categories = tempDic;
+        //Painting the icon with the selected color from colorsarray
+        
+        [self.categories setObject:self.addCategoryField.text forKey:@"categoryName"];
+        [self.categories setObject:self.categoryChosenColor forKey:@"categoryColor"];
+        [self.categories setObject:[self returnImageColoredForColor:self.categoryChosenColor] forKey:@"categoryImage"];
+        
         
         
         // Remove colors from array so they cant be repeated
         [self.colorsArray removeObject:self.colorsArray[selectedIndex]];
         [self.colorsArraySimilar removeObject:self.colorsArraySimilar[selectedIndex]];
         
-        // pass categories dictionaries as parameters of the Categories object
-        Categories *categories = [self categoryInitializer:self.categories];
-        [[DataSource sharedInstance] addCategory:categories];
         
-        // add to list all the objects created
-        [self.categoriesCreated addObject:categories];
+        // pass categories dictionaries as parameters of the Categories object
+        
+        Categories *category = [[Categories alloc] initWithDictionary:self.categories];
+        [[DataSource sharedInstance] addCategory:category];
+        
         NSLog(@"self.categoriesCreted %@", self.categoriesCreated);
         
         [self.tableView reloadData];
@@ -524,16 +541,16 @@ static NSString *kFullTagLabel = @"heart_label_full";
     }
 }
 
--(Categories *)categoryInitializer:(NSDictionary *)dic {
+/*-(Categories *)categoryInitializer:(NSDictionary *)dic {
     
     Categories *category = [[Categories alloc]initWithDictionary:dic];
     return category;
-}
+}*/
 
 
 -(void)barButtonItemDonePressed:(id)sender
 {
-    if (_selectedCategories){
+    //if (_selectedCategories){
         //
         //
         //    if (self.mapVC.comingFromAddAnnotationState)
@@ -541,12 +558,12 @@ static NSString *kFullTagLabel = @"heart_label_full";
         //    NSLog(@"selected Cell content View[-1]---[ %@ ]----", _selectedCell[0] );
         
         Categories *categories = _selectedCategories[0];
-        NSLog(@"selected Categories---[ %@ ]----", _selectedCategories );
-        [self.delegate category:categories];
-        [self.delegate controllerDidDismiss:self];
-        
-        
-    } else {
+        /*NSLog(@"selected Categories---[ %@ ]----", _selectedCategories );
+        [self.delegate category:categories];*/
+    
+    if (categories) {
+        [self.delegate category:categories withImageView:categories.categoryImage];
+    
         [self.delegate controllerDidDismiss:self];
         
     }
@@ -619,6 +636,9 @@ heightForFooterInSection:(NSInteger)section
     cell.delegate = self;
     
     Categories *categories = [DataSource sharedInstance].category[indexPath.row];
+    
+    NSLog(@"[DataSource sharedInstance].categories -%@-", [DataSource sharedInstance].category);
+    
     cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.color];
     [cell.tagImageView setTintColor:categories.color];
     [cell.tagImageViewFull setHidden:YES];
@@ -637,14 +657,20 @@ heightForFooterInSection:(NSInteger)section
     [cell.tagImageViewFull setHidden:NO];
     [cell.tagImageViewFull setTintColor:categories.color];
     
-    self.selectedCell = [NSMutableArray array];
-    [self.selectedCell addObject:cell.tagImageViewFull];
+    /*self.selectedCell = [NSMutableArray array];
+    [self.selectedCell addObject:cell.tagImageViewFull];*/
+    
     self.selectedCategories = [NSMutableArray array];
     [self.selectedCategories addObject:categories];
-    [self.delegate didCompleteWithImageView:cell.tagImageViewFull];
+    //[self.delegate didCompleteWithImageView:cell.tagImageViewFull];
+    
+    self.imageViewSelected = [NSMutableArray array];
+    [self.imageViewSelected addObject:cell.tagImageViewFull];
     
     //    selectedIndex = indexPath.row;
     //    [self.tableView reloadData];
+    
+    [cell setNeedsDisplay];
     
 }
 
@@ -661,11 +687,11 @@ heightForFooterInSection:(NSInteger)section
     [cell.tagImageView setHidden:NO];
     
     [cell.tagImageView setTintColor:categories.color];
-    [self.selectedCell removeObject:cell.tagImageViewFull];
+    //[self.selectedCell removeObject:cell.tagImageViewFull];
     [self.selectedCategories removeObject:categories];
     //    [self.tableView reloadData];
     
-    
+    [cell setNeedsDisplay];
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -679,10 +705,10 @@ heightForFooterInSection:(NSInteger)section
 // Override to support conditional editing of the table view.
 // This only needs to be implemented if you are going to be returning NO
 // for some items. By default, all items are editable.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+/*- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return YES if you want the specified item to be editable.
     return YES;
-}
+}*/
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {

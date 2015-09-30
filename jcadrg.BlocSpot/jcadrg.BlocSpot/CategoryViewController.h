@@ -13,17 +13,24 @@ typedef NS_ENUM(NSInteger, CategoryViewControllerState) {
 };
 
 
-@class CategoryViewController, Categories, CategoryTableViewCell;
+@class CategoryViewController, Categories;
+
+
 @protocol CategoryViewControllerDelegate <NSObject>
 
--(void)didSelectCell:(CategoryTableViewCell *)cell;
+//-(void)didSelectCell:(CategoryTableViewCell *)cell;
 
 -(void)controllerDidDismiss:(CategoryViewController *)controller;
--(void)category:(Categories *)categoriesChosen;
 
--(void)controllerDidChoose:(UIColor *)color;
+-(void)category:(Categories *)categoriesChosen withImageView:(UIImageView *)imageView;
 
--(void)didCompleteWithImageView:(UIImageView *)image;
+
+//-(void)controllerDidChoose:(UIColor *)color;
+
+//-(void)didCompleteWithImageView:(UIImageView *)image;
+
+-(void) didCreateCategory:(Categories *)category;
+
 @end
 @interface CategoryViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource >
 
@@ -38,12 +45,13 @@ typedef NS_ENUM(NSInteger, CategoryViewControllerState) {
 
 @property (nonatomic, strong) UIColor *categoryChosenColor;
 
-@property (nonatomic, strong) NSDictionary *categories;
+@property(nonatomic, strong) NSMutableDictionary *categories;
 
 @property (nonatomic, strong) NSMutableArray *categoriesCreated;
 
 @property (nonatomic, strong) NSMutableArray *selectedCategories;
-@property (nonatomic, strong) NSMutableArray *selectedCell;
+
+@property (nonatomic, strong) NSMutableArray *imageViewSelected;
 
 
 

@@ -22,7 +22,7 @@
 
 -(id) initWithCoordinate:(CLLocationCoordinate2D) coordinate;
 
--(id) initWithArray:(NSArray *)array;
+//-(id) initWithArray:(NSArray *)array;
 
 
 @end
