@@ -7,40 +7,44 @@
 //
 
 #import <UIKit/UIKit.h>
-
-typedef NS_ENUM(NSInteger, CategoriesViewControllerState){
-    CategoriesViewControllerAddCategory,
-    CategoriesViewControllerShowView
+typedef NS_ENUM(NSInteger, CategoryViewControllerState) {
+    CategoryViewControllerAddCategory,
+    CategoryViewControllerShowView
 };
 
-@class CategoryViewController;
-@class Categories;
-@class CategoryTableViewCell;
+
+@class CategoryViewController, Categories, CategoryTableViewCell;
 @protocol CategoryViewControllerDelegate <NSObject>
 
--(void) didSelectCell:(CategoryTableViewCell *)cell;
--(void) controllerDidDismiss:(CategoryViewController *) controller;
--(void) category:(Categories *) categoryPicked;
--(void) didChoseController:(UIColor *) color;
--(void) didCompleteWithImageView:(UIImageView *)image;
+-(void)didSelectCell:(CategoryTableViewCell *)cell;
 
+-(void)controllerDidDismiss:(CategoryViewController *)controller;
+-(void)category:(Categories *)categoriesChosen;
+
+-(void)controllerDidChoose:(UIColor *)color;
+
+-(void)didCompleteWithImageView:(UIImageView *)image;
 @end
+@interface CategoryViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource >
 
 
-@interface CategoryViewController : UIViewController <UITableViewDataSource, UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate>
 
-@property (nonatomic, strong) id<CategoryViewControllerDelegate> delegate;
-@property (nonatomic, assign) CategoriesViewControllerState state;
+@property (nonatomic, strong) id <CategoryViewControllerDelegate> delegate;
+@property (nonatomic, assign) CategoryViewControllerState state;
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) UICollectionView *colorCollectionView;
-@property (nonatomic, strong) NSMutableArray *colorArray;
-@property (nonatomic, strong) NSMutableArray *colorArray2;
-@property (nonatomic, strong) NSMutableArray *pickedCategoryColor;
+@property (nonatomic, strong) UICollectionView *colorsCollectionView;
+@property (nonatomic, strong)  NSMutableArray *colorsArray;
+@property (nonatomic, strong)  NSMutableArray *colorsArraySimilar;
 
-@property (nonatomic, strong) NSDictionary *category;
+@property (nonatomic, strong) UIColor *categoryChosenColor;
+
+@property (nonatomic, strong) NSDictionary *categories;
+
 @property (nonatomic, strong) NSMutableArray *categoriesCreated;
-@property (nonatomic, strong) NSMutableArray *categoriesPicked;
-@property (nonatomic, strong) NSMutableArray *cellSelected;
+
+@property (nonatomic, strong) NSMutableArray *selectedCategories;
+@property (nonatomic, strong) NSMutableArray *selectedCell;
+
 
 
 

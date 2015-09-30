@@ -514,7 +514,7 @@ withDescriptionText:(NSString *)descriptionText{
                   }];
 }
 
-#pragma mark BLCCategoriesViewControllerDelegate
+#pragma mark CategoriesViewControllerDelegate
 
 -(void)controllerDidDismiss:(CategoryViewController *)controller{
     
@@ -528,8 +528,8 @@ withDescriptionText:(NSString *)descriptionText{
 
     [self.parameters setObject:categories forKey:@"category"];
     self.pinColor = [[UIColor alloc]init];
-    self.pinColor = categories.categoryColor;
-    self.createAnnotationView.titleLabel.attributedText = [self.createAnnotationView titleLabelStringWithCategory:categories.categoryName withColor:categories.categoryColor];
+    self.pinColor = categories.color;
+    self.createAnnotationView.titleLabel.attributedText = [self.createAnnotationView titleLabelStringWithCategory:categories.categoryName withColor:categories.color];
     
 }
 
@@ -741,7 +741,7 @@ withDescriptionText:(NSString *)descriptionText{
         _annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation
                                                        reuseIdentifier:viewID];
         
-        [_annotationView setTintColor:poi.category.categoryColor];
+        [_annotationView setTintColor:poi.category.color];
         [mapView addAnnotation:annotation];
     }
     

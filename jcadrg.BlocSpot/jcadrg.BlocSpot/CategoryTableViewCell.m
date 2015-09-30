@@ -9,158 +9,178 @@
 #import "CategoryTableViewCell.h"
 #import "FlatUIKit.h"
 
-@interface CategoryTableViewCell()<UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) UITapGestureRecognizer *tapGR;
+@interface CategoryTableViewCell () <UIGestureRecognizerDelegate>
+
+@property (nonatomic, strong) UITapGestureRecognizer* singleTapRecognizer;
+
 @property (nonatomic, strong) NSLayoutConstraint *categoryLabelHeight;
 
+
+
+
 @end
-
-
 @implementation CategoryTableViewCell
 
--(id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
+
+-(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
     
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         
         
-        //Labels
-        self.categoryLabel = [[UILabel alloc] init];
+        // LABEL
+        self.categoryLabel = [UILabel new];
         self.categoryLabel.numberOfLines = 0;
         self.categoryLabel.translatesAutoresizingMaskIntoConstraints = NO;
         self.categoryLabel.attributedText = [self categoryLabelAttributedString];
         [self.contentView addSubview:self.categoryLabel];
         
-        //Cells
+        // CELL
+        
         [self configureFlatCellWithColor:[UIColor cloudsColor]
                            selectedColor:[UIColor cloudsColor]
                          roundingCorners:UIRectCornerAllCorners];
         
-        self.cornerRadius = 5.0f;
-        self.separatorHeight = 2.0f;
+        self.cornerRadius = 5.0f; // optional
+        self.separatorHeight = 2.0f; // optional
         
-        //Tagged Image
-        self.tagIV = [[UIImageView alloc] init];
+        
+        //TAG IMAGE
+        self.tagImageView = [[UIImageView alloc]init];
         self.image = [UIImage imageNamed:@"like"];
-        self.tagIV.image = self.image;
+        self.tagImageView.image = self.image ;
         
-        self.tagIV.image = [_tagIV.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.tagIV.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.contentView addSubview:_tagIV];
+        self.tagImageView.image = [_tagImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:_tagImageView];
         
-        self.tagIVFullView = [[UIImageView alloc] init];
-        self.image2 = [UIImage imageNamed:@"hearts_filled"];
-        self.tagIVFullView.image = [_tagIVFullView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [self.contentView addSubview:_tagIVFullView];
+        self.tagImageViewFull = [[UIImageView alloc]init];
+        self.image1 = [UIImage imageNamed:@"hearts_filled"];
+        self.tagImageViewFull.image = self.image1 ;
+        
+        self.tagImageViewFull.image = [_tagImageViewFull.image imageWithRenderingMode:  UIImageRenderingModeAlwaysTemplate];
+        
+        self.tagImageViewFull.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        
+        [self.contentView addSubview:_tagImageViewFull];
+        //            [self.tagImageView1 setHidden:YES];
+        
         
         [self createConstraints];
-        
         
     }
     
     return self;
 }
 
-#pragma mark - Attributed String
+#pragma Attributed String
 
--(NSAttributedString *) categoryLabelAttributedString{
+- (NSAttributedString *) categoryLabelAttributedString {
     NSString *categoryName = self.category.categoryName;
-    NSString *string = NSLocalizedString([categoryName uppercaseString], @"Category label");
-    NSRange range = [string rangeOfString:string];
+    NSString *baseString = NSLocalizedString([categoryName uppercaseString], @"Label of category");
+    NSRange range = [baseString rangeOfString:baseString];
     
-    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:string];
+    NSMutableAttributedString *baseAttributedString = [[NSMutableAttributedString alloc] initWithString:baseString];
     
-    [mutableAttributedString addAttribute:NSFontAttributeName value:[UIFont boldFlatFontOfSize:16] range:range];
-    [mutableAttributedString addAttribute:NSKernAttributeName value:@1.3 range:range];
-    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:self.category.categoryColor range:range];
+    [baseAttributedString addAttribute:NSFontAttributeName value:[UIFont boldFlatFontOfSize:16] range:range];
+    [baseAttributedString addAttribute:NSKernAttributeName value:@1.3 range:range];
+    [baseAttributedString addAttribute:NSForegroundColorAttributeName value:self.category.color range:range];
+    return baseAttributedString;
     
-    return mutableAttributedString;
+    
 }
 
--(void) createConstraints{
+
+
+-(void)createConstraints
+
+{
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(  _categoryLabel,_tagImageView, _tagImageViewFull);
     
-    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_categoryLabel, _tagIV, _tagIVFullView);
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tagIV(==44)]|"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:viewDictionary]];
     
-    ;
-    
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_tagIV(==44)]|"
-                                                                             options:kNilOptions
-                                                                             metrics:nil
-                                                                               views:viewDictionary]];
-    
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tagIVFullView]|"
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tagImageView(==44)]|"
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
     ;
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_tagIVFullView(==44)]|"
+    
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_tagImageView(==44)]|"
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tagImageViewFull(==44)]|"
+                                                                             options:kNilOptions
+                                                                             metrics:nil
+                                                                               views:viewDictionary]];
+    ;
+    
+    
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_tagImageViewFull(==44)]|"
+                                                                             options:kNilOptions
+                                                                             metrics:nil
+                                                                               views:viewDictionary]];
+    
+    
+    
+    
+    
     
     [self.contentView addConstraints:({
-        
-        @[[NSLayoutConstraint
-           constraintWithItem:_categoryLabel
-           attribute:NSLayoutAttributeCenterX
-           relatedBy:NSLayoutRelationEqual
-           toItem:self.contentView
-           attribute:NSLayoutAttributeCenterX
-           multiplier:1.f
-           constant:0.f],
-          
-          [NSLayoutConstraint
-           constraintWithItem:_categoryLabel
-           attribute:NSLayoutAttributeCenterY
-           relatedBy:NSLayoutRelationEqual
-           toItem:self.contentView
-           attribute:NSLayoutAttributeCenterY
-           multiplier:1.f
-           constant:0]
-
-           ];
+        @[ [NSLayoutConstraint
+            constraintWithItem:_categoryLabel
+            attribute:NSLayoutAttributeCenterX
+            relatedBy:NSLayoutRelationEqual
+            toItem:self.contentView
+            attribute:NSLayoutAttributeCenterX
+            multiplier:1.f constant:0.f],
+           
+           [NSLayoutConstraint
+            constraintWithItem:_categoryLabel
+            attribute:NSLayoutAttributeCenterY
+            relatedBy:NSLayoutRelationEqual
+            toItem:self.contentView
+            attribute:NSLayoutAttributeCenterY
+            multiplier:1.f constant:0] ];
     })];
-    
-    
-    
 }
 
--(void) setState:(CategoryTableViewCellState)state{
-    [self requestState];
+//-(void)setSelected:(BOOL)selected {
+//    [super setSelected:selected];
+//
+//    if (selected){
+//        [self.delegate didSelectCell:self];
+//
+//    }
+//
+//}
+-(void)setState:(CategoryTableViewCellState)state {
+    [self checkState];
 }
 
--(void) requestState{
-    
+
+-(void)checkState
+{
     switch (self.state) {
-        case CategoryTableViewCellStateSelected:
-            [self.tagIV setHidden:YES];
-            [self.tagIVFullView setHidden:NO];{
-                
-            }break;
             
-        case CategoryTableViewCellStateUnSelected:{
-            [self.tagIV setHidden:YES];
-            [self.tagIVFullView setHidden:NO];
+        case CategoryTableViewCellStateUnSelectedNOT: {
+            [self.tagImageView setHidden:NO];
+            [self.tagImageViewFull setHidden:YES];
+        } break;
+        case CategoryTableViewCellStateSelectedYES: {
+            [self.tagImageView setHidden:YES];
+            [self.tagImageViewFull setHidden:NO];
             
-        }break;
+            
+        } break;
     }
-}
-
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+    
 }
 
 @end

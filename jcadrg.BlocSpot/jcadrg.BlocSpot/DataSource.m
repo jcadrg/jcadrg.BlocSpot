@@ -79,7 +79,7 @@
 -(void) addPOI:(POI *)poi{
     if (!_annotation) {
         [self loadPOI];
-        NSLog(@"Adding Point of Interest: [name: %@] [description: %@] [annotation: %@] [category name: %@] [category color: %@]", poi.locationName, poi.note, poi.annotation, poi.category.categoryName, poi.category.categoryColor);
+        NSLog(@"Adding Point of Interest: [name: %@] [description: %@] [annotation: %@] [category name: %@] [category color: %@]", poi.locationName, poi.note, poi.annotation, poi.category.categoryName, poi.category.color);
         
         [_annotation addObject:poi];
         [NSKeyedArchiver archiveRootObject:_annotation toFile:_path];
@@ -90,7 +90,7 @@
 
 -(void) addPOI:(POI *)poi toCategoryArray:(Categories *)category{
     
-    [category.poi addObject:poi];
+    [category.pointsOfInterest addObject:poi];
     
 }
 

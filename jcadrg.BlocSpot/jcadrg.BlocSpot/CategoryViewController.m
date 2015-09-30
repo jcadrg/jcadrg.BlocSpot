@@ -10,25 +10,42 @@
 #import "FlatUIKit.h"
 #import "JVFloatLabeledTextField.h"
 #import "CategoryTableViewCell.h"
-#import "IQKeyBoardManager.h"
+#import "IQKeyboardManager.h"
 #import "ColorCollectionViewCell.h"
 #import "Categories.h"
+
 #import "ViewController.h"
 #import "DataSource.h"
 
-@interface CategoryViewController()<UIGestureRecognizerDelegate, UITextFieldDelegate, CategoryTableViewCellDelegate, AnnotationViewDelegate>
+
+
+
+
+@interface CategoryViewController () <UIGestureRecognizerDelegate, UITextFieldDelegate, CategoryTableViewCellDelegate, AnnotationViewDelegate>
+
 
 @property (nonatomic, strong) CategoryTableViewCell *cell;
-@property (nonatomic, strong) JVFloatLabeledTextField *categoryTextField;
-@property (nonatomic, strong) UIView *lowerView;
+
+@property (nonatomic, strong) JVFloatLabeledTextField *addCategoryField;
+
+@property (nonatomic, strong) UIView *bottomView;
+
 @property (nonatomic, strong) UIView *backgroundView;
-@property (nonatomic, strong) UILabel *addCategory;
-@property (nonatomic, strong) UIImageView *imageView;
+
+@property (nonatomic, strong) UILabel *addMoreCategoriesLabel;
+
+@property (nonatomic, strong) UIImageView *addImageView;
+
+
 @property (nonatomic, strong) FUIButton *doneButton;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
+
 @property (nonatomic, strong) UIView *div1;
-@property (nonatomic, strong) UIView *backText;
+
+@property (nonatomic, strong) UIView *backTextFieldView;
+
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGR;
+
 
 
 @end
@@ -36,8 +53,9 @@
 static NSInteger selectedIndex;
 static NSInteger tableSelectedIndex;
 
-static NSString *kTagLabel = @"like_label";
-static NSString *kFullTagLabel =@"like_label_full";
+static NSString *kTagLabel = @"heart_label";
+static NSString *kFullTagLabel = @"heart_label_full";
+
 
 @implementation CategoryViewController
 
@@ -62,14 +80,14 @@ static NSString *kFullTagLabel =@"like_label_full";
             //            [self.containerView addSubview:self.backgroundView];
             
         }
-        if (!_addCategory){
-            self.addCategory = [UILabel new];
+        if (!_addMoreCategoriesLabel){
+            self.addMoreCategoriesLabel = [UILabel new];
             //            [self.backgroundView addSubview:self.addMoreCategoriesLabel];
             
         }
-        if (!_imageView)
+        if (!_addImageView)
         {
-            self.imageView = [[UIImageView alloc]init];
+            self.addImageView = [[UIImageView alloc]init];
             //            [self.backgroundView addSubview:self.addImageView];
             
         }
@@ -77,9 +95,9 @@ static NSString *kFullTagLabel =@"like_label_full";
         //        if (!_backTextFieldView){
         //            self.backTextFieldView = [UIView new];
         //        }
-        if (!_categoryTextField)
+        if (!_addCategoryField)
         {
-            self.categoryTextField = [[JVFloatLabeledTextField alloc]init];
+            self.addCategoryField = [[JVFloatLabeledTextField alloc]init];
             //            [self.containerView addSubview:self.addCategoryField ];
             
         }
@@ -108,18 +126,18 @@ static NSString *kFullTagLabel =@"like_label_full";
         
         
         // Initializing a UICollectionView frame, dataSource, delegate and if it shows an indicator
-        self.colorCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
-        self.colorCollectionView.dataSource = self;
-        self.colorCollectionView.delegate = self;
-        self.colorCollectionView.showsHorizontalScrollIndicator = YES;
-        self.colorCollectionView.userInteractionEnabled = YES;
+        self.colorsCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flowLayout];
+        self.colorsCollectionView.dataSource = self;
+        self.colorsCollectionView   .delegate = self;
+        self.colorsCollectionView.showsHorizontalScrollIndicator = YES;
+        self.colorsCollectionView.userInteractionEnabled = YES;
         
         
         
         
         
         // Ititializing colors array
-        self.colorArray = [NSMutableArray arrayWithObjects:[UIColor turquoiseColor],
+        self.colorsArray = [NSMutableArray arrayWithObjects:[UIColor turquoiseColor],
                             [UIColor emerlandColor],
                             [UIColor  peterRiverColor],
                             [UIColor amethystColor],
@@ -128,7 +146,7 @@ static NSString *kFullTagLabel =@"like_label_full";
                             [UIColor alizarinColor],
                             [UIColor concreteColor], nil];
         
-        self.colorArray2  =[ NSMutableArray arrayWithObjects:[UIColor greenSeaColor],
+        self.colorsArraySimilar  =[ NSMutableArray arrayWithObjects:[UIColor greenSeaColor],
                                    [UIColor nephritisColor],
                                    [UIColor belizeHoleColor],
                                    [UIColor wisteriaColor],
@@ -136,7 +154,7 @@ static NSString *kFullTagLabel =@"like_label_full";
                                    [UIColor pumpkinColor],
                                    [UIColor pomegranateColor],
                                    [UIColor asbestosColor],nil];
-        self.category =[NSDictionary new];
+        self.categories =[NSDictionary new];
         self.categoriesCreated =[NSMutableArray new];
         
         UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -157,7 +175,7 @@ static NSString *kFullTagLabel =@"like_label_full";
     [super viewDidLoad];
     //   self.view.backgroundColor = [UIColor clearColor];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor midnightBlueColor],NSFontAttributeName:[UIFont boldFlatFontOfSize:20]};
-    self.navigationItem.title = @"Create a new category!";
+    self.navigationItem.title = @"Create a Category";
     
     // TABLEVIEW
     if (!_tableView) {
@@ -183,10 +201,10 @@ static NSString *kFullTagLabel =@"like_label_full";
     
     
     [self.tableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"CategoryCell"];
-    self.state = CategoriesViewControllerShowView;
-    [self.colorCollectionView registerClass:[ColorCollectionViewCell class] forCellWithReuseIdentifier:@"ColorCell"];
+    self.state = CategoryViewControllerShowView;
+    [self.colorsCollectionView registerClass:[ColorCollectionViewCell class] forCellWithReuseIdentifier:@"ColorCell"];
     
-    self.colorCollectionView.backgroundColor = [UIColor whiteColor];
+    self.colorsCollectionView.backgroundColor = [UIColor cloudsColor];
     
     
     
@@ -200,26 +218,26 @@ static NSString *kFullTagLabel =@"like_label_full";
     
     switch (self.state) {
             
-        case CategoriesViewControllerShowView: {
+        case CategoryViewControllerShowView: {
             //            self.backTextFieldView = nil;
             self.containerView.backgroundColor = [UIColor silverColor];
             
             [self.containerView addSubview:self.backgroundView];
             
-            [self.backgroundView addSubview:self.addCategory];
+            [self.backgroundView addSubview:self.addMoreCategoriesLabel];
             
-            [self.backgroundView addSubview:self.imageView];
-            [self.addCategory setHidden:NO];
-            [self.imageView setHidden:NO];
+            [self.backgroundView addSubview:self.addImageView];
+            [self.addMoreCategoriesLabel setHidden:NO];
+            [self.addImageView setHidden:NO];
             [self.backgroundView setHidden:NO];
             //Hide the views from the other state
             [self.doneButton setHidden:YES];
-            [self.categoryTextField setHidden:YES];
-            [self.colorCollectionView setHidden:YES];
+            [self.addCategoryField setHidden:YES];
+            [self.colorsCollectionView setHidden:YES];
             
-            self.lowerView = [[UIView alloc]init];
-            [self.lowerView viewWithTag:2];
-            self.lowerView = self.containerView;
+            self.bottomView = [[UIView alloc]init];
+            [self.bottomView viewWithTag:2];
+            self.bottomView = self.containerView;
             
             //            _bottomView = self.containerView;
             //            _containerView = _bottomView;
@@ -229,28 +247,27 @@ static NSString *kFullTagLabel =@"like_label_full";
             
             
         } break;
-        case CategoriesViewControllerAddCategory: {
+        case CategoryViewControllerAddCategory: {
             
-            [self.containerView addSubview:self.categoryTextField];
+            [self.containerView addSubview:self.addCategoryField ];
             
             [self.containerView addSubview:self.div1];
             
             [self.containerView addSubview:self.doneButton];
-            [self.containerView addSubview:self.colorCollectionView];
+            [self.containerView addSubview:self.colorsCollectionView];
             
             // MAKE THE ONES FROM THIS STATE VISIBLE
             [self.doneButton setHidden:NO];
-            [self.categoryTextField setHidden:NO];
-            [self.colorCollectionView setHidden:NO];
-            
+            [self.addCategoryField setHidden:NO];
+            [self.colorsCollectionView setHidden:NO];
             //  HIDE THE VIEWS FROM THE OTHER STATE
-            [self.addCategory setHidden:YES];
-            [self.imageView setHidden:YES];
+            [self.addMoreCategoriesLabel setHidden:YES];
+            [self.addImageView setHidden:YES];
             [self.backgroundView setHidden:YES];
             
-            self.backText = [[UIView alloc]init];
-            [self.backText viewWithTag:1];
-            self.backText = self.containerView;
+            self.backTextFieldView = [[UIView alloc]init];
+            [self.backTextFieldView viewWithTag:1];
+            self.backTextFieldView = self.containerView;
             
             
             
@@ -259,23 +276,23 @@ static NSString *kFullTagLabel =@"like_label_full";
     }
     
     // FIRST VIEW
-    self.imageView.frame = CGRectMake(0, 0, 44, 44);
+    self.addImageView.frame = CGRectMake(0, 0, 44, 44);
     
     CGSize maxSize = CGSizeMake(CGRectGetWidth(self.view.bounds), CGFLOAT_MAX);
-    CGSize labelSize = [self.addCategory sizeThatFits:maxSize];
-    self.addCategory.frame = CGRectMake(CGRectGetMaxX(self.imageView.frame), 8, labelSize.width, labelSize.height);
-    CGFloat backgroundViewWidth = CGRectGetWidth(self.imageView.bounds) +labelSize.width;
+    CGSize labelSize = [self.addMoreCategoriesLabel sizeThatFits:maxSize];
+    self.addMoreCategoriesLabel.frame = CGRectMake(CGRectGetMaxX(self.addImageView.frame), 8, labelSize.width, labelSize.height);
+    CGFloat backgroundViewWidth = CGRectGetWidth(self.addImageView.bounds) +labelSize.width;
     self.backgroundView.frame = CGRectMake((viewWidth/2)-(backgroundViewWidth/2), 88/2 -22, backgroundViewWidth , 44);
     
     
     //     SECOND VIEW SHOWN AFTER DOUBLE TAP
     //TRYING TO REMOVE VIEWS FROM SUPERVIEW, SO THAT WHEN THEY ARE CREATED AGAIN IT DOESNT COLLIDE WITH WHAT HAVE ALREADY BEEN CREATED
     
-    self.categoryTextField.frame = CGRectMake(0, 0, (CGRectGetWidth(self.tableView.frame)-44), 44);
-    self.div1.frame = CGRectMake(CGRectGetMaxX(self.categoryTextField.frame), 0, 0.5, 44);
+    self.addCategoryField.frame = CGRectMake(0, 0, (CGRectGetWidth(self.tableView.frame)-44), 44);
+    self.div1.frame = CGRectMake(CGRectGetMaxX(self.addCategoryField.frame), 0, 0.5, 44);
     self.doneButton.frame = CGRectMake(CGRectGetMaxX(self.div1.frame), 0, 44, 44);
     //  self.colorsCollectionView.frame = CGRectMake((CGRectGetWidth(self.tableView.frame)-44)/2, 0, (CGRectGetWidth(self.tableView.frame)-44)/2, 44);
-    self.colorCollectionView.frame = CGRectMake(0, CGRectGetMaxY(self.categoryTextField.frame),viewWidth, 44);
+    self.colorsCollectionView.frame = CGRectMake(0, CGRectGetMaxY(self.addCategoryField.frame),viewWidth, 44);
     
     [self createTapGesture];
     
@@ -286,7 +303,7 @@ static NSString *kFullTagLabel =@"like_label_full";
 
 -(void)createBottomViews
 {
-    self.lowerView.backgroundColor = [UIColor silverColor];
+    self.bottomView.backgroundColor = [UIColor silverColor];
     
     //    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -295,33 +312,33 @@ static NSString *kFullTagLabel =@"like_label_full";
 -(void)creatingBottomLabelAndImage
 {
     
-    self.addCategory.numberOfLines = 0;
-    self.addCategory.font = [UIFont flatFontOfSize:16];
-    self.addCategory.text = @"Tap to add more";
-    self.addCategory.textColor = [UIColor midnightBlueColor];
-    self.addCategory.translatesAutoresizingMaskIntoConstraints  = 0;
+    self.addMoreCategoriesLabel.numberOfLines = 0;
+    self.addMoreCategoriesLabel.font = [UIFont flatFontOfSize:16];
+    self.addMoreCategoriesLabel.text = @"Tap to add more";
+    self.addMoreCategoriesLabel.textColor = [UIColor midnightBlueColor];
+    self.addMoreCategoriesLabel.translatesAutoresizingMaskIntoConstraints  = 0;
     
-    UIImage *image =[UIImage imageNamed:@"add_big"];
+    UIImage *image =[UIImage imageNamed:@"plus_math"];
     
-    self.imageView.image = image;
-    self.imageView.image = [_imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.addImageView.image = image;
+    self.addImageView.image = [_addImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
-    [self.imageView setTintColor:[UIColor midnightBlueColor]];
+    [self.addImageView setTintColor:[UIColor midnightBlueColor]];
     
-    [self.backgroundView addSubview:self.addCategory];
-    [self.backgroundView addSubview:self.imageView];
+    [self.backgroundView addSubview:self.addMoreCategoriesLabel];
+    [self.backgroundView addSubview:self.addImageView];
     
 }
 -(void)creatingTextField {
-    self.categoryTextField.attributedPlaceholder =
-    [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Category", @"POI name")
+    self.addCategoryField.attributedPlaceholder =
+    [[NSAttributedString alloc] initWithString:NSLocalizedString(@"  Category", @"String naming Point of Interest")
                                     attributes:@{NSForegroundColorAttributeName: [UIColor darkGrayColor]}];
     
-    self.categoryTextField.font =[UIFont flatFontOfSize:16];
-    self.categoryTextField.floatingLabel.font = [UIFont flatFontOfSize:11];
-    self.categoryTextField.floatingLabelTextColor = [UIColor pumpkinColor];
-    self.categoryTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.categoryTextField.backgroundColor = [UIColor whiteColor];
+    self.addCategoryField.font =[UIFont flatFontOfSize:16];
+    self.addCategoryField.floatingLabel.font = [UIFont flatFontOfSize:11];
+    self.addCategoryField.floatingLabelTextColor = [UIColor pumpkinColor];
+    self.addCategoryField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    self.addCategoryField.backgroundColor = [UIColor cloudsColor];
     
     
     
@@ -336,7 +353,7 @@ static NSString *kFullTagLabel =@"like_label_full";
     [self.doneButton setImage:[UIImage imageNamed:@"plus_math"] forState:UIControlStateNormal];
     [self.doneButton addTarget:self action:@selector(doneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    self.doneButton.buttonColor = [UIColor whiteColor];
+    self.doneButton.buttonColor = [UIColor cloudsColor];
     self.doneButton.shadowColor = [UIColor silverColor];
     self.doneButton.shadowHeight = 3.0f;
     self.doneButton.cornerRadius = 6.0f;
@@ -352,14 +369,14 @@ static NSString *kFullTagLabel =@"like_label_full";
     [super viewWillLayoutSubviews];
     self.tableView.frame = self.view.bounds;
     
-    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.colorCollectionView.collectionViewLayout;
+    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.colorsCollectionView.collectionViewLayout;
     flowLayout.itemSize = CGSizeMake( 44, 44);
     
     
 }
 #pragma mark - Overrides
 
--(void)setState:(CategoriesViewControllerState)state animated:(BOOL)animated
+-(void)setState:(CategoryViewControllerState)state animated:(BOOL)animated
 {
     _state = state;
     if (animated) {
@@ -374,7 +391,7 @@ static NSString *kFullTagLabel =@"like_label_full";
     
     
 }
--(void)setState:(CategoriesViewControllerState)state {
+-(void)setState:(CategoryViewControllerState)state {
     [self setState:state animated:NO];
     
 }
@@ -382,37 +399,37 @@ static NSString *kFullTagLabel =@"like_label_full";
 #pragma mark TagGesture
 -(void)createTapGesture {
     
-    self.tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(bottomViewTapped:)];
-    self.tapGR.delegate = self;
-    self.tapGR.numberOfTapsRequired = 1;
-    self.tapGR.numberOfTouchesRequired = 1;
+    self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(bottomViewTapped:)];
+    self.tapGesture.delegate = self;
+    self.tapGesture.numberOfTapsRequired = 1;
+    self.tapGesture.numberOfTouchesRequired = 1;
     
-    [self.lowerView addGestureRecognizer:self.tapGR];
-    [self.imageView addGestureRecognizer:self.tapGR];
-    [self.addCategory addGestureRecognizer:self.tapGR];
-    [self.backgroundView addGestureRecognizer:self.tapGR];
+    [self.bottomView addGestureRecognizer:self.tapGesture];
+    [self.addImageView addGestureRecognizer:self.tapGesture];
+    [self.addMoreCategoriesLabel addGestureRecognizer:self.tapGesture];
+    [self.backgroundView addGestureRecognizer:self.tapGesture];
     
     
 }
 
-
+// TO DO, TO BE IMPLEMENTED O THE CELL
 
 
 -(void)bottomViewTapped:(UITapGestureRecognizer *)sender {
     NSLog(@"Tap was actually fired");
     
     // call helper function
-    [self animatingAView:sender.view toAnother:[self.backText viewWithTag:1] forState:CategoriesViewControllerAddCategory flipFromTop:YES];
+    [self animatingAView:sender.view toAnother:[self.backTextFieldView viewWithTag:1] forState:CategoryViewControllerAddCategory flipFromTop:YES];
     
     //remove other subviews of self.containerview
-    [self.imageView removeFromSuperview];
-    [self.addCategory removeFromSuperview];
+    [self.addImageView removeFromSuperview];
+    [self.addMoreCategoriesLabel removeFromSuperview];
     [self.backgroundView removeFromSuperview];
     
     
 }
 // Helper function
--(void)animatingAView:(UIView *)view toAnother:(UIView *)anotherView forState:(CategoriesViewControllerState)state flipFromTop:(BOOL)flip
+-(void)animatingAView:(UIView *)view toAnother:(UIView *)anotherView forState:(CategoryViewControllerState)state flipFromTop:(BOOL)flip
 {
     
     if (flip){
@@ -454,40 +471,40 @@ static NSString *kFullTagLabel =@"like_label_full";
 -(void)doneButtonPressed:(UIButton *)sender
 {
     // Checking to see if there are any colors chosen or if there are any text written
-    if (self.categoryTextField.text.length >0 && self.pickedCategoryColor && _pickedCategoryColor !=nil)
+    if (self.addCategoryField.text.length >0 && self.categoryChosenColor && _categoryChosenColor !=nil)
     {
         // call delegate method
         
         
         
         // call helper function
-        [self animatingAView:self.doneButton toAnother:[self.lowerView viewWithTag:2] forState:CategoriesViewControllerShowView flipFromTop:NO];
+        [self animatingAView:self.doneButton toAnother:[self.bottomView viewWithTag:2] forState:CategoryViewControllerShowView flipFromTop:NO];
         
         
         //remove other subviews of self.containervie
-        [self.addCategory removeFromSuperview ];
+        [self.addCategoryField removeFromSuperview ];
         [self.div1 removeFromSuperview];
         [self.doneButton removeFromSuperview];
-        [self.colorCollectionView removeFromSuperview];
+        [self.colorsCollectionView removeFromSuperview];
         
         // create a temporary dictionary
         NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
         
-        [tempDic setObject:self.categoryTextField.text forKey:@"categoryName"];
-        [tempDic setObject:self.pickedCategoryColor forKey:@"categoryColor"];
+        [tempDic setObject:self.addCategoryField.text forKey:@"categoryName"];
+        [tempDic setObject:self.categoryChosenColor forKey:@"categoryColor"];
         
         
         //        [tempDic setObject:0 forKey:@"selected"];
-        // make temporary dictionary equal to categories dictionary
-        self.category = tempDic;
+        // make temp dictionary equal to categories dictionary
+        self.categories = tempDic;
         
         
         // Remove colors from array so they cant be repeated
-        [self.colorArray removeObject:self.colorArray[selectedIndex]];
-        [self.colorArray2 removeObject:self.colorArray2[selectedIndex]];
+        [self.colorsArray removeObject:self.colorsArray[selectedIndex]];
+        [self.colorsArraySimilar removeObject:self.colorsArraySimilar[selectedIndex]];
         
-        // pass categories dictionaries as parameters of the BLCCategories object
-        Categories *categories = [self categoryInitializer:self.category];
+        // pass categories dictionaries as parameters of the Categories object
+        Categories *categories = [self categoryInitializer:self.categories];
         [[DataSource sharedInstance] addCategory:categories];
         
         // add to list all the objects created
@@ -497,34 +514,34 @@ static NSString *kFullTagLabel =@"like_label_full";
         [self.tableView reloadData];
         
         // reload and adjust tge data
-        self.categoryTextField.text = @"";
-        self.pickedCategoryColor = nil;
+        self.addCategoryField.text = @"";
+        self.categoryChosenColor = nil;
         //        self.categoryChosenColor = nil;
         
     }
     else{
-        [self animatingAView:self.doneButton toAnother:[self.lowerView viewWithTag:2] forState:CategoriesViewControllerShowView flipFromTop:NO];
+        [self animatingAView:self.doneButton toAnother:[self.bottomView viewWithTag:2] forState:CategoryViewControllerShowView flipFromTop:NO];
     }
 }
 
--(Categories *)categoryInitializer:(NSDictionary *)dictionary {
+-(Categories *)categoryInitializer:(NSDictionary *)dic {
     
-    Categories *category = [[Categories alloc] iniWithDictionary:dictionary];
+    Categories *category = [[Categories alloc]initWithDictionary:dic];
     return category;
 }
 
 
 -(void)barButtonItemDonePressed:(id)sender
 {
-    if (_categoriesPicked){
+    if (_selectedCategories){
         //
         //
         //    if (self.mapVC.comingFromAddAnnotationState)
         //    {
         //    NSLog(@"selected Cell content View[-1]---[ %@ ]----", _selectedCell[0] );
         
-        Categories *categories = _categoriesPicked[0];
-        NSLog(@"selected Categories---[ %@ ]----", _categoriesPicked);
+        Categories *categories = _selectedCategories[0];
+        NSLog(@"selected Categories---[ %@ ]----", _selectedCategories );
         [self.delegate category:categories];
         [self.delegate controllerDidDismiss:self];
         
@@ -602,9 +619,9 @@ heightForFooterInSection:(NSInteger)section
     cell.delegate = self;
     
     Categories *categories = [DataSource sharedInstance].category[indexPath.row];
-    cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.categoryColor];
-    [cell.tagIV setTintColor:categories.categoryColor];
-    [cell.tagIVFullView setHidden:YES];
+    cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.color];
+    [cell.tagImageView setTintColor:categories.color];
+    [cell.tagImageViewFull setHidden:YES];
     
     return cell;
 }
@@ -615,16 +632,16 @@ heightForFooterInSection:(NSInteger)section
     CategoryTableViewCell *cell = (CategoryTableViewCell *)[tableView cellForRowAtIndexPath:indexPath ];
     cell.delegate = self;
     Categories *categories = [DataSource sharedInstance].category[indexPath.row];
-    cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.categoryColor];
-    [cell.tagIV setHidden:YES];
-    [cell.tagIVFullView setHidden:NO];
-    [cell.tagIVFullView setTintColor:categories.categoryColor];
+    cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.color];
+    [cell.tagImageView setHidden:YES];
+    [cell.tagImageViewFull setHidden:NO];
+    [cell.tagImageViewFull setTintColor:categories.color];
     
-    self.cellSelected = [NSMutableArray array];
-    [self.cellSelected addObject:cell.tagIVFullView];
-    self.categoriesPicked = [NSMutableArray array];
-    [self.categoriesPicked addObject:categories];
-    [self.delegate didCompleteWithImageView:cell.tagIVFullView];
+    self.selectedCell = [NSMutableArray array];
+    [self.selectedCell addObject:cell.tagImageViewFull];
+    self.selectedCategories = [NSMutableArray array];
+    [self.selectedCategories addObject:categories];
+    [self.delegate didCompleteWithImageView:cell.tagImageViewFull];
     
     //    selectedIndex = indexPath.row;
     //    [self.tableView reloadData];
@@ -638,14 +655,14 @@ heightForFooterInSection:(NSInteger)section
     CategoryTableViewCell *cell = (CategoryTableViewCell *)[tableView cellForRowAtIndexPath:indexPath ];
     cell.delegate = self;
     Categories *categories = [DataSource sharedInstance].category[indexPath.row];
-    cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.categoryColor];
-    [cell.tagIVFullView setHidden:YES];
+    cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.color];
+    [cell.tagImageViewFull setHidden:YES];
     
-    [cell.tagIV setHidden:NO];
+    [cell.tagImageView setHidden:NO];
     
-    [cell.tagIV setTintColor:categories.categoryColor];
-    [self.cellSelected removeObject:cell.tagIVFullView];
-    [self.categoriesPicked removeObject:categories];
+    [cell.tagImageView setTintColor:categories.color];
+    [self.selectedCell removeObject:cell.tagImageViewFull];
+    [self.selectedCategories removeObject:categories];
     //    [self.tableView reloadData];
     
     
@@ -692,7 +709,7 @@ heightForFooterInSection:(NSInteger)section
 }
 
 - (NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.colorArray.count;
+    return self.colorsArray.count;
 }
 
 - (UICollectionViewCell*) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -702,12 +719,12 @@ heightForFooterInSection:(NSInteger)section
     
     
     
-    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.colorCollectionView.collectionViewLayout;
+    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.colorsCollectionView.collectionViewLayout;
     
-    colorCell.colorCollectionView.backgroundColor = self.colorArray[indexPath.row];
+    colorCell.colorCollectionView.backgroundColor = self.colorsArray[indexPath.row];
     
     colorCell.specificSize = flowLayout.itemSize.width;
-    [colorCell.imageView setHidden:YES];
+    [colorCell.checkImageView setHidden:YES];
     
     //        [self.colorCell.colorButton setImage:[UIImage imageNamed:@"done"] forState:UIControlStateNormal];
     //    colorCell.selectedBackgroundView.backgroundColor = self.colorsArraySimilar[indexPath.row];
@@ -726,10 +743,10 @@ heightForFooterInSection:(NSInteger)section
     
     selectedIndex = indexPath.row;
     // Set the selection here so that selection of cell is shown to ur user immediately
-    self.pickedCategoryColor = self.colorArray2[indexPath.row]; ;
+    self.categoryChosenColor = self.colorsArraySimilar[indexPath.row]; ;
     
     
-    [colorCell.imageView setHidden:NO];
+    [colorCell.checkImageView setHidden:NO];
     
     
     [colorCell setNeedsDisplay];
@@ -742,28 +759,10 @@ heightForFooterInSection:(NSInteger)section
     ColorCollectionViewCell *colorCell = (ColorCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
     // Set the index to an invalid value so that the cells get deselected
-    colorCell.colorCollectionView.backgroundColor = self.colorArray[indexPath.row];
-    [colorCell.imageView setHidden:YES];
+    colorCell.colorCollectionView.backgroundColor = self.colorsArray[indexPath.row];
+    [colorCell.checkImageView setHidden:YES];
     
     [colorCell setNeedsDisplay];
     
 }
-
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end
