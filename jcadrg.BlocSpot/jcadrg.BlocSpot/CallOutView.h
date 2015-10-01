@@ -27,4 +27,6 @@
 
 @interface CallOutView : MKAnnotationView
 
+@property (nonatomic, retain) UIView *contentView;
+
 @end
