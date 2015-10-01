@@ -47,6 +47,9 @@
 @property (nonatomic, strong) UIView *containerView;
 
 
+@property (nonatomic, strong) UIColor *similarChosenColor2;
+
+
 
 @end
 
@@ -164,7 +167,7 @@ static NSString *kFullTagLabel = @"heart_label_full";
         
         //INITIALIZE A BUTTON ON THE NAVIGATION BAR
         
-        
+        self.similarChosenColor2 = [UIColor new];
         
         
     }
@@ -483,7 +486,7 @@ static NSString *kFullTagLabel = @"heart_label_full";
 -(void)doneButtonPressed:(UIButton *)sender
 {
     // Checking to see if there are any colors chosen or if there are any text written
-    if (self.addCategoryField.text.length >0 && self.categoryChosenColor && _categoryChosenColor !=nil)
+    if (self.addCategoryField.text.length >0 && self.categoryChosenColor && _similarChosenColor2)
     {
         // call delegate method
         
@@ -517,8 +520,8 @@ static NSString *kFullTagLabel = @"heart_label_full";
         
         
         // Remove colors from array so they cant be repeated
-        [self.colorsArray removeObject:self.colorsArray[selectedIndex]];
-        [self.colorsArraySimilar removeObject:self.colorsArraySimilar[selectedIndex]];
+        //[self.colorsArray removeObject:self.colorsArray[selectedIndex]];
+        //[self.colorsArraySimilar removeObject:self.colorsArraySimilar[selectedIndex]];
         
         
         // pass categories dictionaries as parameters of the Categories object
@@ -562,7 +565,7 @@ static NSString *kFullTagLabel = @"heart_label_full";
         [self.delegate category:categories];*/
     
     if (categories) {
-        [self.delegate category:categories withImageView:categories.categoryImage];
+        [self.delegate category:categories];
     
         [self.delegate controllerDidDismiss:self];
         
@@ -769,7 +772,7 @@ heightForFooterInSection:(NSInteger)section
     
     selectedIndex = indexPath.row;
     // Set the selection here so that selection of cell is shown to ur user immediately
-    self.categoryChosenColor = self.colorsArraySimilar[indexPath.row]; ;
+    self.categoryChosenColor = self.colorsArray[indexPath.row]; ;
     
     
     [colorCell.checkImageView setHidden:NO];
@@ -785,7 +788,10 @@ heightForFooterInSection:(NSInteger)section
     ColorCollectionViewCell *colorCell = (ColorCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
     // Set the index to an invalid value so that the cells get deselected
-    colorCell.colorCollectionView.backgroundColor = self.colorsArray[indexPath.row];
+    colorCell.colorCollectionView.backgroundColor = self.colorsArraySimilar[indexPath.row];
+    
+    self.similarChosenColor2 = self.colorsArraySimilar[indexPath.row];
+    
     [colorCell.checkImageView setHidden:YES];
     
     [colorCell setNeedsDisplay];

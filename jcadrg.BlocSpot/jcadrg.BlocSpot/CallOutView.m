@@ -39,12 +39,55 @@
     if (self) {
         self.frame = CGRectMake(0,0,CGRectGetWidth(self.bounds)-80,200);
         
-        CGRect myFrame = self.frame;
-        myFrame.size.width = 40;
-        myFrame.size.height = 40;
-        self.frame =myFrame;
+        self.topView = [UIView new];
+        self.topView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.backgroundColor = [UIColor cloudsColor];
+        [self addSubview:self.topView];
         
-        self.opaque;
+        self.div1 = [UIView new];
+        self.div1.backgroundColor = [UIColor silverColor];
+        self.div1.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.div1];
+        
+        //background uiview
+        
+        self.descriptionLabel = [UILabel new];
+        self.descriptionLabel.numberOfLines = 0;
+        self.descriptionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.descriptionLabel];
+        
+        self.categoryLabel = [UILabel new];
+        self.categoryLabel.numberOfLines = 0;
+        self.categoryLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.categoryLabel];
+        
+        self.backButtonView = [UIButton new];
+        self.backButtonView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:self.backButtonView];
+        
+        //Map direction button
+        self.mapDirections = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.mapDirections setImage:[UIImage imageNamed:@"near_me"] forState:UIControlStateNormal];
+        [self.mapDirections addTarget:self action:@selector(mapDirectionsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.backButtonView addSubview:self.mapDirections];
+        self.mapDirections.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        //Share location
+        self.share = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.share setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
+        [self.share addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.backButtonView addSubview:self.share];
+        self.share.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        //delete location
+        self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.deleteButton setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
+        [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.backButtonView addSubview:self.deleteButton];
+        self.share.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [self createConstraints];
+        
     }
     
     return self;

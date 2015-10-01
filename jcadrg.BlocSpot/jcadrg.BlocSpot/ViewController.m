@@ -87,10 +87,10 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 
 @property (nonatomic, strong) NSMutableArray *annotationArray;
 @property (nonatomic, strong) UIColor *chosenColor;
-@property (nonatomic, assign) BOOL categoryCreated;
+//@property (nonatomic, assign) BOOL categoryCreated;
 
-@property (nonatomic, strong) UIImageView *categoryImageView;
-@property (nonatomic, strong) NSMutableArray *imageMutableArray;
+//@property (nonatomic, strong) UIImageView *categoryImageView;
+//@property (nonatomic, strong) NSMutableArray *imageMutableArray;
 
 @end
 
@@ -168,15 +168,17 @@ static NSString *viewID = @"LikeAnnotation";
     }
     
     
-    for (POI *poi in [DataSource sharedInstance].annotation) {
+    /*for (POI *poi in [DataSource sharedInstance].annotation) {
         CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(poi.annotation.latitude, poi.annotation.longitude);
         Annotation *annotation = [[Annotation alloc] initWithCoordinate:coordinates];
         
         [self.mapView addAnnotation:annotation];
     
-    }
+    }*/
     
-    self.categoryImageView = [[UIImageView alloc] init];
+    [self.mapView addAnnotations:[self createAnnotations]];
+    
+    //self.categoryImageView = [[UIImageView alloc] init];
     
     //_annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:viewID];
     
@@ -207,6 +209,17 @@ static NSString *viewID = @"LikeAnnotation";
 
     
 }
+
+-(NSMutableArray *) createAnnotations{
+    NSMutableArray *annotations = [[NSMutableArray alloc] init];
+    for (POI *poi in [DataSource sharedInstance].annotation) {
+        CLLocationCoordinate2D coordinates=CLLocationCoordinate2DMake(poi.annotation.latitude, poi.annotation.longitude);
+        poi.annotation = [[Annotation alloc] initWithCoordinate:coordinates];
+        [annotations addObject:poi.annotation];
+    }
+    return annotations;
+}
+
 - (void)setUpSearchBar {
     self.searchBar = [[UISearchBar alloc] init];
     _searchBar.showsCancelButton = YES;
@@ -551,21 +564,23 @@ withDescriptionText:(NSString *)descriptionText{
 }
 
 
--(void)category:(Categories *)categories withImageView:(UIImageView *)imageView  {
+-(void)category:(Categories *)categories {
     
     _category = categories;
-    self.imageMutableArray = [NSMutableArray new];
+    
+    /*self.imageMutableArray = [NSMutableArray new];
     [self.imageMutableArray addObject:imageView];
-    self.categoryImageView = imageView;
+    
+    self.categoryImageView = [[UIImageView alloc] init];
+    
+    self.categoryImageView = imageView;*/
 
     [self.parameters setObject:categories forKey:@"category"];
-    
-    /*self.pinColor = [[UIColor alloc]init];
-    self.pinColor = categories.color;*/
     
     self.createAnnotationView.titleLabel.attributedText = [self.createAnnotationView titleLabelStringWithCategory:categories.categoryName withColor:categories.color];
     
 }
+
 
 -(void) getImageView:(UIImageView *)imageView{
     
@@ -574,6 +589,8 @@ withDescriptionText:(NSString *)descriptionText{
 -(void) addimageView:(UIImageView *)imageView asSubViewOf:(MKAnnotationView *)annotationView{
     
 }
+
+
 
 #pragma mark tap gesture recognizer
 
@@ -746,6 +763,9 @@ withDescriptionText:(NSString *)descriptionText{
         
             _annotationView = [[MKAnnotationView alloc]
                            initWithAnnotation:annotation reuseIdentifier:viewID];
+        
+            [_annotationView setTintColor:_category.color];
+        
             _annotationView.canShowCallout = NO;
         
             //_annotationView.image = _likeIV.image;
@@ -758,8 +778,7 @@ withDescriptionText:(NSString *)descriptionText{
             /*[_annotationView addSubview:[self returnImageColored]];
             _annotationView.image = [self returnImageColored].image;*/
         
-        _annotationView.opaque = NO;
-        [_annotationView addSubview:[self.imageMutableArray lastObject]];
+            [_annotationView addSubview:[self returnImageColored]];
     
     }else{
         
@@ -768,6 +787,30 @@ withDescriptionText:(NSString *)descriptionText{
     
     return _annotationView;
 }
+
+-(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray<MKAnnotationView *> *)views{
+    NSLog(@"Array of annotation views: %@", views);
+    for (MKAnnotationView *view in views) {
+        id<MKAnnotation> mp = [view annotation];
+        for (POI *poi in [DataSource sharedInstance].annotation) {
+            if (poi.annotation == mp) {
+                [view setTintColor:poi.category.color];
+            }
+        }
+    }
+}
+
+-(UIImageView *) returnImageColored{
+    UIImageView *imageView = [UIImageView new];
+    UIImage *image = [UIImage imageNamed:@"hearts_filled"];
+    imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+    imageView.image = image;
+    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    return imageView;
+}
+
+
 
 /*-(void) mapViewWillStartRenderingMap:(MKMapView *)mapView{
     
@@ -787,8 +830,7 @@ withDescriptionText:(NSString *)descriptionText{
     
 }
 */
-- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
-{
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
     
     //SMCalloutView *callOutView = [[SMCalloutView alloc] init];
     //callOutView.contentView = composePlacesVC.view;

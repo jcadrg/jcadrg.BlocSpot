@@ -22,7 +22,7 @@ typedef NS_ENUM(NSInteger, CategoryViewControllerState) {
 
 -(void)controllerDidDismiss:(CategoryViewController *)controller;
 
--(void)category:(Categories *)categoriesChosen withImageView:(UIImageView *)imageView;
+-(void)category:(Categories *)categoriesChosen;
 
 
 //-(void)controllerDidChoose:(UIColor *)color;
