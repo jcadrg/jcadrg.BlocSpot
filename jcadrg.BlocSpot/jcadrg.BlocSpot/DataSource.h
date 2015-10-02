@@ -40,7 +40,7 @@ typedef void (^SearchListCompletionBlock)(NSArray *locations, NSError *error);
 -(void) removeCategory:(Categories *) categories;
 -(void) removePOI:(POI *) poi;
 -(void) category:(Categories *)categories addPOI:(POI *) poi;
--(void) addPOI:(POI *)poi toCategoryArray:(Categories *) category;
+-(void) addPOI:(POI *)poi toArray:(NSMutableArray *) categoryArray;
 
 //-(void) createAnnotation;
 

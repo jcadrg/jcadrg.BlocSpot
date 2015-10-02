@@ -21,6 +21,10 @@
         
         self.categoryImage = categoryDictionary [@"categoryImage"];
         
+        //Use later!
+        
+        //self.categoryDictionaryAccessor = categoryDictionary;
+        
     }
     
     return self;

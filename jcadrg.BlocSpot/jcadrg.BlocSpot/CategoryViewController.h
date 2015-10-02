@@ -31,6 +31,8 @@ typedef NS_ENUM(NSInteger, CategoryViewControllerState) {
 
 -(void) didCreateCategory:(Categories *)category;
 
+-(void) controllerWillSendCategoryObjectWithDictionary:(NSDictionary *) dictionary;
+
 @end
 @interface CategoryViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource >
 

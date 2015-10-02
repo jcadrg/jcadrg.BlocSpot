@@ -33,6 +33,7 @@
 #import "CategoryViewController.h"
 
 #import "CallOutView.h"
+#import "CallOutInnerView.h"
 
 
 typedef NS_ENUM(NSInteger, ViewControllerState){
@@ -91,6 +92,9 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 
 //@property (nonatomic, strong) UIImageView *categoryImageView;
 //@property (nonatomic, strong) NSMutableArray *imageMutableArray;
+
+@property(nonatomic, strong) NSMutableArray *poiTemporaryArray;
+@property(nonatomic, strong) NSMutableDictionary *categoryDictionary;
 
 @end
 
@@ -522,6 +526,9 @@ withDescriptionText:(NSString *)descriptionText{
     
     [self.mapView addAnnotation:annotation];
     
+    Categories *categories = self.parameters[@"category"];
+    [[DataSource sharedInstance] addPOI:self.poi toArray:categories.pointsOfInterest];
+    
     NSLog(@"parameters = %@", self.parameters);
     
     self.createAnnotationView.titleLabel.attributedText = [self titleLabelString];
@@ -529,7 +536,15 @@ withDescriptionText:(NSString *)descriptionText{
     /*Categories *category = self.parameters[@"category"];
     [[DataSource sharedInstance] addPOI:self.poi toCategoryArray:category];*/
     
-    [[DataSource sharedInstance] addPOI:self.poi toCategoryArray:self.poi.category];
+}
+
+
+-(void) controllerWillSendCategoryObjectWithDictionary:(NSDictionary *)dictionary{
+    
+    NSLog(@"delegate firing");
+    
+    Categories *category = [[Categories alloc] initWithDictionary:dictionary];
+    [[DataSource sharedInstance] addCategory:category];
 }
 
 -(void)customViewDidPressAddCategoryView:(UIView *)categoryView{
@@ -760,13 +775,15 @@ withDescriptionText:(NSString *)descriptionText{
     if ([annotation isKindOfClass:[Annotation class]]) {
         
         _annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:viewID];
-        
+        if (!_annotationView) {
             _annotationView = [[MKAnnotationView alloc]
-                           initWithAnnotation:annotation reuseIdentifier:viewID];
+                               initWithAnnotation:annotation reuseIdentifier:viewID];
+        }else{
+            _annotationView.annotation = annotation;
+        }
+        _annotationView.enabled = YES;
         
             [_annotationView setTintColor:_category.color];
-        
-            _annotationView.canShowCallout = NO;
         
             //_annotationView.image = _likeIV.image;
             //[_annotationView setTintColor:[UIColor redColor]];
@@ -831,33 +848,24 @@ withDescriptionText:(NSString *)descriptionText{
 }
 */
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
+    CallOutInnerView *innerView = [[CallOutInnerView alloc] initForAnnotation:view.annotation];
     
-    //SMCalloutView *callOutView = [[SMCalloutView alloc] init];
-    //callOutView.contentView = composePlacesVC.view;
-    //[callOutView presentCalloutFromRect:self.view.frame inView:mapView constrainedToView:mapView permittedArrowDirections:SMCalloutArrowDirectionUp animated:YES];
-    //    self.popOver.popoverContentSize = self.composePlacesVC.view.bounds.size;
-    //
-    //    [self.popOver presentPopoverFromRect:view.frame
-    //                                  inView:mapView
-    //                permittedArrowDirections:WYPopoverArrowDirectionAny
-    //                                animated:YES
-    //                                 options:WYPopoverAnimationOptionScale
-    //                              completion:nil];
+    [mapView addAnnotation:innerView.annotations];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [mapView selectAnnotation:innerView.annotations animated:YES];
+    });
+    
+    innerView.categoryLabel.text = @"Location test";
+    innerView.descriptionLabel.text = @"description test!!!!";
+
     
     
-    //   EXTERNAL LIBRARY POPOVER
-    //    FPPopoverController *popover = [[FPPopoverController alloc] initWithViewController:composePlacesVC ];
-    //    popover.delegate = self;
-    //    popover.border = NO;
-    //    popover.arrowDirection = FPPopoverArrowDirectionIsVertical(FPPopoverArrowDirectionUp);
-    //    popover.origin = view.frame.origin;
-    //    //[popover setShadowsHidden:YES];
-    //    [popover presentPopoverFromPoint:view.frame.origin];
-    
-    
-    
-    
-    
+}
+
+-(void) mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view{
+    for (UIView *subView in view.subviews) {
+        [subView removeFromSuperview];
+    }
 }
 
 #pragma mark CLLocationManagerDelegate Methods

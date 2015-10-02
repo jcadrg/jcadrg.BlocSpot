@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D02B12F1BBDDE7500F97B47 /* CallOutInnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D02B12E1BBDDE7500F97B47 /* CallOutInnerView.m */; settings = {ASSET_TAGS = (); }; };
+		5D02B1351BBDF16500F97B47 /* CallOutAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D02B1341BBDF16500F97B47 /* CallOutAnnotation.m */; settings = {ASSET_TAGS = (); }; };
+		5D02B1381BBE151000F97B47 /* CategoryButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D02B1371BBE151000F97B47 /* CategoryButton.m */; settings = {ASSET_TAGS = (); }; };
 		5D8FA8971BAA7B76008D53A1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D8FA8961BAA7B76008D53A1 /* main.m */; };
 		5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D8FA8991BAA7B76008D53A1 /* AppDelegate.m */; };
 		5D8FA89D1BAA7B76008D53A1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D8FA89C1BAA7B76008D53A1 /* ViewController.m */; };
@@ -45,6 +48,12 @@
 /* Begin PBXFileReference section */
 		17913D47799818F188D9B950 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "../Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		1DA352D6E6D58A346971A4F2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "../Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		5D02B12D1BBDDE7500F97B47 /* CallOutInnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallOutInnerView.h; sourceTree = "<group>"; };
+		5D02B12E1BBDDE7500F97B47 /* CallOutInnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallOutInnerView.m; sourceTree = "<group>"; };
+		5D02B1331BBDF16500F97B47 /* CallOutAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallOutAnnotation.h; sourceTree = "<group>"; };
+		5D02B1341BBDF16500F97B47 /* CallOutAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallOutAnnotation.m; sourceTree = "<group>"; };
+		5D02B1361BBE151000F97B47 /* CategoryButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryButton.h; sourceTree = "<group>"; };
+		5D02B1371BBE151000F97B47 /* CategoryButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryButton.m; sourceTree = "<group>"; };
 		5D8FA8911BAA7B76008D53A1 /* jcadrg.BlocSpot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = jcadrg.BlocSpot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D8FA8951BAA7B76008D53A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5D8FA8961BAA7B76008D53A1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -187,6 +196,12 @@
 				5DB344571BB9EA7900B26D98 /* ColorCollectionViewCell.m */,
 				5DB344591BBA53E100B26D98 /* CallOutView.h */,
 				5DB3445A1BBA53E100B26D98 /* CallOutView.m */,
+				5D02B12D1BBDDE7500F97B47 /* CallOutInnerView.h */,
+				5D02B12E1BBDDE7500F97B47 /* CallOutInnerView.m */,
+				5D02B1331BBDF16500F97B47 /* CallOutAnnotation.h */,
+				5D02B1341BBDF16500F97B47 /* CallOutAnnotation.m */,
+				5D02B1361BBE151000F97B47 /* CategoryButton.h */,
+				5D02B1371BBE151000F97B47 /* CategoryButton.m */,
 			);
 			path = jcadrg.BlocSpot;
 			sourceTree = "<group>";
@@ -362,12 +377,15 @@
 				5DB344551BB9C8B700B26D98 /* CategoryTableViewCell.m in Sources */,
 				5D8FA89D1BAA7B76008D53A1 /* ViewController.m in Sources */,
 				5DF641D31BB300A000427AC9 /* Categories.m in Sources */,
+				5D02B12F1BBDDE7500F97B47 /* CallOutInnerView.m in Sources */,
 				5DEF240F1BB313280073C4BC /* AnnotationView.m in Sources */,
 				5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */,
 				5DB344581BB9EA7900B26D98 /* ColorCollectionViewCell.m in Sources */,
 				5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */,
+				5D02B1381BBE151000F97B47 /* CategoryButton.m in Sources */,
 				5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */,
 				5DE767E21BAF507B00F09663 /* POI.m in Sources */,
+				5D02B1351BBDF16500F97B47 /* CallOutAnnotation.m in Sources */,
 				5DE767D61BAF022800F09663 /* Search.m in Sources */,
 				5DB3445B1BBA53E100B26D98 /* CallOutView.m in Sources */,
 				5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */,

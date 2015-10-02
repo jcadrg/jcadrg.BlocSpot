@@ -25,6 +25,8 @@ typedef NS_ENUM(NSInteger, CategoriesState) {
 
 @property (nonatomic, strong) UIImageView *categoryImage;
 
+@property (nonatomic, strong) NSDictionary *categoryDictionaryAccessor;
+
 
 -(instancetype)initWithDictionary:(NSDictionary *)categoryDictionary;
 

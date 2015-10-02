@@ -517,6 +517,7 @@ static NSString *kFullTagLabel = @"heart_label_full";
         [self.categories setObject:self.categoryChosenColor forKey:@"categoryColor"];
         [self.categories setObject:[self returnImageColoredForColor:self.categoryChosenColor] forKey:@"categoryImage"];
         
+        [self.delegate controllerWillSendCategoryObjectWithDictionary:self.categories];
         
         
         // Remove colors from array so they cant be repeated

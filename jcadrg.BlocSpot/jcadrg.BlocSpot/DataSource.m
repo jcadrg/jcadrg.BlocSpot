@@ -88,9 +88,9 @@
 }
 
 
--(void) addPOI:(POI *)poi toCategoryArray:(Categories *)category{
+-(void) addPOI:(POI *)poi toArray:(Categories *)categoryArray{
     
-    [category.pointsOfInterest addObject:poi];
+    [categoryArray.pointsOfInterest addObject:poi];
     
 }
 
