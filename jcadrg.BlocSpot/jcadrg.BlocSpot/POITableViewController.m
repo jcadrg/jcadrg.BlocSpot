@@ -18,8 +18,10 @@
 #import "UIBarButtonItem+FlatUI.h"
 #import "FlatUIKit.h"
 
+#import "DataSource.h"
 
-@interface POITableViewController ()<UISearchBarDelegate, UISearchControllerDelegate>
+
+@interface POITableViewController ()<UISearchBarDelegate, UISearchControllerDelegate, POITableViewCellDelegate>
 @property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) ViewController *mapVC;
@@ -35,6 +37,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[DataSource sharedInstance] addObserver:self forKeyPath:@"annotations" options:0 context:nil];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -54,6 +58,11 @@
     [self addRightBarButttons];
     [self setUpSearchBar];
     
+}
+
+-(void)dealloc{
+    [[DataSource sharedInstance] removeObserver:self forKeyPath:@"annotations"];
+
 }
 
 - (void)setUpSearchBar {
@@ -88,6 +97,67 @@
     [_mapBarButtonItem setTintColor:[UIColor whiteColor]];
     self.navigationItem.leftBarButtonItems = @[_mapBarButtonItem, _labelBarButtonItem];
     
+}
+
+
+#pragma mark Attributed Strings
+
+-(NSAttributedString *)locationNameStringWithString:(NSString *)string{
+
+    CGFloat locationNameFontSize = 18;
+
+    NSMutableParagraphStyle *mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    mutableParagraphStyle.headIndent = 20.0;
+    mutableParagraphStyle.firstLineHeadIndent = 10.0;
+    mutableParagraphStyle.tailIndent = -20.0;
+    mutableParagraphStyle.paragraphSpacingBefore = 5;
+    if (string){
+
+    NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName :[UIFont preferredFontForTextStyle:UIFontTextStyleHeadline],NSParagraphStyleAttributeName : mutableParagraphStyle}];
+
+    NSRange stringRange = [string rangeOfString:string];
+    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor midnightBlueColor] range:stringRange];
+    return mutableAttributedString;
+    
+    } else{
+    
+        return nil;
+    }
+
+}
+
+
+-(NSAttributedString *)locationNotesStringWithString:(NSString *)string{
+
+
+    NSString *baseString = string;
+    NSMutableParagraphStyle *mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    mutableParagraphStyle.headIndent = 20.0;
+    mutableParagraphStyle.firstLineHeadIndent = 20.0;
+    mutableParagraphStyle.tailIndent = -20.0;
+    mutableParagraphStyle.paragraphSpacingBefore = 5;
+    
+    if (string){
+    
+        NSMutableAttributedString *mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName :[UIFont preferredFontForTextStyle:UIFontTextStyleBody],NSParagraphStyleAttributeName : mutableParagraphStyle }];
+    NSRange stringRange = [baseString rangeOfString:baseString];
+    [mutableAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor midnightBlueColor] range:stringRange];
+
+    return mutableAttributedString;
+    
+    }else return nil;
+
+}
+
+-(NSAttributedString *)distanceString {
+
+    NSString *baseString = @"< 1 km";
+
+    NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName :[UIFont preferredFontForTextStyle:UIFontTextStyleCaption1] }];
+    NSRange stringRange = [baseString rangeOfString:baseString];
+    [mutAttString addAttribute:NSForegroundColorAttributeName value:[UIColor midnightBlueColor] range:stringRange];
+    
+    return mutAttString;
 }
 
 -(NSAttributedString *)titleLabelString  {
@@ -152,16 +222,40 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 5;
+    return [DataSource sharedInstance].annotations.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     POITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Points" forIndexPath:indexPath];
     
-    // Configure the cell...
+    POI *poi = [DataSource sharedInstance].annotations[indexPath.row];
+
+    cell.locationName.attributedText = [self locationNameStringWithString:poi.locationName];
+    cell.locationNotes.attributedText = [self locationNotesStringWithString:poi.note];
+    cell.distance.attributedText = [self distanceString];
+
+    [cell.categoryButton setTintColor:poi.category.color];
+
+    if ([poi.visited isEqualToString:@"1"]){
+            cell.categoryButton.visitButtonState = VisitButtonSelectedYES;
+
+    } else{
+        cell.categoryButton.visitButtonState = VisitButtonSelectedNO;
+    }
+    
+
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        POI *poi = [DataSource sharedInstance].annotations[indexPath.row];
+        [[DataSource sharedInstance] deletePOI:poi];
+    }
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -169,6 +263,41 @@
     //BLCPointOfInterest *POI = [[BLCPointOfInterest alloc]init];
     //return [BLCPoiTableViewCell heightForPointOfInterestCell:POI width:CGRectGetWidth(self.view.bounds)];
     return 100;
+}
+
+-(UIImageView *)returnImageColored
+{
+    UIImageView *imageView = [UIImageView new];
+    UIImage *image = [UIImage imageNamed:@"hearts_filled"];
+    imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+    imageView.image = image;
+    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+    return imageView;
+}
+
+
+#pragma mark BLCPoiTableViewCellDelegate
+
+-(void)cellDidPressOnButton:(POITableViewCell *)cell {
+
+
+    for (POI *poi in [DataSource sharedInstance].annotations){
+
+        if (poi.annotation == cell.annotation){
+            if ([poi.visited isEqualToString:@"0"]) {
+                poi.visited = @"1";
+                cell.categoryButton.visitButtonState = VisitButtonSelectedYES;
+
+            }else{
+                poi.visited = @"0";
+                cell.categoryButton.visitButtonState = VisitButtonSelectedNO;
+                
+            }
+        }
+    }
+    
+    
 }
 
 
@@ -229,6 +358,51 @@
                      }];
     
     
+}
+
+
+#pragma mark Key-Value Observing
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    
+    if (object == [DataSource sharedInstance] && ([keyPath isEqualToString:@"annotations"])) {
+ 
+            int kindOfChange = [change[NSKeyValueChangeKindKey] intValue];
+    
+            if (kindOfChange == NSKeyValueChangeSetting) {
+                    // Someone set a brand new images array
+                    [self.tableView reloadData];
+                } else if (kindOfChange == NSKeyValueChangeInsertion ||
+                                                kindOfChange == NSKeyValueChangeRemoval ||
+                                                kindOfChange == NSKeyValueChangeReplacement) {
+                        // We have an incremental change: inserted, deleted, or replaced images
+            
+                        // Get a list of the index (or indices) that changed
+                        NSIndexSet *indexSetOfChanges = change[NSKeyValueChangeIndexesKey];
+            
+                        // Convert this NSIndexSet to an NSArray of NSIndexPaths (which is what the table view animation methods require)
+                        NSMutableArray *indexPathsThatChanged = [NSMutableArray array];
+                        [indexSetOfChanges enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                                NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                                [indexPathsThatChanged addObject:newIndexPath];
+                            }];
+                
+                        // Call `beginUpdates` to tell the table view we're about to make changes
+                        [self.tableView beginUpdates];
+            
+                        // Tell the table view what the changes are
+                        if (kindOfChange == NSKeyValueChangeInsertion) {
+                                [self.tableView insertRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+                            } else if (kindOfChange == NSKeyValueChangeRemoval) {
+                                    [self.tableView deleteRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+                                } else if (kindOfChange == NSKeyValueChangeReplacement) {
+                                        [self.tableView reloadRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+                                    }
+                
+                        // Tell the table view that we're done telling it about changes, and to complete the animation
+                        [self.tableView endUpdates];
+                    }
+        }
 }
 
 

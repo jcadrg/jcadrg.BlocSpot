@@ -16,6 +16,8 @@
         self.coordinate = coordinate;
         self.latitude = self.coordinate.latitude;
         self.longitude = self.coordinate.longitude;
+        
+        self.title = @"Title";
     }
     
     return self;

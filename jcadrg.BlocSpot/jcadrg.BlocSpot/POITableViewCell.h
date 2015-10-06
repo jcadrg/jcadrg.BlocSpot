@@ -8,9 +8,30 @@
 
 #import <UIKit/UIKit.h>
 #import "POI.h"
+#import "CategoryButton.h"
+#import <MapKit/MapKit.h>
+
+@class POITableViewCell;
+
+@protocol POITableViewCellDelegate <NSObject>
+
+-(void) cellDidPressOnButton:(POITableViewCell *) cell;
+
+@end
+
 
 @interface POITableViewCell : UITableViewCell
 
-+(CGFloat) heightForPOICell:(POI *) point width:(CGFloat) width;
+@property (nonatomic, strong) id<POITableViewCellDelegate> delegate;
+@property (nonatomic, strong) UILabel *locationName;
+@property (nonatomic, strong) UILabel *locationNotes;
+@property (nonatomic, strong) UILabel *distance;
+@property (nonatomic, strong) CategoryButton *categoryButton;
+@property (nonatomic, strong) id<MKAnnotation> annotation;
+
+
+-(id) initForAnnotation:(id<MKAnnotation>) annotation;
+
+
 
 @end

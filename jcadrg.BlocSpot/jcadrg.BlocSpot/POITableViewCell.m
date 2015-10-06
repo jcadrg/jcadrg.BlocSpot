@@ -19,11 +19,6 @@
 @property (nonatomic, strong) NSLayoutConstraint *categoryButtonWidth;
 @property (nonatomic, strong) NSLayoutConstraint *distanceWidth;
 
-@property (nonatomic, strong) UILabel *locationName;
-@property (nonatomic, strong) UILabel *locationNotes;
-@property (nonatomic, strong) UILabel *distance;
-
-@property (nonatomic, strong) UIButton *categoryButton;
 
 @property (nonatomic, strong) UIImageView *nextViewImage;
 
@@ -48,6 +43,15 @@ static UIColor *fontColor;
     
     backgroundColor = [UIColor cloudsColor];
     fontColor = [UIColor midnightBlueColor];
+}
+
+-(id) initForAnnotation:(id<MKAnnotation>)annotation{
+    self = [super init];
+    if (self) {
+        self.annotation = annotation;
+    }
+    
+    return self;
 }
 
 -(id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
@@ -76,7 +80,6 @@ static UIColor *fontColor;
     [self.contentView addSubview: self.locationName ];
     self.locationName.translatesAutoresizingMaskIntoConstraints = NO;
     
-    self.locationName.attributedText = [self locationNameString];
     
 }
 
@@ -87,7 +90,6 @@ static UIColor *fontColor;
     [self.contentView addSubview: self.locationNotes];
     self.locationNotes.translatesAutoresizingMaskIntoConstraints = NO;
     
-    self.locationNotes.attributedText = [self locationNotesString];
     
     
 }
@@ -98,14 +100,15 @@ static UIColor *fontColor;
     [self.contentView addSubview: self.distance];
     self.distance.translatesAutoresizingMaskIntoConstraints = NO;
     
-    self.distance.attributedText = [self distanceString];
+
     
 }
 
 // Category button going to be a Model button itself
 -(void)addCategory{
-    self.categoryButton =  [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.categoryButton setImage:[UIImage imageNamed:@"like"] forState:UIControlStateNormal];
+    /*self.categoryButton =  [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.categoryButton setImage:[UIImage imageNamed:@"like"] forState:UIControlStateNormal];*/
+    self.categoryButton = [[CategoryButton alloc] init];
     [self.categoryButton addTarget:self action:@selector(categoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.categoryButton];
     self.categoryButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -123,7 +126,7 @@ static UIColor *fontColor;
 
 #pragma mark Attributed Strings
 
--(NSAttributedString *)locationNameString {
+/*-(NSAttributedString *)locationNameString {
     
     CGFloat placeNameFontSize = 18;
     
@@ -164,6 +167,7 @@ static UIColor *fontColor;
     return attributedString;
     
 }
+*/
 
 -(void)createConstraints {
     NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_locationName, _locationNotes, _distance, _categoryButton, _nextViewImage);
@@ -259,6 +263,10 @@ static UIColor *fontColor;
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+-(void) categoryButtonPressed:(UIButton *) sender{
+    [self.delegate cellDidPressOnButton:self];
 }
 
 @end

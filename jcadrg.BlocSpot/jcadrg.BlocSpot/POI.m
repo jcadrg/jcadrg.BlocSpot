@@ -19,6 +19,8 @@
         //self.location = poiDictionary[@"location"];
         self.annotation = poiDictionary[@"annotation"];
         
+        self.buttonState = self.visitState ? VisitButtonSelectedYES : VisitButtonSelectedNO;
+        
         NSLog(@"POIDictionary =%@", poiDictionary);
 
     }
@@ -36,6 +38,8 @@
         self.category=[aDecoder decodeObjectForKey:NSStringFromSelector(@selector(category))];
         //self.location=[aDecoder decodeObjectForKey:NSStringFromSelector(@selector(location))];
         self.annotation = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(annotation))];
+        self.visited = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(visited))];
+        self.buttonState = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(buttonState))];
     }
     
     return self;
@@ -48,6 +52,7 @@
     [aCoder encodeObject:self.category forKey:NSStringFromSelector(@selector(category))];
     //[aCoder encodeObject:self.location forKey:NSStringFromSelector(@selector(location))];
     [aCoder encodeObject:self.annotation forKey:NSStringFromSelector(@selector(annotation))];
+    [aCoder encodeInteger:self.buttonState forKey:NSStringFromSelector(@selector(buttonState))];
 }
 
 @end

@@ -15,33 +15,35 @@
 typedef void (^SearchListCompletionBlock)(NSArray *locations, NSError *error);
 
 @interface DataSource : NSObject{
-    NSString *_path;
+    /*NSString *_path;
     NSMutableArray *_annotation;
     
     NSString *_categoryPath;
     NSMutableArray *_category;
-    NSMutableArray *_categoryPOI;
+    NSMutableArray *_categoryPOI;*/
+    
+    NSString *_annotationPath;
+    NSString *_categoriesPath;
 }
 
 +(instancetype) sharedInstance;
 
-@property (nonatomic, strong) NSMutableArray *annotation;
-@property (nonatomic, strong) NSString *path;
-//@property (nonatomic, strong) POI *poi;
+@property (nonatomic, weak, readonly) NSArray *annotations;
+@property (nonatomic, weak, readonly) NSArray *categories;
+
+
 
 +(void) getLocationWithName:(NSString *) searchTerm withLocationCoordinate:(CLLocationCoordinate2D *) coordinate completion:(SearchListCompletionBlock)completionHandler;
--(NSArray *)annotation;
+
+-(void) deleteCategories:(Categories *)category;
+-(void) addCategories:(Categories *)category;
 -(void) addPOI:(POI *)poi;
--(NSArray *)category;
--(NSArray *)categoryPOI;
 
+-(void) deletePOI:(POI *)poi;
+-(void) replaceAnnotation:(POI *)poi withOtherPOI:(POI *) otherPOI;
+
+-(void) toggleVisitedOnPOI:(POI *) poi;
 //-(void) saveToDisk;
--(void) addCategory:(Categories *) categories;
--(void) removeCategory:(Categories *) categories;
--(void) removePOI:(POI *) poi;
--(void) category:(Categories *)categories addPOI:(POI *) poi;
--(void) addPOI:(POI *)poi toArray:(NSMutableArray *) categoryArray;
-
 //-(void) createAnnotation;
 
 @end
