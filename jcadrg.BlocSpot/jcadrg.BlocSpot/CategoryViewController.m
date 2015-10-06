@@ -62,13 +62,12 @@ static NSString *kFullTagLabel = @"heart_label_full";
 
 @implementation CategoryViewController
 
-
 -(id)init
 {
     self = [super init];
     
     if (self){
-        
+        [[DataSource sharedInstance] addObserver:self forKeyPath:@"categories" options:0 context:nil];
         //Itnitialize all objects
         if (!_containerView)
         {
@@ -160,18 +159,25 @@ static NSString *kFullTagLabel = @"heart_label_full";
         self.categories =[NSMutableDictionary new];
         self.categoriesCreated =[NSMutableArray new];
         
+        
+        //INITIALIZE A BUTTON ON THE NAVIGATION BAR
+        
         UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                       target:self
                                                                                       action:@selector(barButtonItemDonePressed:)];
         self.navigationItem.leftBarButtonItem = leftBarButton;
         
-        //INITIALIZE A BUTTON ON THE NAVIGATION BAR
-        
         self.similarChosenColor2 = [UIColor new];
+        
         
         
     }
     return self;
+}
+-(void)dealloc
+{
+    [[DataSource sharedInstance] removeObserver:self forKeyPath:@"categories"];
+    
 }
 
 - (void)viewDidLoad {
@@ -289,12 +295,11 @@ static NSString *kFullTagLabel = @"heart_label_full";
     
     
     //     SECOND VIEW SHOWN AFTER DOUBLE TAP
-    //TRYING TO REMOVE VIEWS FROM SUPERVIEW, SO THAT WHEN THEY ARE CREATED AGAIN IT DOESNT COLLIDE WITH WHAT HAVE ALREADY BEEN CREATED
     
     self.addCategoryField.frame = CGRectMake(0, 0, (CGRectGetWidth(self.tableView.frame)-44), 44);
     self.div1.frame = CGRectMake(CGRectGetMaxX(self.addCategoryField.frame), 0, 0.5, 44);
     self.doneButton.frame = CGRectMake(CGRectGetMaxX(self.div1.frame), 0, 44, 44);
-    //  self.colorsCollectionView.frame = CGRectMake((CGRectGetWidth(self.tableView.frame)-44)/2, 0, (CGRectGetWidth(self.tableView.frame)-44)/2, 44);
+    
     self.colorsCollectionView.frame = CGRectMake(0, CGRectGetMaxY(self.addCategoryField.frame),viewWidth, 44);
     
     [self createTapGesture];
@@ -307,8 +312,6 @@ static NSString *kFullTagLabel = @"heart_label_full";
 -(void)createBottomViews
 {
     self.bottomView.backgroundColor = [UIColor silverColor];
-    
-    //    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     
 }
 
@@ -468,8 +471,8 @@ static NSString *kFullTagLabel = @"heart_label_full";
     
     
 }
-
--(UIImageView *) returnImageColoredForColor:(UIColor *) color{
+-(UIImageView *)returnImageColoredForColor:(UIColor *)color
+{
     UIImageView *imageView = [UIImageView new];
     UIImage *image = [UIImage imageNamed:@"hearts_filled"];
     imageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
@@ -478,9 +481,10 @@ static NSString *kFullTagLabel = @"heart_label_full";
     
     [imageView setTintColor:color];
     
+    //    chosenColor = nil;
     return imageView;
+    
 }
-
 
 #pragma mark UIButton action
 -(void)doneButtonPressed:(UIButton *)sender
@@ -491,9 +495,11 @@ static NSString *kFullTagLabel = @"heart_label_full";
         // call delegate method
         
         
-        
         // call helper function
-        [self animatingAView:self.doneButton toAnother:[self.bottomView viewWithTag:2] forState:CategoryViewControllerShowView flipFromTop:NO];
+        [self animatingAView:self.doneButton
+                   toAnother:[self.bottomView viewWithTag:2]
+                    forState:CategoryViewControllerShowView
+                 flipFromTop:NO];
         
         
         //remove other subviews of self.containervie
@@ -503,40 +509,23 @@ static NSString *kFullTagLabel = @"heart_label_full";
         [self.colorsCollectionView removeFromSuperview];
         
         
-        /*NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
-        
-        [tempDic setObject:self.addCategoryField.text forKey:@"categoryName"];
-        [tempDic setObject:self.categoryChosenColor forKey:@"categoryColor"];
-        
-
-        self.categories = tempDic;*/
-        
-        //Painting the icon with the selected color from colorsarray
-        
         [self.categories setObject:self.addCategoryField.text forKey:@"categoryName"];
         [self.categories setObject:self.categoryChosenColor forKey:@"categoryColor"];
         [self.categories setObject:[self returnImageColoredForColor:self.categoryChosenColor] forKey:@"categoryImage"];
-        
-        [self.delegate controllerWillSendCategoryObjectWithDictionary:self.categories];
-        
-        
+        Categories *category = [[Categories alloc]initWithDictionary:self.categories];
+        [[DataSource sharedInstance] addCategories:category];
         // Remove colors from array so they cant be repeated
-        //[self.colorsArray removeObject:self.colorsArray[selectedIndex]];
-        //[self.colorsArraySimilar removeObject:self.colorsArraySimilar[selectedIndex]];
+        
+        // pass categories dictionaries as parameters of the BLCCategories object
         
         
-        // pass categories dictionaries as parameters of the Categories object
         
-        Categories *category = [[Categories alloc] initWithDictionary:self.categories];
-        [[DataSource sharedInstance] addCategory:category];
-        
-        NSLog(@"self.categoriesCreted %@", self.categoriesCreated);
         
         [self.tableView reloadData];
         
         // reload and adjust tge data
         self.addCategoryField.text = @"";
-        self.categoryChosenColor = nil;
+        //        self.categoryChosenColor = nil;
         //        self.categoryChosenColor = nil;
         
     }
@@ -545,35 +534,36 @@ static NSString *kFullTagLabel = @"heart_label_full";
     }
 }
 
-/*-(Categories *)categoryInitializer:(NSDictionary *)dic {
-    
-    Categories *category = [[Categories alloc]initWithDictionary:dic];
-    return category;
-}*/
-
-
 -(void)barButtonItemDonePressed:(id)sender
 {
-    //if (_selectedCategories){
-        //
-        //
-        //    if (self.mapVC.comingFromAddAnnotationState)
-        //    {
-        //    NSLog(@"selected Cell content View[-1]---[ %@ ]----", _selectedCell[0] );
-        
-        Categories *categories = _selectedCategories[0];
-        /*NSLog(@"selected Categories---[ %@ ]----", _selectedCategories );
-        [self.delegate category:categories];*/
+    //
+    //
+    //    if (self.mapVC.comingFromAddAnnotationState)
+    //    {
+    //    NSLog(@"selected Cell content View[-1]---[ %@ ]----", _selectedCell[0] );
     
-    if (categories) {
+    Categories *categories = _selectedCategories[0];
+    NSLog(@"CATEGORY Dictionary  ---- %@ ----", categories.pointsOfInterest);
+    if (categories){
         [self.delegate category:categories];
-    
-        [self.delegate controllerDidDismiss:self];
         
+        NSLog(@"self.catefories['categoryImage'] = %@", categories.categoryImage);
+        
+        
+        
+        [self.delegate controllerDidDismiss:self];
     }
+    
 }
 
-
+#pragma mark BLCCategoryTaleViewCell
+//
+//-(void)didGetImageView:(UIImageView *)imageView {
+//
+//    self.imageViewSelected = [NSMutableArray array];
+//    [self.imageViewSelected addObject:imageView];
+//
+//}
 
 
 #pragma Attributed String
@@ -602,9 +592,7 @@ static NSString *kFullTagLabel = @"heart_label_full";
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    
-    
-    return [DataSource sharedInstance].category.count;
+    return [DataSource sharedInstance].categories.count;
     
 }
 
@@ -639,10 +627,8 @@ heightForFooterInSection:(NSInteger)section
     CategoryTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CategoryCell" forIndexPath:indexPath];
     cell.delegate = self;
     
-    Categories *categories = [DataSource sharedInstance].category[indexPath.row];
-    
-    NSLog(@"[DataSource sharedInstance].categories -%@-", [DataSource sharedInstance].category);
-    
+    Categories *categories = [DataSource sharedInstance].categories[indexPath.row];
+    NSLog(@"[BLCDataSource sharedInstance].categories *** %@ ***", [DataSource sharedInstance].categories);
     cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.color];
     [cell.tagImageView setTintColor:categories.color];
     [cell.tagImageViewFull setHidden:YES];
@@ -655,27 +641,24 @@ heightForFooterInSection:(NSInteger)section
 {
     CategoryTableViewCell *cell = (CategoryTableViewCell *)[tableView cellForRowAtIndexPath:indexPath ];
     cell.delegate = self;
-    Categories *categories = [DataSource sharedInstance].category[indexPath.row];
+    Categories *categories = [DataSource sharedInstance].categories[indexPath.row];
     cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.color];
     [cell.tagImageView setHidden:YES];
     [cell.tagImageViewFull setHidden:NO];
     [cell.tagImageViewFull setTintColor:categories.color];
     
-    /*self.selectedCell = [NSMutableArray array];
-    [self.selectedCell addObject:cell.tagImageViewFull];*/
-    
+    //    self.selectedCell = [NSMutableArray array];
+    //    [self.selectedCell addObject:cell.tagImageViewFull];
     self.selectedCategories = [NSMutableArray array];
     [self.selectedCategories addObject:categories];
-    //[self.delegate didCompleteWithImageView:cell.tagImageViewFull];
     
     self.imageViewSelected = [NSMutableArray array];
     [self.imageViewSelected addObject:cell.tagImageViewFull];
     
+    
     //    selectedIndex = indexPath.row;
     //    [self.tableView reloadData];
-    
     [cell setNeedsDisplay];
-    
 }
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -684,18 +667,21 @@ heightForFooterInSection:(NSInteger)section
     
     CategoryTableViewCell *cell = (CategoryTableViewCell *)[tableView cellForRowAtIndexPath:indexPath ];
     cell.delegate = self;
-    Categories *categories = [DataSource sharedInstance].category[indexPath.row];
+    Categories *categories = [DataSource sharedInstance].categories[indexPath.row];
     cell.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:categories.categoryName andColor:categories.color];
     [cell.tagImageViewFull setHidden:YES];
     
     [cell.tagImageView setHidden:NO];
     
     [cell.tagImageView setTintColor:categories.color];
-    //[self.selectedCell removeObject:cell.tagImageViewFull];
+    //    [self.selectedCell removeObject:cell.tagImageViewFull];
     [self.selectedCategories removeObject:categories];
-    //    [self.tableView reloadData];
+    //    [self.imageViewSelected removeObject:cell.tagImageViewFull];
     
+    //    [self.tableView reloadData];
     [cell setNeedsDisplay];
+    
+    
 }
 
 -(CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -706,30 +692,64 @@ heightForFooterInSection:(NSInteger)section
     
 }
 
-// Override to support conditional editing of the table view.
-// This only needs to be implemented if you are going to be returning NO
-// for some items. By default, all items are editable.
-/*- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return YES if you want the specified item to be editable.
-    return YES;
-}*/
+
+// EDIT EACH CELL
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         //add code here for when you hit delete
-        Categories *category = [DataSource sharedInstance].category[indexPath.row];
-        NSLog(@"ALL CATEGORIES BEFORE DELETING = %@",[DataSource sharedInstance].category);
-        
-        [[DataSource sharedInstance] removeCategory:category];
-        
-        //        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView reloadData];
-        NSLog(@"ALL CATEGORIES AFTER DELETING = %@",[DataSource sharedInstance].category);
+        Categories *item = [DataSource sharedInstance].categories[indexPath.row];
+        [[DataSource sharedInstance] deleteCategories:item];
+        //        [self.tableView reloadData];
+        NSLog(@"ALL CATEGORIES AFTER DELETING = %@",[DataSource sharedInstance].categories);
         
         
     }
 }
+#pragma mark Key-Value Observing
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [DataSource sharedInstance] && [keyPath isEqualToString:@"categories"]) {
+        // Nothing… YET
+        int kindOfChange = [change[NSKeyValueChangeKindKey] intValue];
+        
+        if (kindOfChange == NSKeyValueChangeSetting) {
+            // Someone set a brand new images array
+            [self.tableView reloadData];
+        } else if (kindOfChange == NSKeyValueChangeInsertion ||
+                   kindOfChange == NSKeyValueChangeRemoval ||
+                   kindOfChange == NSKeyValueChangeReplacement) {
+            // We have an incremental change: inserted, deleted, or replaced images
+            
+            // Get a list of the index (or indices) that changed
+            NSIndexSet *indexSetOfChanges = change[NSKeyValueChangeIndexesKey];
+            
+            // Convert this NSIndexSet to an NSArray of NSIndexPaths (which is what the table view animation methods require)
+            NSMutableArray *indexPathsThatChanged = [NSMutableArray array];
+            [indexSetOfChanges enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                [indexPathsThatChanged addObject:newIndexPath];
+            }];
+            
+            // Call `beginUpdates` to tell the table view we're about to make changes
+            [self.tableView beginUpdates];
+            
+            // Tell the table view what the changes are
+            if (kindOfChange == NSKeyValueChangeInsertion) {
+                [self.tableView insertRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            } else if (kindOfChange == NSKeyValueChangeRemoval) {
+                [self.tableView deleteRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            } else if (kindOfChange == NSKeyValueChangeReplacement) {
+                [self.tableView reloadRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+            
+            // Tell the table view that we're done telling it about changes, and to complete the animation
+            [self.tableView endUpdates];
+        }
+    }
+}
+
 
 
 #pragma mark - UICollectionView delegate and data source
@@ -790,12 +810,11 @@ heightForFooterInSection:(NSInteger)section
     
     // Set the index to an invalid value so that the cells get deselected
     colorCell.colorCollectionView.backgroundColor = self.colorsArraySimilar[indexPath.row];
-    
     self.similarChosenColor2 = self.colorsArraySimilar[indexPath.row];
-    
     [colorCell.checkImageView setHidden:YES];
     
     [colorCell setNeedsDisplay];
     
 }
+
 @end

@@ -12,6 +12,7 @@
 #import "Annotation.h"
 #import "Categories.h"
 
+#import "CategoryButton.h"
 
 @interface POI : NSObject
 
@@ -21,6 +22,9 @@
 @property (nonatomic, assign) CLLocation *location;
 @property (nonatomic, strong) Categories *category;
 @property (nonatomic, strong) Annotation *annotation;
+
+@property (nonatomic, strong) NSString *visited;
+@property (nonatomic, assign) VisitButtonSelected buttonState;
 
 
 -(instancetype) initWithDictionary:(NSDictionary *)mediaDictionary;

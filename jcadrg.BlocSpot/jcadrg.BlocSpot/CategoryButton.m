@@ -41,13 +41,13 @@
     switch (_visitButtonState) {
         case VisitButtonSelectedNO:
             
-            imageName = @"like";
+            imageName = @"hearts_filled";
             
             break;
             
         case VisitButtonSelectedYES:
             
-            imageName = @"hearts_filled";
+            imageName = @"like";
             
             break;
     }

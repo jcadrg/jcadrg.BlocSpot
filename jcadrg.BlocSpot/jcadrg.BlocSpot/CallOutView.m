@@ -27,14 +27,24 @@
     
     if (self) {
         
-        self.backgroundColor = [UIColor clearColor];
+        /*self.backgroundColor = [UIColor clearColor];
         self.canShowCallout = NO;
         self.centerOffset = CGPointMake(0, -55);
-        self.frame = CGRectMake(0, 0, 300, 80);
+        self.frame = CGRectMake(0, 0, 300, 80);*/
         
-        self.contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - Arrow_height)];
+        //Framing to appropiate values
+        
+        CGRect frame = self.frame;
+        frame.size.width = 40;
+        frame.size.height = 40;
+        self.frame = frame;
+        
+        
+        /*self.contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - Arrow_height)];
         _contentView.backgroundColor = [UIColor clearColor];
-        [self addSubview:self.contentView];
+        [self addSubview:self.contentView];*/
+        
+        self.opaque = NO;
         
     }
     
@@ -43,7 +53,7 @@
 
 
 
--(void) drawInContext:(CGContextRef)context{
+/*-(void) drawInContext:(CGContextRef)context{
     CGContextSetLineWidth(context, 2.0);
     CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
     
@@ -51,9 +61,21 @@
     CGContextFillPath(context);
     
     
+}*/
+
+-(UIView *) hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+    
+    UIView *hitView = [super hitTest:point withEvent:event];
+    if (hitView !=nil) {
+        [self.superview bringSubviewToFront:self];
+    }
+    
+    return hitView;
 }
 
--(void) getDrawPath:(CGContextRef)context{
+
+
+/*-(void) getDrawPath:(CGContextRef)context{
     CGRect rect = self.bounds;
     CGFloat radius = 6.0;
     
@@ -73,15 +95,36 @@
     CGContextAddArcToPoint(context, maxX, minY, maxX, maxX, radius);
     CGContextAddArcToPoint(context, maxX, maxY, midX, maxY, radius);
     CGContextClosePath(context);
+}*/
+
+-(BOOL) pointInside:(CGPoint)point withEvent:(UIEvent *)event{
+    
+    CGRect rect = self.bounds;
+    BOOL isInside = CGRectContainsPoint(rect, point);
+    if (!isInside) {
+        for (UIView *view in self.subviews) {
+            isInside = CGRectContainsPoint(view.frame, point);
+            if (isInside)
+                break;
+        }
+        
+
+    }
+    
+    return isInside;
 }
 
--(void) drawRect:(CGRect)rect{
+-(void) dismiss{
+    [self setHidden:YES];
+}
+
+/*-(void) drawRect:(CGRect)rect{
     [self drawInContext:UIGraphicsGetCurrentContext()];
     
     self.layer.shadowColor = [[UIColor blackColor] CGColor];
     self.layer.shadowOpacity = 1.0;
     self.layer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-}
+}*/
 
 /*
 // Only override drawRect: if you perform custom drawing.

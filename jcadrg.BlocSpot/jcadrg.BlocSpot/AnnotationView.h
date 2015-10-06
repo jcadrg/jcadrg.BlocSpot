@@ -21,7 +21,7 @@
 @protocol AnnotationViewDelegate <NSObject>
 
 -(void) customView:(AnnotationView *)view didPressDoneButton:(FUIButton *)button withTitleText:(NSString *)titleText withDescriptionText:(NSString *)descriptionText;
--(void) customViewDidPressAddCategoryView:(AnnotationView *)categoryView;
+-(void) customViewDidPressAddCategoriesView:(AnnotationView *)categoryView;
 -(Categories *) categoryPicked;
 
 @end
