@@ -24,7 +24,7 @@
         
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
         
-        self.contentEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        self.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
         self.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
         
         self.visitButtonState = VisitButtonSelectedNO;

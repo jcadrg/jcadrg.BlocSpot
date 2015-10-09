@@ -14,16 +14,16 @@ typedef NS_ENUM(NSInteger, CategoryTableViewCellState) {
     CategoryTableViewCellStateSelectedYES,
     CategoryTableViewCellStateUnSelectedNOT
 };
-@class CategoryTableViewCell;
-@protocol CategoryTableViewCellDelegate <NSObject>
+//@class CategoryTableViewCell;
+//@protocol CategoryTableViewCellDelegate <NSObject>
 
--(void)didSelectCellWithView:(UIView *)contentView;
+//-(void)didSelectCellWithView:(UIView *)contentView;
 
 
-@end
+//@end
 @interface CategoryTableViewCell : UITableViewCell
 
-@property (nonatomic, assign) id<CategoryTableViewCellDelegate> delegate;
+//@property (nonatomic, assign) id<CategoryTableViewCellDelegate> delegate;
 
 @property (nonatomic, assign) CategoryTableViewCellState state;
 @property (nonatomic, strong) UILabel *categoryLabel;

@@ -14,36 +14,34 @@
 
 typedef void (^SearchListCompletionBlock)(NSArray *locations, NSError *error);
 
-@interface DataSource : NSObject{
-    /*NSString *_path;
-    NSMutableArray *_annotation;
-    
-    NSString *_categoryPath;
-    NSMutableArray *_category;
-    NSMutableArray *_categoryPOI;*/
-    
-    NSString *_annotationPath;
+@interface DataSource : NSObject {
+    NSString *_annotationsPath;
     NSString *_categoriesPath;
+    NSString *_distanceValuesPath;
 }
 
 +(instancetype) sharedInstance;
 
+
 @property (nonatomic, weak, readonly) NSArray *annotations;
 @property (nonatomic, weak, readonly) NSArray *categories;
+@property (nonatomic, weak, readonly) NSDictionary *distanceValuesDictionary;
 
 
+// To be implemented on the data regarding the list of venues
++(void)fetchPlacesWithName:(NSString *)searchTerm withLocationCoordinate:(CLLocationCoordinate2D *)coordinate completion:(SearchListCompletionBlock)completionHandler;
 
-+(void) getLocationWithName:(NSString *) searchTerm withLocationCoordinate:(CLLocationCoordinate2D *) coordinate completion:(SearchListCompletionBlock)completionHandler;
 
--(void) deleteCategories:(Categories *)category;
--(void) addCategories:(Categories *)category;
--(void) addPOI:(POI *)poi;
+// KVO METHODS
+-(void)deleteCategories:(Categories *)category;
+-(void)addCategories:(Categories *)category;
 
--(void) deletePOI:(POI *)poi;
--(void) replaceAnnotation:(POI *)poi withOtherPOI:(POI *) otherPOI;
+-(void)addPOI:(POI *)poi;
+-(void)deletePOI:(POI *)poi;
+-(void)replaceAnnotation:(POI *)poi withOtherPOI:(POI *)otherPOI;
 
--(void) toggleVisitedOnPOI:(POI *) poi;
-//-(void) saveToDisk;
-//-(void) createAnnotation;
+-(void)toggleVisitedOnPOI:(POI *)poi;
+-(void)addPOI:(POI *)poi toCategoryArray:(Categories *)category;
+-(void)addDictionary:(NSDictionary *)dic;
 
 @end

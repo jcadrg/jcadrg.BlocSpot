@@ -23,14 +23,11 @@
 @interface POITableViewCell : UITableViewCell
 
 @property (nonatomic, strong) id<POITableViewCellDelegate> delegate;
-@property (nonatomic, strong) UILabel *locationName;
-@property (nonatomic, strong) UILabel *locationNotes;
+
+
 @property (nonatomic, strong) UILabel *distance;
 @property (nonatomic, strong) CategoryButton *categoryButton;
-@property (nonatomic, strong) id<MKAnnotation> annotation;
-
-
--(id) initForAnnotation:(id<MKAnnotation>) annotation;
+@property (nonatomic, strong) POI *poi;
 
 
 

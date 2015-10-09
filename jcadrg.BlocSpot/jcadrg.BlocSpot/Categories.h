@@ -9,27 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, CategoriesState) {
-    CategoriesUnselectedState,
-    CategoriesSelectedState
-};
+
 @interface Categories : NSObject <NSCoding>
 
 @property (nonatomic, strong) NSString *categoryName;
 @property (nonatomic, strong) UIColor *color;
-@property (nonatomic, strong) UILabel *categoryLabel;
-@property (nonatomic, assign) CategoriesState state;
-@property (nonatomic, strong) NSArray *selectedCategory;
-@property (nonatomic, strong) NSMutableArray *pointsOfInterest;
-@property (nonatomic, strong) NSMutableArray *colorList;
 
-@property (nonatomic, strong) UIImageView *categoryImage;
-
-@property (nonatomic, strong) NSDictionary *categoryDictionaryAccessor;
-
+@property (nonatomic, strong) NSMutableArray *poi;
 
 -(instancetype)initWithDictionary:(NSDictionary *)categoryDictionary;
 
--(UILabel *)returnLabel;
 
 @end

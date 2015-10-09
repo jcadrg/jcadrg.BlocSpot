@@ -22,6 +22,8 @@
 		5DB344551BB9C8B700B26D98 /* CategoryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB344541BB9C8B700B26D98 /* CategoryTableViewCell.m */; settings = {ASSET_TAGS = (); }; };
 		5DB344581BB9EA7900B26D98 /* ColorCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB344571BB9EA7900B26D98 /* ColorCollectionViewCell.m */; settings = {ASSET_TAGS = (); }; };
 		5DB3445B1BBA53E100B26D98 /* CallOutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB3445A1BBA53E100B26D98 /* CallOutView.m */; settings = {ASSET_TAGS = (); }; };
+		5DB6C9F81BC5BD8700B95D23 /* PopUpCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB6C9F71BC5BD8700B95D23 /* PopUpCategoriesViewController.m */; settings = {ASSET_TAGS = (); }; };
+		5DB6C9FB1BC5CC8700B95D23 /* SearchResultsTableVCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB6C9FA1BC5CC8700B95D23 /* SearchResultsTableVCViewController.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D31BAEFD0B00F09663 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D21BAEFD0B00F09663 /* DataSource.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D61BAF022800F09663 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D51BAF022800F09663 /* Search.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767D91BAF027000F09663 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767D81BAF027000F09663 /* SearchViewController.m */; settings = {ASSET_TAGS = (); }; };
@@ -76,6 +78,10 @@
 		5DB344571BB9EA7900B26D98 /* ColorCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorCollectionViewCell.m; sourceTree = "<group>"; };
 		5DB344591BBA53E100B26D98 /* CallOutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallOutView.h; sourceTree = "<group>"; };
 		5DB3445A1BBA53E100B26D98 /* CallOutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallOutView.m; sourceTree = "<group>"; };
+		5DB6C9F61BC5BD8700B95D23 /* PopUpCategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopUpCategoriesViewController.h; sourceTree = "<group>"; };
+		5DB6C9F71BC5BD8700B95D23 /* PopUpCategoriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopUpCategoriesViewController.m; sourceTree = "<group>"; };
+		5DB6C9F91BC5CC8700B95D23 /* SearchResultsTableVCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsTableVCViewController.h; sourceTree = "<group>"; };
+		5DB6C9FA1BC5CC8700B95D23 /* SearchResultsTableVCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultsTableVCViewController.m; sourceTree = "<group>"; };
 		5DE767D11BAEFD0B00F09663 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
 		5DE767D21BAEFD0B00F09663 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 		5DE767D41BAF022800F09663 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Search.h; sourceTree = "<group>"; };
@@ -202,6 +208,10 @@
 				5D02B1341BBDF16500F97B47 /* CallOutAnnotation.m */,
 				5D02B1361BBE151000F97B47 /* CategoryButton.h */,
 				5D02B1371BBE151000F97B47 /* CategoryButton.m */,
+				5DB6C9F61BC5BD8700B95D23 /* PopUpCategoriesViewController.h */,
+				5DB6C9F71BC5BD8700B95D23 /* PopUpCategoriesViewController.m */,
+				5DB6C9F91BC5CC8700B95D23 /* SearchResultsTableVCViewController.h */,
+				5DB6C9FA1BC5CC8700B95D23 /* SearchResultsTableVCViewController.m */,
 			);
 			path = jcadrg.BlocSpot;
 			sourceTree = "<group>";
@@ -376,10 +386,12 @@
 				5DB344521BB9C35900B26D98 /* CategoryViewController.m in Sources */,
 				5DB344551BB9C8B700B26D98 /* CategoryTableViewCell.m in Sources */,
 				5D8FA89D1BAA7B76008D53A1 /* ViewController.m in Sources */,
+				5DB6C9FB1BC5CC8700B95D23 /* SearchResultsTableVCViewController.m in Sources */,
 				5DF641D31BB300A000427AC9 /* Categories.m in Sources */,
 				5D02B12F1BBDDE7500F97B47 /* CallOutInnerView.m in Sources */,
 				5DEF240F1BB313280073C4BC /* AnnotationView.m in Sources */,
 				5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */,
+				5DB6C9F81BC5BD8700B95D23 /* PopUpCategoriesViewController.m in Sources */,
 				5DB344581BB9EA7900B26D98 /* ColorCollectionViewCell.m in Sources */,
 				5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */,
 				5D02B1381BBE151000F97B47 /* CategoryButton.m in Sources */,

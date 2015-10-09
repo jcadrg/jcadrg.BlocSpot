@@ -75,27 +75,6 @@
 
 
 
-/*-(void) getDrawPath:(CGContextRef)context{
-    CGRect rect = self.bounds;
-    CGFloat radius = 6.0;
-    
-    CGFloat minX = CGRectGetMinX(rect),
-    midX = CGRectGetMidX(rect),
-    maxX = CGRectGetMaxX(rect);
-    
-    CGFloat minY = CGRectGetMinY(rect),
-    maxY = CGRectGetMaxY(rect)-Arrow_height;
-    
-    CGContextMoveToPoint(context, midX+Arrow_height, maxY);
-    CGContextAddLineToPoint(context, midX, maxY+Arrow_height);
-    CGContextAddLineToPoint(context, midX-Arrow_height, maxY);
-    
-    CGContextAddArcToPoint(context, minX, maxY, minX, minY, radius);
-    CGContextAddArcToPoint(context, minX, minX, maxX, minY, radius);
-    CGContextAddArcToPoint(context, maxX, minY, maxX, maxX, radius);
-    CGContextAddArcToPoint(context, maxX, maxY, midX, maxY, radius);
-    CGContextClosePath(context);
-}*/
 
 -(BOOL) pointInside:(CGPoint)point withEvent:(UIEvent *)event{
     
@@ -118,20 +97,6 @@
     [self setHidden:YES];
 }
 
-/*-(void) drawRect:(CGRect)rect{
-    [self drawInContext:UIGraphicsGetCurrentContext()];
-    
-    self.layer.shadowColor = [[UIColor blackColor] CGColor];
-    self.layer.shadowOpacity = 1.0;
-    self.layer.shadowOffset = CGSizeMake(0.0f, 0.0f);
-}*/
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

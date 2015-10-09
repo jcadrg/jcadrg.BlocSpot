@@ -22,7 +22,7 @@
 
 -(void) customView:(AnnotationView *)view didPressDoneButton:(FUIButton *)button withTitleText:(NSString *)titleText withDescriptionText:(NSString *)descriptionText;
 -(void) customViewDidPressAddCategoriesView:(AnnotationView *)categoryView;
--(Categories *) categoryPicked;
+
 
 @end
 
@@ -42,7 +42,7 @@
 
 @property(nonatomic, strong) FUIButton *doneButton;
 @property(nonatomic, strong) Categories *category;
-@property(nonatomic, strong) TLTagsControl *tagsControl;
+
 @property(nonatomic, strong) UIView *categoryView;
 @property(nonatomic, strong) FUIButton *categoryButton;
 @property(nonatomic, strong) UILabel *titleLabel;

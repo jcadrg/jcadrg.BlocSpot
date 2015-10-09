@@ -19,6 +19,10 @@
 
 -(void)calloutView:(CallOutInnerView *)view didPressVisitedButton:(CategoryButton *)button ;
 
+-(void)callOutViewDidPressDeleteButton:(CallOutInnerView *)view;
+-(void)callOutViewDidPressShareButton:(CallOutInnerView *)view;
+-(void)callOutViewDidPressMapDirectionsButton:(CallOutInnerView *)view;
+
 @end
 
 @interface CallOutInnerView : UIView
