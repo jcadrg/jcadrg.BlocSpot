@@ -17,9 +17,7 @@
         self.categoryName = categoryDictionary[@"categoryName"];
         self.color = categoryDictionary[@"categoryColor"];
         //        self.isSelected = categoryDictionary[@"selected"];
-        self.pointsOfInterest = categoryDictionary[@"pointsOfInterest"];
-        
-        self.categoryImage = categoryDictionary [@"categoryImage"];
+        self.poi = categoryDictionary[@"poi"];
         
         //Use later!
         
@@ -41,9 +39,9 @@
     if (self) {
         self.categoryName = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(categoryName))];
         self.color = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(color))];
-        self.pointsOfInterest = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(pointsOfInterest))];
+        self.poi = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(poi))];
         
-        self.categoryImage = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(categoryImage))];
+        
         
     }
     return self;
@@ -52,9 +50,9 @@
 -(void) encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.categoryName forKey:NSStringFromSelector(@selector(categoryName))];
     [aCoder encodeObject:self.color forKey:NSStringFromSelector(@selector(color))];
-    [aCoder encodeObject:self.pointsOfInterest forKey:NSStringFromSelector(@selector(pointsOfInterest))];
+    [aCoder encodeObject:self.poi forKey:NSStringFromSelector(@selector(poi))];
     
-    [aCoder encodeObject:self.categoryImage forKey:NSStringFromSelector(@selector(categoryImage))];
+
     
 }
 

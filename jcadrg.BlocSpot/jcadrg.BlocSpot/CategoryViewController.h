@@ -22,16 +22,10 @@ typedef NS_ENUM(NSInteger, CategoryViewControllerState) {
 
 -(void)controllerDidDismiss:(CategoryViewController *)controller;
 
--(void)category:(Categories *)categoriesChosen;
+-(void)category:(Categories *)categories;
 
 
-//-(void)controllerDidChoose:(UIColor *)color;
 
-//-(void)didCompleteWithImageView:(UIImageView *)image;
-
--(void) didCreateCategory:(Categories *)category;
-
--(void) controllerWillSendCategoryObjectWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end
 @interface CategoryViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource >

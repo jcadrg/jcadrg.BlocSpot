@@ -14,7 +14,7 @@
 #import "CategoryViewController.h"
 
 
-@interface AnnotationView() <UITextFieldDelegate, UITextViewDelegate, CategoryTableViewCellDelegate>
+@interface AnnotationView() <UITextFieldDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) UIView *topView;
 

@@ -35,6 +35,11 @@
 #import "CallOutView.h"
 #import "CallOutInnerView.h"
 
+#import "PopUpCategoriesViewController.h"
+
+
+
+
 
 typedef NS_ENUM(NSInteger, ViewControllerState){
     ViewControllerStateMapContent, ViewControllerStateAddPOI
@@ -43,12 +48,12 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 
 
 
-@interface ViewController () <MKMapViewDelegate, UIViewControllerTransitioningDelegate, UISearchBarDelegate, UISearchControllerDelegate, UITabBarControllerDelegate, UIGestureRecognizerDelegate, AnnotationViewDelegate, WYPopoverControllerDelegate, CategoryViewControllerDelegate, SMCalloutViewDelegate, CallOutInnerViewDelegate>{
+@interface ViewController () <MKMapViewDelegate, UIViewControllerTransitioningDelegate, UISearchBarDelegate, UISearchControllerDelegate, UITabBarControllerDelegate, UIGestureRecognizerDelegate, AnnotationViewDelegate, WYPopoverControllerDelegate, CategoryViewControllerDelegate, SMCalloutViewDelegate, CallOutInnerViewDelegate, PopUpCategoriesViewControllerDelegate, POITableViewControllerDelegate>{
     
     CallOutView *_callOutView;
 }
 
-@property (nonatomic, strong) MKMapView *mapView;
+
 
 @property(nonatomic, strong) POITableViewController *poiTableVC;
 @property(nonatomic, strong) SearchViewController *searchVC;
@@ -56,9 +61,9 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 
 
 @property(nonatomic, strong) UISearchController *searchController;
-@property(nonatomic, strong) UISearchBar *searchBar;
 
-@property(nonatomic, strong) CLLocation *currentLocation;
+
+@property(nonatomic, strong) CLLocation *location;
 @property(nonatomic, strong) UIBarButtonItem *searchButton;
 @property(nonatomic, strong) UIBarButtonItem *filterButton;
 @property(nonatomic, strong) UIBarButtonItem *listButton;
@@ -67,36 +72,35 @@ typedef NS_ENUM(NSInteger, ViewControllerState){
 @property(nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
 @property(nonatomic, strong) UILongPressGestureRecognizer *longTapRecognizer;
 
-//@property(nonatomic, strong) AnnotationView *createAnnotation;
+
 @property(nonatomic, strong) POI *poi;
 @property(nonatomic, strong) NSMutableDictionary *parameters;
 @property(nonatomic, assign) CLLocationCoordinate2D coordinates;
 @property(nonatomic, assign) CGPoint point;
 @property(nonatomic, strong) MKAnnotationView *annotationView;
 
-//@property(nonatomic, strong) Annotation *customAnnotation;
+
 @property(nonatomic, assign) ViewControllerState state;
 
 @property(nonatomic, strong) CategoryViewController *categoryVC;
-@property(nonatomic, strong) CategoryViewController *popup;
+@property(nonatomic, strong) PopUpCategoriesViewController *categoryPopupVC;
 @property(nonatomic, strong) WYPopoverController *popover;
 
 @property(nonatomic, strong) Categories *category;
 @property(nonatomic, strong) UINavigationController *navVC;
-//@property(nonatomic, strong) UIColor *pinColor;
-//@property(nonatomic, strong) UIImageView *likeIV;
+
 
 @property (nonatomic, strong) NSMutableArray *annotationArray;
 @property (nonatomic, strong) UIColor *chosenColor;
-//@property (nonatomic, assign) BOOL categoryCreated;
 
-//@property (nonatomic, strong) UIImageView *categoryImageView;
-//@property (nonatomic, strong) NSMutableArray *imageMutableArray;
 
 @property(nonatomic, strong) NSMutableArray *poiTemporaryArray;
 @property(nonatomic, strong) NSMutableDictionary *categoryDictionary;
 
 @property(nonatomic, strong) SMCalloutView *calloutView;
+
+@property(nonatomic, assign) CGFloat currentLocationLatitude;
+@property(nonatomic, assign) CGFloat currentLocationLongitude;
 
 
 @end
@@ -106,21 +110,21 @@ static NSString *viewID = @"LikeAnnotation";
 @implementation ViewController
 
 
--(instancetype) init{
+-(instancetype)init {
     self = [super init];
-    if (self) {
+    if (self)
+    {
         
     }
-    
     return self;
 }
-
 -(void)viewDidLoad {
     [super viewDidLoad];
     
     
     // set the tab bar color
-    self.poiTableVC =[[ POITableViewController alloc]init];
+    self.poiTableVC =[[POITableViewController alloc]init];
+    self.poiTableVC.tableDelegate = self;
     self.navigationItem.hidesBackButton = YES;
     
     // create a mapview
@@ -150,22 +154,31 @@ static NSString *viewID = @"LikeAnnotation";
     
     [self createTabBarButtons];
     [self createListViewBarButton];
-    [self setUpSearchBar];
+    
     if(!_categoryVC){
         self.categoryVC = [[CategoryViewController alloc]init];
         self.categoryVC.delegate = self;
-    }
-    
-    if(!_popup){
-        self.popup = [[CategoryViewController alloc]init];
-        self.popup.delegate = self;
+        self.categoryVC.navigationItem.title = @"Add a Category";
     }
     self.navVC = [[UINavigationController alloc]initWithRootViewController:self.categoryVC];
-    UINavigationController *navVCPopup =[[UINavigationController alloc]initWithRootViewController:self.popup];
-    UIBarButtonItem *leftBarButtonPopup = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                       target:self
-                                                                                       action:@selector(popupBarButtonItemDonePressed:)];
-    self.popup.navigationItem.leftBarButtonItem = leftBarButtonPopup;
+    
+    if(!_categoryPopupVC){
+        self.categoryPopupVC = [[PopUpCategoriesViewController alloc]init];
+        self.categoryPopupVC.popupDelegate = self;
+    }
+    UINavigationController *navVCPopup =[[UINavigationController alloc]initWithRootViewController:self.categoryPopupVC];
+    UIBarButtonItem *leftBarButtonPopup = [[UIBarButtonItem alloc]initWithTitle:@"Filter" style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(popupBarButtonItemDonePressed:)];
+    UIBarButtonItem *rightBarButtonPopup = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                        target:self
+                                                                                        action:@selector(cancelFilterCategoryPressed:)];
+    
+    self.categoryPopupVC.navigationItem.leftBarButtonItem = leftBarButtonPopup;
+    self.categoryPopupVC.navigationItem.rightBarButtonItem = rightBarButtonPopup;
+    
+    self.categoryPopupVC.navigationItem.title = @"Filter by Category";
+    
     
     if (!_popover){
         self.popover = [[WYPopoverController alloc]initWithContentViewController:navVCPopup];
@@ -191,11 +204,14 @@ static NSString *viewID = @"LikeAnnotation";
     if(!self.parameters){
         self.parameters = [NSMutableDictionary new];
     }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [[DataSource sharedInstance] addDictionary:[self calculateDistanceFromCurrentLoaction:self.locationManager.location.coordinate.latitude andLongitude:self.locationManager.location.coordinate.longitude]];
+        NSLog(@"[BLCDataSource sharedInstance].distanceValuesDic : %@", [DataSource sharedInstance].distanceValuesDictionary);
+        
+    });
     
-    //    for (BLCCategories *category in [BLCDataSource sharedInstance].categories)
-    //    {
-    //        NSLog(@"Points of Interests array %@", category.pointsOfInterest);
-    //    }
+    
     
     
 }
@@ -211,11 +227,6 @@ static NSString *viewID = @"LikeAnnotation";
     }
     return annotations;
     
-}
-- (void)setUpSearchBar {
-    self.searchBar = [[UISearchBar alloc] init];
-    _searchBar.showsCancelButton = YES;
-    _searchBar.delegate = self;
 }
 
 
@@ -336,15 +347,16 @@ static NSString *viewID = @"LikeAnnotation";
     label.frame = CGRectMake(0, 0, labelMaxSize.width, labelMaxSize.height);
     
     [customView addSubview:label];
-    _labelButton = [[UIBarButtonItem alloc] initWithCustomView:customView];
+    //    _labelBarButton = [[UIBarButtonItem alloc] initWithCustomView:customView];
     
-    UIImage *listImage = [UIImage imageNamed:@"align_justify_filled"];
+    UIImage *listImage = [UIImage imageNamed:@"list_filled"];
     self.listButton = [[UIBarButtonItem alloc]initWithImage:listImage
                                                              style:UIBarButtonItemStylePlain
                                                             target:self
                                                             action:@selector(listViewPressed:)];
     [_listButton setTintColor:[UIColor cloudsColor]];
-    self.navigationItem.leftBarButtonItems = @[_listButton, _labelButton];
+    self.navigationItem.leftBarButtonItem = _listButton;
+    self.navigationItem.titleView = customView;
     
     [_listButton configureFlatButtonWithColor:[UIColor midnightBlueColor]
                                     highlightedColor:[UIColor wetAsphaltColor]
@@ -376,6 +388,7 @@ static NSString *viewID = @"LikeAnnotation";
 
 #pragma Location delegate methods call
 
+
 - (CLLocationManager *)locationManager {
     if (!_locationManager) {
         self.locationManager=[[CLLocationManager alloc] init];
@@ -390,6 +403,7 @@ static NSString *viewID = @"LikeAnnotation";
 -(void)updateLocation {
     [self.locationManager startUpdatingLocation];
     
+    
 }
 // TO DO
 -(void)fetchVenuesForLocation:(CLLocation *)location {
@@ -402,11 +416,72 @@ static NSString *viewID = @"LikeAnnotation";
     [self.mapView setRegion:region];
     
 }
+-(void)zoomToCoordinate:(CLLocationCoordinate2D )coordinate radius:(CGFloat)radius {
+    
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coordinate, radius*2, radius*2);
+    [self.mapView setRegion:region];
+    
+}
+
+#pragma mark CLLocationManagerDelegate Methods
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    self.location = [locations lastObject];
+    self.currentLocationLatitude = self.location.coordinate.latitude;
+    self.currentLocationLongitude = self.location.coordinate.longitude;
+    
+    
+    [self fetchVenuesForLocation:_location];
+    [self zoomToLocation:_location radius:2000];
+    [self.locationManager stopUpdatingLocation];
+    NSDate* eventDate = _location.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    
+    
+    if (fabs(howRecent) < 15.0) {
+        // If the event is recent, do something with it.
+        NSLog(@"latitude %+.6f, longitude %+.6f\n",
+              _location.coordinate.latitude,
+              _location.coordinate.longitude);
+        
+        
+    }
+}
+
+// HELPER METHOD
+
+-(NSDictionary *)calculateDistanceFromCurrentLoaction:(CGFloat )latitude andLongitude:(CGFloat )longitude
+{
+    
+    NSMutableDictionary *tempDic = [NSMutableDictionary new];
+    
+    for (POI *poi in [DataSource sharedInstance].annotations)
+    {
+        CGFloat poiLatitude = poi.annotation.latitude;
+        CGFloat poiLongitude = poi.annotation.longitude;
+        NSLog(@"POI LATITUDE: %f", poiLatitude);
+        NSLog(@"POI LONGITUDE: %f", poiLongitude);
+        
+        CLLocation *desiredLocation = [[CLLocation alloc] initWithLatitude:poiLatitude longitude:poiLongitude];
+        NSLog(@"LOCATION LATITUDE: %f",latitude);
+        NSLog(@"LOCATION LONGITUDE: %f",longitude);
+        CLLocation *currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+        
+        CLLocationDistance distance = [currentLocation distanceFromLocation:desiredLocation];
+        
+        NSLog(@"DISTANCE %f", distance);
+        
+        NSNumber *distanceNumber = [NSNumber numberWithFloat:distance];
+        [tempDic setObject:distanceNumber forKey:poi.locationName];
+    }
+    NSLog(@"TEMP DIC: %@", tempDic);
+    return tempDic;
+}
+
 
 #pragma mark Attributed String
 -(NSAttributedString *)titleLabelString  {
     
-    NSString *baseString = @"BlocSpot Map";
+    NSString *baseString = @"Create a BlocSpot";
     
     NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSForegroundColorAttributeName:[UIColor midnightBlueColor],NSFontAttributeName:[UIFont boldFlatFontOfSize:20]}];
     
@@ -416,12 +491,6 @@ static NSString *viewID = @"LikeAnnotation";
 
 #pragma mark creat TabBar buttons
 -(void) createTabBarButtons {
-    UIImage *searchImage =[UIImage imageNamed:@"search"];
-    
-    self.searchButton   = [[UIBarButtonItem alloc]initWithImage:searchImage
-                                                          style:UIBarButtonItemStylePlain
-                                                         target:self
-                                                         action:@selector(searchButtonPressed:)];
     
     UIImage *filterImage=[UIImage imageNamed:@"sorting_answers_filled"];
     
@@ -431,16 +500,13 @@ static NSString *viewID = @"LikeAnnotation";
                                                        target:self
                                                        action:@selector(filterButtonPressed:)];
     
-    [_filterButton setTintColor:[UIColor cloudsColor]];
-    [_searchButton setTintColor:[UIColor cloudsColor]];
+    [_filterButton setTintColor:[UIColor clearColor]];
     [_filterButton configureFlatButtonWithColor:[UIColor midnightBlueColor]
                                highlightedColor:[UIColor wetAsphaltColor]
                                    cornerRadius:3];
-    [_searchButton configureFlatButtonWithColor:[UIColor midnightBlueColor]
-                               highlightedColor:[UIColor wetAsphaltColor]
-                                   cornerRadius:3];
     
-    [self.navigationItem setRightBarButtonItems:@[_filterButton, _searchButton]];
+    
+    [self.navigationItem setRightBarButtonItem:_filterButton];
 }
 
 
@@ -472,10 +538,7 @@ static NSString *viewID = @"LikeAnnotation";
 
 -(void)dealloc {
     self.locationManager = nil;
-    
-    
-    
-    //    _coords = nil;
+    [self.locationManager stopMonitoringSignificantLocationChanges];
 }
 
 
@@ -485,67 +548,27 @@ static NSString *viewID = @"LikeAnnotation";
 didPressDoneButton:(FUIButton *)button
     withTitleText:(NSString *)titleText
 withDescriptionText:(NSString *)descriptionText
-//withCategory:(BLCCategories *)category
 {
-    //    BLCCategoryButton *catButton = [[BLCCategoryButton alloc]init];
     
-    [self.parameters setObject:titleText forKey:@"placeName"];
+    [self.parameters setObject:titleText forKey:@"locationName"];
     [self.parameters setObject:descriptionText forKey:@"notes"];
     [self.parameters setObject:self forKey:NSStringFromSelector(@selector(buttonState))];
-    //    NSLog(@"self.params before initializing POI [%@]", self.params);
     Annotation *annotation = [[Annotation alloc]initWithCoordinate:_coordinates];
     [self.parameters setObject:annotation forKey:@"annotation"];
     self.poi = [[POI alloc] initWithDictionary:self.parameters];
-    
-    NSLog(@"SELF.POI *** %@ ***", self.poi);
     [[DataSource sharedInstance] addPOI:self.poi];
-    
-    
+    [[DataSource sharedInstance] addPOI:self.poi toCategoryArray:self.parameters[@"category"]];
     [self setState:ViewControllerStateMapContent animated:YES];
     
     [self.mapView addAnnotation:annotation];
-    
-    //    BLCCategories *categories = self.params[@"category"];
-    //    [categories.pointsOfInterest addObject:self.poi];
-    
-    //    [[BLCDataSource sharedInstance] addPointOfInterest:self.poi ToArray:categories.pointsOfInterest];
-    
-    
-    
-    // set the title lablel of the custom view back to its real title
     self.createAnnotationView.titleLabel.attributedText = [self titleLabelString];
     
-    //    self.categoryDic[@"pointsOfInterest"] = tempMutArray;
-    //    BLCCategories *category = [[BLCCategories alloc]initWithDictionary:self.categoryDic];
-    //    for (BLCCategories *category in [BLCDataSource sharedInstance].categories)
-    //    {
-    //        if (categories == category)
-    //        {
-    //            [category.pointsOfInterest addObject:self.poi];
-    ////            self.categoryDic[@"pointsOfInterest"] = category.pointsOfInterest;
-    //
-    //        }
-    //    }
     
     
 }
 
-//-(void)controllerWillSendCategoryObjectWithDictionary:(NSMutableDictionary *)dic {
-//    NSLog(@"delegate was fired");
-//    self.categoryDic = [NSMutableDictionary new];
-//    self.categoryDic = dic;
-//
-//
-////    [mutDic setObject:_poiTempArray forKey:@"pointsOfInterest"];
-//
-//
-//
-//
-//}
 -(void)customViewDidPressAddCategoriesView:(UIView *)categoryView
 {
-    NSLog(@"tap being fired DELEGATE");
-    
     [UIView animateWithDuration:1
                           delay:0
          usingSpringWithDamping:.75
@@ -555,8 +578,6 @@ withDescriptionText:(NSString *)descriptionText
                          
                          [self.navigationController presentViewController:self.navVC animated:NO completion:nil];
                          
-                         
-                         //
                      } completion:^(BOOL finished) {
                          
                          
@@ -566,13 +587,11 @@ withDescriptionText:(NSString *)descriptionText
 
 #pragma mark BLCCategoriesViewControllerDelegate
 
--(void)controllerDidDismiss:(CategoryViewController *)controller
-{
+-(void)controllerDidDismiss:(CategoryViewController *)controller{
     
     [self.navVC dismissViewControllerAnimated:YES completion:nil];
     
 }
-
 
 -(void)category:(Categories *)categories {
     _category = categories;
@@ -582,17 +601,87 @@ withDescriptionText:(NSString *)descriptionText
     
     self.createAnnotationView.titleLabel.attributedText = [self.createAnnotationView titleLabelStringWithCategory:categories.categoryName withColor:categories.color];
     
+    [self.categoryVC dismissViewControllerAnimated:YES completion:nil];
+    
+}
+#pragma mark BLCPopUpCategoriesTableViewControllerDelegate
+
+-(void)getSelectedCategories:(NSArray *)categories andProceed:(BOOL)proceed
+{
+    if (proceed)
+    {
+        self.catArray = [NSMutableArray new];
+        self.catArray = [NSMutableArray arrayWithArray:[self filterAnnotationsFromCategories:categories]];
+    }
+}
+
+-(NSMutableArray *)filterAnnotationsFromCategories:(NSArray *)categories
+{
+    NSMutableArray *mutArray = [NSMutableArray new];
+    
+    for (Categories *category in categories)
+    {
+        
+        [mutArray addObjectsFromArray:category.poi];
+        
+    }
+    NSMutableArray *annotationArray =[NSMutableArray new];
+    
+    for (POI *poi in mutArray)
+    {
+        for (POI *dataPOI in [DataSource sharedInstance].annotations)
+        {
+            if ([poi.locationName isEqualToString:[NSString stringWithFormat:@"%@", dataPOI.locationName]] && [poi.note isEqualToString:[NSString stringWithFormat:@"%@", dataPOI.note]])
+            {
+                Annotation *annotation = [[Annotation alloc]initWithCoordinate:CLLocationCoordinate2DMake(poi.annotation.latitude, poi.annotation.longitude)];
+                
+                
+                CallOutView *view = [[CallOutView alloc] initWithAnnotation:annotation reuseIdentifier:@"LikeAnnotation"];
+                [view setTintColor:poi.category.color];
+                
+                [annotationArray addObject:view];
+                
+                
+            }
+        }
+        
+    }
+    
+    
+    return annotationArray;
+    
+    
+}
+#pragma mark BLCPoiTableViewControllerDelegate
+
+
+-(void)didSelectPOI:(POI *)poi
+{
+    NSMutableArray *mutArray = [NSMutableArray new];
+    
+    for (POI *dataPOI in [DataSource sharedInstance].annotations)
+    {
+        
+        if ([poi.locationName isEqualToString:[NSString stringWithFormat:@"%@",dataPOI.locationName]] &&[poi.note isEqualToString:[NSString stringWithFormat:@"%@",dataPOI.note]])
+        {
+            CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(dataPOI.annotation.latitude, dataPOI.annotation.longitude);
+            Annotation *annotation = [[Annotation alloc]initWithCoordinate:coordinate];
+            CallOutView *calloutView = [[CallOutView alloc]initWithAnnotation:annotation reuseIdentifier:viewID];
+            [mutArray addObject:calloutView];
+        }
+        
+        
+    }
+    
+    [self.mapView showAnnotations:mutArray animated:YES];
+    
 }
 
 #pragma mark tap gesture recognizer
 
 -(void)tapFired:(UITapGestureRecognizer *)sender
 {
-    [_searchBar resignFirstResponder];
-    _searchBar.alpha = 0.0;
-    self.navigationItem.titleView = nil;
-    self.navigationItem.leftBarButtonItems = @[_listButton, _labelButton];
-    self.navigationItem.rightBarButtonItems =@[_filterButton, _searchButton];
+    
     [self setState:ViewControllerStateMapContent animated:NO];
 }
 
@@ -614,28 +703,28 @@ withDescriptionText:(NSString *)descriptionText
 
 #pragma mark UITabBar button actions
 
--(void)searchButtonPressed:(id)sender
+-(void)popupBarButtonItemDonePressed:(id)sender
 {
+    if (self.catArray)
+    {
+        [self.mapView showAnnotations:self.catArray animated:YES];
+        [self.popover dismissPopoverAnimated:YES];
+        [self.catArray removeAllObjects];
+        [self.navigationItem.leftBarButtonItem setEnabled:YES];
+        
+    }
+}
+-(void)cancelFilterCategoryPressed:(id)sender
+{
+    [self.popover dismissPopoverAnimated:YES];
+    [self.navigationItem.leftBarButtonItem setEnabled:YES];
     
-    [UIView animateWithDuration:1
-                          delay:0
-         usingSpringWithDamping:.75
-          initialSpringVelocity:10
-                        options:kNilOptions
-                     animations:^{
-                         _searchBar.alpha = 1.0;
-                         self.navigationItem.rightBarButtonItems = nil;
-                         self.navigationItem.leftBarButtonItems = nil;
-                         self.navigationItem.titleView = _searchBar;
-                         [_searchBar becomeFirstResponder];
-                         
-                         
-                         
-                     } completion:^(BOOL finished) {
-                         
-                         
-                         
-                     }];
+    
+}
+-(void)popoverControllerDidDismissPopover:(WYPopoverController *)popoverController
+{
+    [self.navigationItem.leftBarButtonItem setEnabled:YES];
+    
 }
 -(void)listViewPressed:(id)sender
 {
@@ -649,58 +738,31 @@ withDescriptionText:(NSString *)descriptionText
     [self.navigationController.view.layer addAnimation:transition forKey:nil];
     
     self.navigationController.navigationBarHidden = NO;
-    [self.navigationController pushViewController:self.poiTableVC animated:NO];
+    [self.navigationController pushViewController:self.poiTableVC animated:YES];
     
 }
 -(void)filterButtonPressed:(id)sender
 {
-    
-    
     [UIView animateWithDuration:1
                           delay:0
          usingSpringWithDamping:.75
           initialSpringVelocity:10
                         options:kNilOptions
                      animations:^{
-                         [self.navVC.navigationItem.leftBarButtonItem setEnabled:NO];
-                         [_popover presentPopoverFromBarButtonItem:self.filterButton
-                                          permittedArrowDirections:WYPopoverArrowDirectionDown
-                                                          animated:NO];
+                         [self.navigationItem.leftBarButtonItem setEnabled:NO];
+                         [self.popover presentPopoverFromBarButtonItem:self.filterButton
+                                              permittedArrowDirections:WYPopoverArrowDirectionDown
+                                                              animated:NO];
                          
-                         //
                      } completion:^(BOOL finished) {
                          
                          
                          
                      }];
 }
--(void)popupBarButtonItemDonePressed:(id)sender
-{
-    [self.popover dismissPopoverAnimated:YES];
-}
 
-#pragma mark UISearchBarDelegate methods
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [UIView animateWithDuration:0.9
-                          delay:0
-         usingSpringWithDamping:1
-          initialSpringVelocity:0
-                        options:kNilOptions
-                     animations:^{
-                         
-                         
-                     } completion:^(BOOL finished) {
-                         _searchBar.alpha = 0.0;
-                         
-                         self.navigationItem.titleView = nil;
-                         self.navigationItem.leftBarButtonItems = @[_listButton, _labelButton];
-                         self.navigationItem.rightBarButtonItems =@[_filterButton, _searchButton];
-                         
-                     }];
-    
-    
-}
+
 
 
 
@@ -717,8 +779,6 @@ withDescriptionText:(NSString *)descriptionText
     if([annotation isKindOfClass:[Annotation class]])
         
     {
-        
-        
         if (!annotationView){
             annotationView = [[CallOutView alloc]
                               initWithAnnotation:annotation reuseIdentifier:viewID];
@@ -728,8 +788,7 @@ withDescriptionText:(NSString *)descriptionText
         annotationView.enabled = YES;
         [annotationView setTintColor:_category.color];
         annotationView.canShowCallout = NO;
-        //        _annotationView
-        //        _annotationView.calloutOffset =0;
+        
         [annotationView addSubview:[self returnImageColored]];
         
         
@@ -758,11 +817,6 @@ withDescriptionText:(NSString *)descriptionText
     
     mapView.scrollEnabled =NO;
     
-    
-    //    [mapView setCenter:view.center];
-    ////        [mapView addAnnotation:innerView.customAnnotation];
-    //            [mapView selectAnnotation:innerView.customAnnotation animated:YES];
-    
     for (POI *poi in [DataSource sharedInstance].annotations)
     {
         if (poi.annotation == view.annotation){
@@ -774,21 +828,10 @@ withDescriptionText:(NSString *)descriptionText
             self.calloutView = [[SMCalloutView alloc]init];
             self.calloutView.contentView =innerView; ;
             
-            //            // setting the attributes of the Labels present on the view
-            //            innerView.titleLabel.attributedText = [self calloutTtitleStringWithString:poi.placeName andColor:[UIColor midnightBlueColor]];
-            //            innerView.descriptionLabel.attributedText = [self descriptionStringWithString:poi.notes];
-            //            innerView.categoryLabel.attributedText = [self categoryLabelAttributedStringForString:poi.category.categoryName andColor:poi.category.color];
-            
-            //            [[self returnImageColored] setTintColor:poi.category.color];
-            //            [innerView.visitIndicatorButton setImage:[self returnImageColored].image forState:UIControlStateNormal];
-            //            [innerView.visitIndicatorButton setTintColor:poi.category.color];
             
             NSLog(@"poi.buttonState coming from the database %i", poi.buttonState);
             
-            //[self.calloutView presentCalloutFromRect:view.frame inView:mapView constrainedToView:mapView permittedArrowDirections:SMCalloutArrowDirectionAny animated:YES];
-            
             [self.calloutView presentCalloutFromRect:view.frame inView:mapView constrainedToView:mapView animated:YES];
-            
         }
         
         
@@ -818,55 +861,8 @@ withDescriptionText:(NSString *)descriptionText
     
 }
 
-#pragma mark NSAttributedStrings
-//- (NSAttributedString *)categoryLabelAttributedStringForString:(NSString*)string andColor:(UIColor *)color{
-//    NSString *baseString = NSLocalizedString([string uppercaseString], @"Label of category");
-//    NSRange range = [baseString rangeOfString:baseString];
-//
-//    NSMutableAttributedString *baseAttributedString = [[NSMutableAttributedString alloc] initWithString:baseString];
-//
-//    [baseAttributedString addAttribute:NSFontAttributeName value:[UIFont boldFlatFontOfSize:16] range:range];
-//    [baseAttributedString addAttribute:NSKernAttributeName value:@1.3 range:range];
-//    [baseAttributedString addAttribute:NSForegroundColorAttributeName value:color range:range];
-//    return baseAttributedString;
-//
-//
-//}
-//
-//-(NSAttributedString *)calloutTtitleStringWithString:(NSString *)string andColor:(UIColor *)color  {
-//
-//    NSString *baseString =string;
-//
-//    NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSForegroundColorAttributeName:color,NSFontAttributeName:[UIFont boldFlatFontOfSize:20]}];
-//
-//    return mutAttString;
-//
-//}
-//
-//-(NSAttributedString *)descriptionStringWithString:(NSString *)string  {
-//
-//    NSString *baseString = string;
-//    NSMutableParagraphStyle *mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-//    mutableParagraphStyle.headIndent = 20.0;
-//    mutableParagraphStyle.firstLineHeadIndent = 20.0;
-//    mutableParagraphStyle.tailIndent = -20.0;
-//    mutableParagraphStyle.paragraphSpacingBefore = 5;
-//
-//    NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:baseString
-//                                                                                     attributes:@{NSForegroundColorAttributeName:[UIColor midnightBlueColor],NSFontAttributeName:[UIFont flatFontOfSize:16],NSParagraphStyleAttributeName : mutableParagraphStyle}];
-//
-//    return mutAttString;
-//
-//}
 
-#pragma mark CLLocationManagerDelegate Methods
--(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    CLLocation *location = [locations lastObject];
-    [self fetchVenuesForLocation:location];
-    [self zoomToLocation:location radius:2000];
-    [self.locationManager stopUpdatingLocation];
-    
-}
+
 
 #pragma mark BLCCallOutInnerViewDelegate
 
@@ -883,48 +879,49 @@ withDescriptionText:(NSString *)descriptionText
         view.visitIndicatorButton.visitButtonState = VisitButtonSelectedYES;
     }
     
+}
+
+-(void)callOutViewDidPressDeleteButton:(CallOutInnerView *)view
+{
+    [[DataSource sharedInstance] deletePOI:view.poi];
+    [self.mapView removeAnnotation:view.poi.annotation];
+    [self.calloutView dismissCalloutAnimated:YES];
+    
+}
+-(void)callOutViewDidPressShareButton:(CallOutInnerView *)view
+{
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[view.poi.locationName, view.poi.note, view.poi.annotation] applicationActivities:nil];
+    [self presentViewController:activityVC animated:YES completion:nil];
+}
+
+
+-(void)callOutViewDidPressMapDirectionsButton:(CallOutInnerView *)view
+{
     
     
-    //    for (BLCPointOfInterest *poi in [BLCDataSource sharedInstance].annotations)
-    //    {
-    //        NSLog(@"POI.VISITED IN LOOP %@",poi.visited);
-    //        if (poi.customAnnotation == view.customAnnotation)
-    //        {
-    ////            if (poi.visited)
-    ////            {
-    //                if ([poi.visited isEqualToString:@"0"])
-    //                {
-    ////                    BLCPointOfInterest *newPOI = [[BLCPointOfInterest alloc]initWithDictionary:self.params];
-    //                    self.params[@"visited"] = @"1";
-    //                    BLCPointOfInterest *POI = [[BLCPointOfInterest alloc]initWithDictionary:self.params];
-    //                    [[BLCDataSource sharedInstance] replaceAnnotation:poi withOtherPOI:POI];
-    //
-    //                    view.visitIndicatorButton.vistButtonState = BLCVisitButtonSelectedYES;
-    //
-    ////                    [self.mapView reloadInputViews];
-    //                    NSLog(@" OLD POI.VISITED INSIDE IF STATEMENT IF NOT VISITED %@",poi.visited);
-    //
-    ////                    NSLog(@"***new POI.VISITED INSIDE IF STATEMENT IF NOT VISITED %@",newPOI.visited);
-    //                }if ([poi.visited isEqualToString:@"1"])
-    //                {
-    //
-    ////                    [poi.visited setValue:@"0" forKey:@"visited"];
-    //                    self.params[@"visited"] = @"0";
-    //                    BLCPointOfInterest *POI = [[BLCPointOfInterest alloc]initWithDictionary:self.params];
-    ////                    BLCPointOfInterest *newPOI = [[BLCPointOfInterest alloc]initWithDictionary:self.params];
-    //                    [[BLCDataSource sharedInstance] replaceAnnotation:poi withOtherPOI:POI];
-    //
-    //                    view.visitIndicatorButton.vistButtonState = BLCVisitButtonSelectedNO;
-    //
-    ////                    [self.mapView reloadInputViews];
-    //                    NSLog(@" OLD POI.VISITED INSIDE IF STATEMENT IF NOT VISITED %@",poi.visited);
-    //
-    ////                    NSLog(@"*** NEW POI.VISITED INSIDE IF STATEMENT IF VISITED %@",newPOI.visited);
-    //
-    //                }
-    //            }
-    //////        }
-    //    }
+    Class mapItemClass = [MKMapItem class];
+    if (mapItemClass && [mapItemClass respondsToSelector:@selector(openMapsWithItems:launchOptions:)])
+    {
+        
+        // Create an MKMapItem to pass to the Maps app
+        CLLocationCoordinate2D coordinate =
+        CLLocationCoordinate2DMake(view.poi.annotation.latitude,view.poi.annotation.longitude);
+        MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coordinate
+                                                       addressDictionary:nil];
+        MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+        [mapItem setName:view.poi.locationName];
+        
+        // Set the directions mode to "Driving"
+        // Can use MKLaunchOptionsDirectionsModeDriving instead
+        NSDictionary *launchOptions = @{MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving};
+        // Get the "Current User Location" MKMapItem
+        MKMapItem *currentLocationMapItem = [MKMapItem mapItemForCurrentLocation];
+        // Pass the current location and destination map items to the Maps app
+        // Set the direction mode in the launchOptions dictionary
+        [MKMapItem openMapsWithItems:@[currentLocationMapItem, mapItem]
+                       launchOptions:launchOptions];
+    }
+    
 }
 
 @end

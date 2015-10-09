@@ -13,7 +13,7 @@
 -(instancetype) initWithDictionary:(NSDictionary *)poiDictionary{
     self = [super init];
     if (self) {
-        self.locationName = poiDictionary[@"location"];
+        self.locationName = poiDictionary[@"locationName"];
         self.note = poiDictionary[@"notes"];
         self.category = poiDictionary[@"category"];
         //self.location = poiDictionary[@"location"];
@@ -38,7 +38,7 @@
         self.category=[aDecoder decodeObjectForKey:NSStringFromSelector(@selector(category))];
         //self.location=[aDecoder decodeObjectForKey:NSStringFromSelector(@selector(location))];
         self.annotation = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(annotation))];
-        self.visited = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(visited))];
+
         self.buttonState = [aDecoder decodeIntegerForKey:NSStringFromSelector(@selector(buttonState))];
     }
     
@@ -50,7 +50,7 @@
     [aCoder encodeObject:self.locationName forKey:NSStringFromSelector(@selector(locationName))];
     [aCoder encodeObject:self.note forKey:NSStringFromSelector(@selector(note))];
     [aCoder encodeObject:self.category forKey:NSStringFromSelector(@selector(category))];
-    //[aCoder encodeObject:self.location forKey:NSStringFromSelector(@selector(location))];
+
     [aCoder encodeObject:self.annotation forKey:NSStringFromSelector(@selector(annotation))];
     [aCoder encodeInteger:self.buttonState forKey:NSStringFromSelector(@selector(buttonState))];
 }

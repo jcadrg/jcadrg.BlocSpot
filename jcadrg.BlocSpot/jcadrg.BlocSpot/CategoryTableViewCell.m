@@ -34,7 +34,7 @@
         self.categoryLabel = [UILabel new];
         self.categoryLabel.numberOfLines = 0;
         self.categoryLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        self.categoryLabel.attributedText = [self categoryLabelAttributedString];
+        //self.categoryLabel.attributedText = [self categoryLabelAttributedString];
         [self.contentView addSubview:self.categoryLabel];
         
         // CELL
@@ -48,25 +48,31 @@
         
         
         //TAG IMAGE
-        self.tagImageView = [[UIImageView alloc]init];
+        /*self.tagImageView = [[UIImageView alloc]init];
         self.image = [UIImage imageNamed:@"like"];
-        self.tagImageView.image = self.image ;
+        self.tagImageView.image = self.image ;*/
         
-        self.tagImageView.image = [_tagImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.tagImageView = [[UIImageView alloc] init];
+        [self.contentView addSubview:self.tagImageView];
         self.tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.contentView addSubview:_tagImageView];
         
-        self.tagImageViewFull = [[UIImageView alloc]init];
+        /*self.tagImageView.image = [_tagImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.tagImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addSubview:_tagImageView];*/
+        
+        /*self.tagImageViewFull = [[UIImageView alloc]init];
         self.image1 = [UIImage imageNamed:@"hearts_filled"];
         self.tagImageViewFull.image = self.image1 ;
         
         self.tagImageViewFull.image = [_tagImageViewFull.image imageWithRenderingMode:  UIImageRenderingModeAlwaysTemplate];
         
-        self.tagImageViewFull.translatesAutoresizingMaskIntoConstraints = NO;
+        self.tagImageViewFull.translatesAutoresizingMaskIntoConstraints = NO;*/
         
         
-        [self.contentView addSubview:_tagImageViewFull];
+        //[self.contentView addSubview:_tagImageViewFull];
         //            [self.tagImageView1 setHidden:YES];
+        
+        self.state = CategoryTableViewCellStateUnSelectedNOT;
         
         
         [self createConstraints];
@@ -78,19 +84,32 @@
 
 #pragma Attributed String
 
-- (NSAttributedString *) categoryLabelAttributedString {
-    NSString *categoryName = self.category.categoryName;
+- (NSAttributedString *) categoryLabelAttributedStringWithColor:(UIColor *) color {
+    NSString *categoryName = [NSString stringWithFormat:@"%@", self.category.categoryName];
+    
     NSString *baseString = NSLocalizedString([categoryName uppercaseString], @"Label of category");
     NSRange range = [baseString rangeOfString:baseString];
     
-    NSMutableAttributedString *baseAttributedString = [[NSMutableAttributedString alloc] initWithString:baseString];
+    if (categoryName) {
+        
+        NSMutableAttributedString *baseAttributedString = [[NSMutableAttributedString alloc] initWithString:baseString];
+        
+        [baseAttributedString addAttribute:NSFontAttributeName value:[UIFont boldFlatFontOfSize:16] range:range];
+        [baseAttributedString addAttribute:NSKernAttributeName value:@1.3 range:range];
+        
+        [baseAttributedString addAttribute:NSForegroundColorAttributeName value:color range:range];
+        
+        return baseAttributedString;
+        
+    }else return nil;
     
-    [baseAttributedString addAttribute:NSFontAttributeName value:[UIFont boldFlatFontOfSize:16] range:range];
-    [baseAttributedString addAttribute:NSKernAttributeName value:@1.3 range:range];
-    [baseAttributedString addAttribute:NSForegroundColorAttributeName value:self.category.color range:range];
-    return baseAttributedString;
     
-    
+}
+
+-(void) setCategory:(Categories *)category{
+    _category = category;
+    self.categoryLabel.attributedText = [self categoryLabelAttributedStringWithColor:category.color];
+    [self.tagImageView setTintColor:category.color];
 }
 
 
@@ -98,7 +117,7 @@
 -(void)createConstraints
 
 {
-    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(  _categoryLabel,_tagImageView, _tagImageViewFull);
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(  _categoryLabel,_tagImageView);
     
     
     
@@ -114,7 +133,7 @@
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tagImageViewFull(==44)]|"
+    /*[self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tagImageViewFull(==44)]|"
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
@@ -128,7 +147,7 @@
                                                                                views:viewDictionary]];
     
     
-    
+    */
     
     
     
@@ -160,27 +179,43 @@
 //    }
 //
 //}
--(void)setState:(CategoryTableViewCellState)state {
-    [self checkState];
+
+-(UIImageView *) returnImageColoredWithName:(NSString *)name{
+    
+    UIImageView *imageView = [UIImageView new];
+    self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    UIImage *image = [UIImage imageNamed:name];
+    imageView.frame = CGRectMake(0, 0, self.frame.size.width -10, self.frame.size.height -10);
+    imageView.image = image;
+    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    return imageView;
 }
 
-
--(void)checkState
-{
+-(void)setState:(CategoryTableViewCellState)state {
+    _state = state;
+    
+    NSString *imageName;
+    
     switch (self.state) {
             
-        case CategoryTableViewCellStateUnSelectedNOT: {
-            [self.tagImageView setHidden:NO];
-            [self.tagImageViewFull setHidden:YES];
-        } break;
-        case CategoryTableViewCellStateSelectedYES: {
-            [self.tagImageView setHidden:YES];
-            [self.tagImageViewFull setHidden:NO];
+        case CategoryTableViewCellStateUnSelectedNOT:
+            
+            imageName = @"like";
+            
+        break;
+        case CategoryTableViewCellStateSelectedYES:
+            imageName = @"hearts_filled";
             
             
-        } break;
+        
     }
     
+    [self.tagImageView setImage:[self returnImageColoredWithName:imageName].image];
+    
 }
+
+
+
 
 @end

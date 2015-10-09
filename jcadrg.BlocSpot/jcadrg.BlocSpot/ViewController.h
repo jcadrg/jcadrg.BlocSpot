@@ -12,14 +12,11 @@
 #import "AnnotationView.h"
 #import "DataSource.h"
 
-@class ViewController, POI;
 
-@protocol ViewControllerDelegate <NSObject>
 
--(void) viewController:(ViewController *) viewController didLongPressOnMap:(MKMapView *)map;
--(void) controller:(ViewController *) controller didComeFromVC:(BOOL) confirmation;
 
-@end
+
+
 
 
 
@@ -28,13 +25,16 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 
 @property (nonatomic, strong) AnnotationView *createAnnotationView;
-@property (nonatomic, weak) id<ViewControllerDelegate> delegate;
+
 
 @property (nonatomic, strong) DataSource *data;
-@property (nonatomic, strong) NSArray *diskArray;
+
 
 @property (nonatomic, assign) BOOL addAnnotationState;
 @property (nonatomic, assign) BOOL ViewState;
+
+@property (nonatomic, strong) MKMapView *mapView;
+@property (nonatomic, strong) NSMutableArray *catArray;
 
 
 @end

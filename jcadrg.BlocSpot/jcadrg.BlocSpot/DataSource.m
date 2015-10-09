@@ -11,10 +11,12 @@
 @interface DataSource () {
     NSMutableArray *_annotations;
     NSMutableArray *_categories;
+    NSMutableDictionary *_distanceValuesDictionary;
     
 }
 @property (nonatomic, strong) NSArray *annotations;
 @property (nonatomic, strong) NSArray *categories;
+@property (nonatomic, strong) NSDictionary *distanceValuesDictionary;
 
 
 
@@ -22,7 +24,6 @@
 @end
 
 @implementation DataSource
-
 
 
 + (instancetype) sharedInstance {
@@ -40,12 +41,8 @@
         
         
     }
-    
-    
     return self;
 }
-\
-
 
 
 - (void)removeImage:(NSString *)fileName
@@ -57,7 +54,7 @@
     NSError *error;
     BOOL success = [fileManager removeItemAtPath:filePath error:&error];
     if (success) {
-        UIAlertView *removeSuccessFulAlert=[[UIAlertView alloc]initWithTitle:@"Congratulation:" message:@"Successfully removed" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:nil];
+        UIAlertView *removeSuccessFulAlert=[[UIAlertView alloc]initWithTitle:@"Congratulations:" message:@"Successfully removed" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:nil];
         [removeSuccessFulAlert show];
     }
     else
@@ -66,7 +63,12 @@
     }
 }
 
-
+-(void)addDictionary:(NSDictionary *)dic
+{
+    _distanceValuesDictionary =[NSMutableDictionary dictionaryWithDictionary:dic];
+    
+    
+}
 -(void) deleteCategories:(Categories *)category
 {
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"categories"];
@@ -78,21 +80,40 @@
 {
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"categories"];
     [mutableArrayWithKVO insertObject:category atIndex:0];
+    
     [self savingCategories];
 }
 
--(void) deletePointOfInterest:(POI *)poi
-{
+-(void) deletePOI:(POI *)poi{
+    
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"annotations"];
+    //    [poi.category.pointsOfInterest removeObject:poi];
     [mutableArrayWithKVO removeObject:poi];
     [self savingAnnotations];
+    //    [self savingCategories];
     
 }
--(void)addPOI:(POI *)poi
-{
+-(void)addPOI:(POI *)poi{
+    
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"annotations"];
     [mutableArrayWithKVO insertObject:poi atIndex:0];
     [self savingAnnotations];
+}
+
+-(void)addPOI:(POI *)poi toCategoryArray:(Categories *)category{
+    
+    [category.poi addObject:poi];
+    [self savingCategories];
+    [self reloadCategories:category];
+    
+    
+}
+-(void)reloadCategories:(Categories *)category{
+    
+    NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"categories"];
+    NSUInteger index = [mutableArrayWithKVO indexOfObject:category];
+    [mutableArrayWithKVO replaceObjectAtIndex:index withObject:category];
+    
 }
 
 -(void)toggleVisitedOnPOI:(POI *)poi
@@ -100,24 +121,20 @@
     
     if (poi.buttonState == VisitButtonSelectedNO)
     {
-        NSLog(@"BWFORE A: %i", poi.buttonState);
         
         [poi setButtonState:VisitButtonSelectedYES];
         [self reloadAnnotation:poi];
         
         [self savingAnnotations];
         
-        NSLog(@"AFTER A: %i", poi.buttonState);
         
     }else {
-        NSLog(@"BEFORE B: %i", poi.buttonState);
         
         [poi setButtonState:VisitButtonSelectedNO];
         [self reloadAnnotation:poi];
         
         [self savingAnnotations];
         
-        NSLog(@"AFTER B: %i", poi.buttonState);
     }
     
     
@@ -146,22 +163,23 @@
     // Write the changes to disk
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         ;
-        _annotationPath = [self pathForFilename:NSStringFromSelector(@selector(annotations))];
+        _annotationsPath = [self pathForFilename:NSStringFromSelector(@selector(annotations))];
         NSData *annotationData = [NSKeyedArchiver archivedDataWithRootObject:self.annotations];
         
         NSError *dataError;
-        BOOL wroteSuccessfully = [annotationData writeToFile:_annotationPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
+        BOOL wroteSuccessfully = [annotationData writeToFile:_annotationsPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
         
         if (!wroteSuccessfully) {
             NSLog(@"Couldn't write file: %@", dataError);
         }
+        
     });
     
 }
 
 - (void)loadAnnotations {
-    _annotationPath = [self pathForFilename:NSStringFromSelector(@selector(annotations))];
-    _annotations  = [NSKeyedUnarchiver unarchiveObjectWithFile:_annotationPath];
+    _annotationsPath = [self pathForFilename:NSStringFromSelector(@selector(annotations))];
+    _annotations  = [NSKeyedUnarchiver unarchiveObjectWithFile:_annotationsPath];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSMutableArray *mutableAnnotations = [_annotations mutableCopy];
         
@@ -280,6 +298,5 @@
 - (void) replaceObjectInCategoriesAtIndex:(NSUInteger)index withObject:(id)object {
     [_categories replaceObjectAtIndex:index withObject:object];
 }
-
 
 @end

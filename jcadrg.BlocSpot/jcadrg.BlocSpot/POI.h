@@ -19,11 +19,11 @@
 @property (nonatomic, strong) NSString *locationName;
 @property (nonatomic, strong) NSString *note;
 @property (nonatomic, assign) BOOL visitState;
-@property (nonatomic, assign) CLLocation *location;
+
 @property (nonatomic, strong) Categories *category;
 @property (nonatomic, strong) Annotation *annotation;
 
-@property (nonatomic, strong) NSString *visited;
+
 @property (nonatomic, assign) VisitButtonSelected buttonState;
 
 
