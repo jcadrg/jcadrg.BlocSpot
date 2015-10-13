@@ -70,7 +70,7 @@ static NSString *kFullTagLabel = @"heart_label_full";
     
     if (self){
         [[DataSource sharedInstance] addObserver:self forKeyPath:@"categories" options:0 context:nil];
-        //        [self.category addObserver:self forKeyPath:@"POI" options:0 context:nil];
+        //        [self.category addObserver:self forKeyPath:@"pointsOfInterest" options:0 context:nil];
         
         //Itnitialize all objects
         if (!_containerView)
@@ -540,19 +540,19 @@ static NSString *kFullTagLabel = @"heart_label_full";
         bool passedFirst = NO;
         if (!_categoryChosenColor && _addCategoryField.text.length ==0)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something went wrong!"  message:@"You have forgotten to add a color and write a name for your category" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK button") otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something Happened!!"  message:@"You have forgotten to add a color and write a name for your category" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK button") otherButtonTitles:nil];
             [alert show];
             passedFirst = YES;
         }
         if (!_categoryChosenColor && !passedFirst)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something went wrong!!"  message:@"You have forgotten to add a color" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK button") otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something Happened!!"  message:@"You have forgotten to add a color" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK button") otherButtonTitles:nil];
             [alert show];
             passedFirst = NO;
         }
         if (_addCategoryField.text.length == 0 && !passedFirst)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something went wrong!"  message:@"You have forgotten to write a text for your category" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK button") otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Something Happened!!"  message:@"You have forgotten to write a text for your category" delegate:self cancelButtonTitle:NSLocalizedString(@"OK", @"OK button") otherButtonTitles:nil];
             [alert show];
             
             passedFirst = NO;

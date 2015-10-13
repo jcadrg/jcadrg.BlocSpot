@@ -35,7 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[DataSource sharedInstance] addObserver:self forKeyPath:@"categories" options:0 context:nil];
+ //   [[DataSource sharedInstance] addObserver:self forKeyPath:@"categories" options:0 context:nil];
     [self.tableView registerClass:[CategoryTableViewCell class] forCellReuseIdentifier:@"categoryCell"];
 }
 
@@ -47,7 +47,12 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Categories *item = [DataSource sharedInstance].categories[indexPath.row];
+        
+        NSLog(@"ALL CATEGORIES BEFORE DELETING = %@",[DataSource sharedInstance].categories);
+        
         [[DataSource sharedInstance] deleteCategories:item];
+        
+        NSLog(@"ALL CATEGORIES AFTER DELETING = %@",[DataSource sharedInstance].categories);
         
     }
 }

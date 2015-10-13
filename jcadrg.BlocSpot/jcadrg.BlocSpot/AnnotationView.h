@@ -10,7 +10,7 @@
 #import <MapKit/MapKit.h>
 
 #import "FlatUIKit.h"
-#import "TLTagsControl.h"
+//#import "TLTagsControl.h"
 #import "Categories.h"
 #import "POI.h"
 #import "DataSource.h"

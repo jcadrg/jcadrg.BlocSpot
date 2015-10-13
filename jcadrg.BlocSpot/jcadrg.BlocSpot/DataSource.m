@@ -54,7 +54,7 @@
     NSError *error;
     BOOL success = [fileManager removeItemAtPath:filePath error:&error];
     if (success) {
-        UIAlertView *removeSuccessFulAlert=[[UIAlertView alloc]initWithTitle:@"Congratulations:" message:@"Successfully removed" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:nil];
+        UIAlertView *removeSuccessFulAlert=[[UIAlertView alloc]initWithTitle:@"Congratulation:" message:@"Successfully removed" delegate:self cancelButtonTitle:@"Close" otherButtonTitles:nil];
         [removeSuccessFulAlert show];
     }
     else
@@ -78,14 +78,29 @@
 }
 -(void)addCategories:(Categories *)category
 {
-    NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"categories"];
-    [mutableArrayWithKVO insertObject:category atIndex:0];
-    
-    [self savingCategories];
+    if ([category isKindOfClass:[Categories class]]) {
+        NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"categories"];
+        [mutableArrayWithKVO insertObject:category atIndex:0];
+        
+        
+        /*
+        
+        // Convert this NSIndexSet to an NSArray of NSIndexPaths (which is what the table view animation methods require)
+        NSMutableArray *indexPathsThatChanged = @[[NSIndexPath indexPathForItem:0 inSection:0]];
+        
+        // Call `beginUpdates` to tell the table view we're about to make changes
+        [self.tableView beginUpdates];
+        [self.tableView insertRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+*/
+        
+        [self savingCategories];
+
+    }
 }
 
--(void) deletePOI:(POI *)poi{
-    
+-(void) deletePOI:(POI *)poi
+{
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"annotations"];
     //    [poi.category.pointsOfInterest removeObject:poi];
     [mutableArrayWithKVO removeObject:poi];
@@ -93,14 +108,15 @@
     //    [self savingCategories];
     
 }
--(void)addPOI:(POI *)poi{
-    
+-(void)addPOI:(POI *)poi
+{
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"annotations"];
     [mutableArrayWithKVO insertObject:poi atIndex:0];
     [self savingAnnotations];
 }
 
--(void)addPOI:(POI *)poi toCategoryArray:(Categories *)category{
+-(void)addPOI:(POI *)poi toCategoryArray:(Categories *)category
+{
     
     [category.poi addObject:poi];
     [self savingCategories];
@@ -108,8 +124,8 @@
     
     
 }
--(void)reloadCategories:(Categories *)category{
-    
+-(void)reloadCategories:(Categories *)category
+{
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"categories"];
     NSUInteger index = [mutableArrayWithKVO indexOfObject:category];
     [mutableArrayWithKVO replaceObjectAtIndex:index withObject:category];
