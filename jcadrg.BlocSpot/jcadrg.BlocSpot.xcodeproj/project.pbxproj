@@ -31,7 +31,6 @@
 		5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E41BAF571800F09663 /* POITableViewController.m */; settings = {ASSET_TAGS = (); }; };
 		5DE767E81BAF586200F09663 /* POITableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DE767E71BAF586200F09663 /* POITableViewCell.m */; settings = {ASSET_TAGS = (); }; };
 		5DEF240F1BB313280073C4BC /* AnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF240E1BB313280073C4BC /* AnnotationView.m */; settings = {ASSET_TAGS = (); }; };
-		5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24111BB313D70073C4BC /* TLTagsControl.m */; settings = {ASSET_TAGS = (); }; };
 		5DEF24151BB342A70073C4BC /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DEF24141BB342A70073C4BC /* Annotation.m */; settings = {ASSET_TAGS = (); }; };
 		5DF641D31BB300A000427AC9 /* Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DF641D21BB300A000427AC9 /* Categories.m */; settings = {ASSET_TAGS = (); }; };
 		8086C2727E79159ADA828466 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2626E303E06022C8EB65B15 /* libPods.a */; };
@@ -96,8 +95,6 @@
 		5DE767E71BAF586200F09663 /* POITableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POITableViewCell.m; sourceTree = "<group>"; };
 		5DEF240D1BB313280073C4BC /* AnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationView.h; sourceTree = "<group>"; };
 		5DEF240E1BB313280073C4BC /* AnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationView.m; sourceTree = "<group>"; };
-		5DEF24101BB313D10073C4BC /* TLTagsControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TLTagsControl.h; path = "/Users/Rata/Documents/Juanca/jcadrg.BlocSpot/Pods/../../../../Desktop/TLTagsControl-master/TLTagsContol/TLTagsControl.h"; sourceTree = "<absolute>"; };
-		5DEF24111BB313D70073C4BC /* TLTagsControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TLTagsControl.m; path = "/Users/Rata/Documents/Juanca/jcadrg.BlocSpot/Pods/../../../../Desktop/TLTagsControl-master/TLTagsContol/TLTagsControl.m"; sourceTree = "<absolute>"; };
 		5DEF24131BB342A70073C4BC /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
 		5DEF24141BB342A70073C4BC /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
 		5DF641D11BB300A000427AC9 /* Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Categories.h; sourceTree = "<group>"; };
@@ -190,8 +187,6 @@
 				5DF641D21BB300A000427AC9 /* Categories.m */,
 				5DEF240D1BB313280073C4BC /* AnnotationView.h */,
 				5DEF240E1BB313280073C4BC /* AnnotationView.m */,
-				5DEF24111BB313D70073C4BC /* TLTagsControl.m */,
-				5DEF24101BB313D10073C4BC /* TLTagsControl.h */,
 				5DEF24131BB342A70073C4BC /* Annotation.h */,
 				5DEF24141BB342A70073C4BC /* Annotation.m */,
 				5DB344501BB9C35900B26D98 /* CategoryViewController.h */,
@@ -393,7 +388,6 @@
 				5D8FA89A1BAA7B76008D53A1 /* AppDelegate.m in Sources */,
 				5DB6C9F81BC5BD8700B95D23 /* PopUpCategoriesViewController.m in Sources */,
 				5DB344581BB9EA7900B26D98 /* ColorCollectionViewCell.m in Sources */,
-				5DEF24121BB313D70073C4BC /* TLTagsControl.m in Sources */,
 				5D02B1381BBE151000F97B47 /* CategoryButton.m in Sources */,
 				5DE767E51BAF571800F09663 /* POITableViewController.m in Sources */,
 				5DE767E21BAF507B00F09663 /* POI.m in Sources */,

@@ -823,6 +823,7 @@ withDescriptionText:(NSString *)descriptionText
             CallOutInnerView *innerView = [[CallOutInnerView alloc]init];
             innerView.delegate = self;
             innerView.poi  = poi;
+
             //            innerView.visitIndicatorButton.vistButtonState = poi.buttonState;
             innerView.frame = CGRectMake(0, 0, 280, 188);
             self.calloutView = [[SMCalloutView alloc]init];

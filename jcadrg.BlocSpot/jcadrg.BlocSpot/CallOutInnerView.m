@@ -138,7 +138,7 @@
 
 #pragma mark NSAttributedStrings
 - (NSAttributedString *)categoryLabelAttributedString{
-    NSString *aString = [NSString stringWithFormat:@"  %@  ", self.poi.category.categoryName];
+    NSString *aString = [NSString stringWithFormat:@"%@", self.poi.category.categoryName];
     
     NSString *baseString = NSLocalizedString([aString uppercaseString], @"Label of category");
     NSRange range = [baseString rangeOfString:baseString];
@@ -159,6 +159,8 @@
     NSString *aString = [NSString stringWithFormat:@"%@", self.poi.locationName];
     UIColor *color = [UIColor new];
     color = self.poi.category.color;
+
+    
     if (aString){
         NSMutableAttributedString *mutAttString = [[NSMutableAttributedString alloc] initWithString:aString attributes:@{NSForegroundColorAttributeName:color ,NSFontAttributeName:[UIFont boldFlatFontOfSize:20]}];
         
@@ -167,7 +169,7 @@
     
 }
 
--(NSAttributedString *)descriptionString  {
+-(NSMutableAttributedString *)descriptionString  {
     
     NSMutableParagraphStyle *mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     mutableParagraphStyle.headIndent = 20.0;
@@ -185,7 +187,7 @@
 }
 
 
--(void)setPOI:(POI *)poi
+-(void)setPoi:(POI *)poi
 {
     _poi = poi;
     _visitIndicatorButton.visitButtonState = _poi.buttonState;
