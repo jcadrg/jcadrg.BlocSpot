@@ -61,6 +61,12 @@ IB_DESIGNABLE
 @property (nonatomic) IBInspectable CGFloat floatingLabelXPadding;
 
 /**
+ * Ratio by which to modify the font size of the floating label.
+ * Defaults to 70
+ */
+@property (nonatomic) IBInspectable CGFloat floatingLabelReductionRatio;
+
+/**
  * Padding to be applied to the y coordinate of the placeholder.
  * Defaults to zero.
  */
@@ -117,11 +123,30 @@ IB_DESIGNABLE
 @property (nonatomic, assign) IBInspectable BOOL keepBaseline;
 
 /**
+ * Force floating label to be always visible
+ * Defaults to NO
+ */
+@property (nonatomic, assign) BOOL alwaysShowFloatingLabel;
+
+/**
+ * Color of the placeholder
+ */
+@property (nonatomic, strong) IBInspectable UIColor * placeholderColor;
+
+/**
  *  Sets the placeholder and the floating title
  *
  *  @param placeholder The string that to be shown in the text field when no other text is present.
  *  @param floatingTitle The string to be shown above the text field once it has been populated with text by the user.
  */
 - (void)setPlaceholder:(NSString *)placeholder floatingTitle:(NSString *)floatingTitle;
+
+/**
+ *  Sets the attributed placeholder and the floating title
+ *
+ *  @param attributedPlaceholder The string that to be shown in the text field when no other text is present.
+ *  @param floatingTitle The string to be shown above the text field once it has been populated with text by the user.
+ */
+- (void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder floatingTitle:(NSString *)floatingTitle;
 
 @end

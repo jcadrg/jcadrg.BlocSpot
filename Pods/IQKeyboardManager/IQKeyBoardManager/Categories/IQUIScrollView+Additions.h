@@ -1,5 +1,5 @@
 //
-//  IQKeyboardManagerConstantsInternal.h
+//  IQUIScrollView+Additions.h
 // https://github.com/hackiftekhar/IQKeyboardManager
 // Copyright (c) 2013-15 Iftekhar Qurashi.
 //
@@ -21,35 +21,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef IQKeyboardManagerConstantsInternal_h
-#define IQKeyboardManagerConstantsInternal_h
+#import <UIKit/UIKit.h>
 
 
-///-----------------------------------
-/// @name IQLayoutGuidePosition
-///-----------------------------------
+@interface UIScrollView (Additions)
 
 /**
- `IQLayoutGuidePositionNone`
- If there are no IQLayoutGuideConstraint associated with viewController
- 
- `IQLayoutGuidePositionTop`
- If provided IQLayoutGuideConstraint is associated with with viewController topLayoutGuide
- 
- `IQLayoutGuidePositionBottom`
- If provided IQLayoutGuideConstraint is associated with with viewController bottomLayoutGuide
+ Restore scrollViewContentOffset when resigning from scrollView. Default is NO.
  */
-typedef NS_ENUM(NSInteger, IQLayoutGuidePosition) {
-    IQLayoutGuidePositionNone,
-    IQLayoutGuidePositionTop,
-    IQLayoutGuidePositionBottom,
-};
+@property(nonatomic, assign) BOOL shouldRestoreScrollViewContentOffset;
 
-//Xcode 6 compatibility check
-#ifdef NSFoundationVersionNumber_iOS_7_1
-    #define IQ_IS_IOS8_OR_GREATER (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1)
-#else
-    #define IQ_IS_IOS8_OR_GREATER NO
-#endif
 
-#endif
+@end

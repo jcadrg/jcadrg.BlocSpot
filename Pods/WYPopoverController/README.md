@@ -32,7 +32,7 @@ WYPopoverController is for the presentation of content in popover on iPhone / iP
 
 | Property                      | Type           | Default value (iOS 6)  | Default value (iOS 7)  |
 | ----------------------------- | -------------- | ---------------------: | ---------------------: |
-| usesRoundedArrow              | `BOOL`         |                    YES |                    YES |
+| usesRoundedArrow              | `BOOL`         |                     NO |                    YES |
 | tintColor                     | `UIColor`      |                  *nil* |                  *nil* |
 | arrowBase                     | `NSUInteger`   |                     42 |                     25 |
 | arrowHeight                   | `NSUInteger`   |                     18 |                     13 |
@@ -173,7 +173,7 @@ To use the `master` branch of the repo :
 
 ```Ruby
 platform :ios, '6.0'
-pod 'WYPopoverController', :git => 'https://github.com/nicolaschengdev/WYPopoverController.git'
+pod 'WYPopoverController', :git => 'https://github.com/sammcewan/WYPopoverController.git'
 ```
 
 #### Manually
@@ -337,14 +337,14 @@ Situations when handling is required:
 
 ---
 
-A brief summary of each WYPopoverController release can be found on the [wiki](https://github.com/nicolaschengdev/WYPopoverController/wiki/Change-logs).
+A brief summary of each WYPopoverController release can be found on the [wiki](https://github.com/sammcewan/WYPopoverController/wiki/Change-logs).
 
 ### Contact
 
 ---
 
-* [@mikl_jeo](https://twitter.com/mikl_jeo) on Twitter
-* [@nicolaschengdev](https://github.com/nicolaschengdev) on Github
+* ~~[@mikl_jeo](https://twitter.com/mikl_jeo) on Twitter~~
+* [@vitalys](https://github.com/vitalys) on Github
 
 ### License
 

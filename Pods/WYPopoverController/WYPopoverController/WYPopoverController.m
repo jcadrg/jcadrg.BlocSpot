@@ -1,5 +1,5 @@
 /*
- Version 0.3.6
+ Version 0.3.9
 
  WYPopoverController is available under the MIT license.
 
@@ -341,7 +341,7 @@ static char const * const UINavigationControllerEmbedInPopoverTagKey = "UINaviga
     if ([self.navigationController wy_isEmbedInPopover] == NO) {
       return;
     } else if ([self respondsToSelector:@selector(setPreferredContentSize:)]) {
-      [self.navigationController sizzled_setPreferredContentSize:aSize];
+      [self.navigationController setPreferredContentSize:aSize];
     }
 #endif
   }
@@ -2317,7 +2317,7 @@ static WYPopoverTheme *defaultTheme_ = nil;
   // keyboard support
   if (keyboardHeight > 0) {
 
-    float keyboardY = UIInterfaceOrientationIsPortrait(orientation) ? WYKeyboardListener.rect.origin.y : WYKeyboardListener.rect.origin.x;
+    float keyboardY = overlayHeight - keyboardHeight;
 
     float yOffset = containerFrame.origin.y + containerFrame.size.height - keyboardY;
 

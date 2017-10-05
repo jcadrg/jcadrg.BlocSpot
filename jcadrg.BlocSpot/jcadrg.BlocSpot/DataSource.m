@@ -9,14 +9,14 @@
 #import "DataSource.h"
 
 @interface DataSource () {
-    NSMutableArray *_annotations;
-    NSMutableArray *_categories;
-    NSMutableDictionary *_distanceValuesDictionary;
+    __strong NSMutableArray *annotations;
+    __strong NSMutableArray *categories;
+    __strong NSMutableDictionary *distanceValuesDictionary;
     
 }
-@property (nonatomic, strong) NSArray *annotations;
-@property (nonatomic, strong) NSArray *categories;
-@property (nonatomic, strong) NSDictionary *distanceValuesDictionary;
+@property (nonatomic, strong) NSMutableArray *annotations;
+@property (nonatomic, strong) NSMutableArray *categories;
+@property (nonatomic, strong) NSMutableDictionary *distanceValuesDictionary;
 
 
 

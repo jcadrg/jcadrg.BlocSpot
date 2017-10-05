@@ -33,7 +33,6 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
 
 @interface JVFloatLabeledTextView ()
 
-@property (nonatomic) CGFloat startingTextContainerInsetTop;
 
 @end
 
@@ -69,8 +68,10 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     self.textContainer.lineFragmentPadding = 0;
     
     _placeholderLabel = [[UILabel alloc] initWithFrame:self.frame];
-    // by default self.font is nil - so make UITextView use UILabel's default
-    self.font = _placeholderLabel.font;
+    if (!self.font) {
+        // by default self.font may be nil - so make UITextView use UILabel's default
+        self.font = _placeholderLabel.font;
+    }
     _placeholderLabel.font = self.font;
     _placeholderLabel.text = self.placeholder;
     _placeholderLabel.numberOfLines = 0;
@@ -171,7 +172,7 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     
     _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x,
                                       _floatingLabel.frame.origin.y,
-                                      floatingLabelSize.width,
+                                      self.frame.size.width,
                                       floatingLabelSize.height);
     
     CGSize placeholderLabelSize = [_placeholderLabel sizeThatFits:_placeholderLabel.superview.bounds.size];
@@ -187,11 +188,31 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     BOOL firstResponder = self.isFirstResponder;
     _floatingLabel.textColor = (firstResponder && self.text && self.text.length > 0 ?
                                 self.labelActiveColor : self.floatingLabelTextColor);
-    if (!self.text || 0 == [self.text length]) {
+    if ((!self.text || 0 == [self.text length]) && !self.alwaysShowFloatingLabel) {
         [self hideFloatingLabel:firstResponder];
     }
     else {
         [self showFloatingLabel:firstResponder];
+    }
+    
+    // Without this code, the size of the view is not calculated correctly when it
+    // is first displayed. Only seems relevant when scroll is disabled.
+    if (!self.scrollEnabled && !CGSizeEqualToSize(self.bounds.size, [self intrinsicContentSize])) {
+        [self invalidateIntrinsicContentSize];
+    }
+}
+
+- (CGSize)intrinsicContentSize
+{
+    CGSize textFieldIntrinsicContentSize = [super intrinsicContentSize];
+
+    if (self.text != nil && self.text.length > 0) {
+        return textFieldIntrinsicContentSize;
+    } else {
+        CGFloat additionalHeight = _placeholderLabel.bounds.size.height - (_floatingLabel.bounds.size.height + _floatingLabelYPadding);
+
+        return CGSizeMake(textFieldIntrinsicContentSize.width,
+                          textFieldIntrinsicContentSize.height + additionalHeight);
     }
 }
 
@@ -204,6 +225,12 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
         return [self performSelector:@selector(tintColor)];
     }
     return [UIColor blueColor];
+}
+
+- (void)setAlwaysShowFloatingLabel:(BOOL)alwaysShowFloatingLabel
+{
+    _alwaysShowFloatingLabel = alwaysShowFloatingLabel;
+    [self setNeedsLayout];
 }
 
 - (void)showFloatingLabel:(BOOL)animated

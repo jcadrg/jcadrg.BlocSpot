@@ -1,5 +1,5 @@
 //
-//  IQKeyboardManagerConstantsInternal.h
+//  IQUIScrollView+Additions.m
 // https://github.com/hackiftekhar/IQKeyboardManager
 // Copyright (c) 2013-15 Iftekhar Qurashi.
 //
@@ -21,35 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef IQKeyboardManagerConstantsInternal_h
-#define IQKeyboardManagerConstantsInternal_h
+#import "IQUIScrollView+Additions.h"
+#import <objc/runtime.h>
 
+@implementation UIScrollView (Additions)
 
-///-----------------------------------
-/// @name IQLayoutGuidePosition
-///-----------------------------------
+-(void)setShouldRestoreScrollViewContentOffset:(BOOL)shouldRestoreScrollViewContentOffset
+{
+    objc_setAssociatedObject(self, @selector(shouldRestoreScrollViewContentOffset), @(shouldRestoreScrollViewContentOffset), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
-/**
- `IQLayoutGuidePositionNone`
- If there are no IQLayoutGuideConstraint associated with viewController
- 
- `IQLayoutGuidePositionTop`
- If provided IQLayoutGuideConstraint is associated with with viewController topLayoutGuide
- 
- `IQLayoutGuidePositionBottom`
- If provided IQLayoutGuideConstraint is associated with with viewController bottomLayoutGuide
- */
-typedef NS_ENUM(NSInteger, IQLayoutGuidePosition) {
-    IQLayoutGuidePositionNone,
-    IQLayoutGuidePositionTop,
-    IQLayoutGuidePositionBottom,
-};
+-(BOOL)shouldRestoreScrollViewContentOffset
+{
+    NSNumber *shouldRestoreScrollViewContentOffset = objc_getAssociatedObject(self, @selector(shouldRestoreScrollViewContentOffset));
+    
+    return [shouldRestoreScrollViewContentOffset boolValue];
+}
 
-//Xcode 6 compatibility check
-#ifdef NSFoundationVersionNumber_iOS_7_1
-    #define IQ_IS_IOS8_OR_GREATER (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1)
-#else
-    #define IQ_IS_IOS8_OR_GREATER NO
-#endif
-
-#endif
+@end
